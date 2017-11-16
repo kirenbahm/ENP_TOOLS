@@ -23,7 +23,11 @@ FILESAVE = INI.FILESAVE_STAT;
 
 % to select a list of station either use the line below. For selected
 % stations rerun the entire script sequence A0, A1,...
-STATIONS_LIST = INI.SELECTED_STATIONS;
+%if INI.ANALYSIS_EXTRACTED
+    STATIONS_LIST = INI.SELECTED_STATIONS;
+%else
+%    STATIONS_LIST = INI.SELECTED_STATIONS.list.stat;
+%end
 
 % STATIONS_LIST = MAP_ALL_DATA.keys;
 

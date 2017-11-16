@@ -8,7 +8,7 @@ function INI = setup_ini(INI,U)
 % get_INI(INI) calculates the remaining input variables
 % the user should not modify anything in get_INI(INI)
 
-INI.SAVEFIGS = 0;
+%INI.SAVEFIGS = 0;
 
 INI.DATUM = 'NGVD29';
 INI.SELECTED_STATION_LIST = [INI.CURRENT_PATH U.SELECTED_STATION_LIST];
@@ -23,17 +23,12 @@ INI.fileXL = [D '/' INI.ANALYSIS_TAG '/' INI.ANALYSIS_TAG '_' N '.xlsx'];
 % path for a log file which will record all exceptions
 INI.LOGFILE = [INI.ANALYSIS_PATH  INI.ANALYSIS_TAG '/' INI.ANALYSIS_TAG '_LOGFILE.TXT'];
 
-% NOT SURE HOW THESE ARE IMPLEMENTED YET:
-INI.INCLUDE_OBSERVED      = 'YES'; % Include observed in the output figs and tables. Check if this switch works
-INI.COMPUTE_SENSITIVITES  = 'YES'; % Compute statistics and generate tables in Latex? Check if this switch works
-INI.MAKE_STATISTICS_TABLE = 'YES';  % Make the statistics tables in LaTeX
-INI.MAKE_EXCEEDANCE_PLOTS = 'YES'; % Generate exceedance curve plots? Also generates the exceedance table.
 
 % GRAPHICS_PROPERTIES
 INI.GRAPHICS_CO = {'r', 'k', 'b', '[0 0.5 0]', 'm', 'b', 'k', 'g', 'c', 'm', 'k', 'g', 'b', 'm', 'b'};
 INI.GRAPHICS_LS = {'none','-','-','-','-','-.','-.','-.','-.','-.',':','-','-','-','-','-.','-.'};
 INI.GRAPHICS_M = {'s','none','none','none','none','none','none','none','none','none','none','none','none','none','none'};
-INI.GRAPHICS_MSZ = [ 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3];
+INI.GRAPHICS_MSZ = [ 1 3 3 3 3 3 3 3 3 3 3 3 3 3 3];
 INI.GRAPHICS_LW = [ 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3];
 
 % STATIONS TO BE ANALYZED/EXTRACTED, the default is to check current dir for selected_station_list.txt
@@ -70,16 +65,16 @@ INI.OVERWRITE_GRID_XL = 0; % this regenerates the gridded points from
 
 % Overland Flow File
 i=1;
-INI.CELL_DEF_FILE_DIR_OL   = [''];
-INI.CELL_DEF_FILE_NAME_OL  = 'Transects_v12';
-INI.CELL_DEF_FILE_SHEETNAME_OL{i} = 'OL Flow'; i=i+1;
+INI.CELL_DEF_FILE_DIR_OL   = 'E:\home\ENPMS\ANALYZE_TEMPLATE\';
+INI.CELL_DEF_FILE_NAME_OL  = 'Transects_v14';
+INI.CELL_DEF_FILE_SHEETNAME_OL{i} = 'OLQ'; i=i+1;
 INI.CELL_DEF_FILE_SHEETNAME_OL{i} = 'OL2RIV'; i=i+1;
 
 % 3D Saturated Zone Flow file
 i=1;
-INI.CELL_DEF_FILE_DIR_3DSZQ   = [''];
-INI.CELL_DEF_FILE_NAME_3DSZQ  = 'Transects_v12';
-INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{i} = 'SZ Flow'; i=i+1;
+INI.CELL_DEF_FILE_DIR_3DSZQ   = 'E:\home\ENPMS\ANALYZE_TEMPLATE\';
+INI.CELL_DEF_FILE_NAME_3DSZQ  = 'Transects_v14';
+INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{i} = 'SZQ'; i=i+1;
 INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{i} = 'SZunderRIV'; i=i+1;
 INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{i} = 'SZ2RIV'; i=i+1;
 
@@ -101,7 +96,7 @@ INI = get_INI(INI);
 %     fprintf(' --> missing SELECTED_STATION_LIST\n')
 %     fprintf(' --> will use the general list in %s\n', infile)
 % end
-% INI.SELECTED_STATIONS = get_station_list(INI.SELECTED_STATION_LIST);
-INI.SELECTED_STATIONS = get_station_list_alt(INI.SELECTED_STATION_LIST);
+INI.SELECTED_STATIONS = get_station_list(INI.SELECTED_STATION_LIST);
 
+INI.NO_OBS_STATIONS = get_station_list(INI.NO_OBS_STATION_LIST);
 end

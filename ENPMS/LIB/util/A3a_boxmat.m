@@ -26,6 +26,11 @@ run = INI.ANALYSIS_TAG;
 TS.startdate = INI.ANALYZE_DATE_I;  %start  on this date
 TS.enddate = INI.ANALYZE_DATE_F;
 
+endInt= datenum(TS.enddate(1),TS.enddate(2),TS.enddate(3));
+startInt = datenum(TS.startdate(1),TS.startdate(2),TS.startdate(3));
+if (endInt - startInt) < 1098
+    fprintf('\n\n ** WARNING IN A3a_boxmat: TIME INTERVAL TOO SMALL TO PRODUCE BOXPLOTS\n\n');
+end
 rundir = [INI.ANALYSIS_DIR '/' run '/'];
 figdir = [rundir 'figures/boxplot/'];
 if ~exist(figdir,'file'),      mkdir(figdir), end  %Create a figures dir in output

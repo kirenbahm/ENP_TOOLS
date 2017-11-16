@@ -112,6 +112,7 @@ MAP_COMPUTED = combine_computed(...
 % add observed data and elevations to container if we extracted them
 MAP_ALL_DATA = add_observed(INI,MAP_COMPUTED,DATA_OBSERVED.DATA);
 
+%MAP_ALL_DATA = create_budget_flows(INI,MAP_ALL_DATA);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %save the structures which are subsequently used in other postprocessing
@@ -131,6 +132,7 @@ function MAP_COMPUTED_3DSZQ_DATA = load_SZ_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_3
 MAP_COMPUTED_3DSZQ = 0;
 if L
     MAP_COMPUTED_3DSZQ = {get_GRIDDED_DATA(FILE_3DSZQ,INI)};
+%    MAP_COMPUTED_3DSZQ = {get_GRIDDED_DATA(FILE_3DSZQ,INI,INI.CELL_DEF_FILE_DIR_3DSZQ,INI.CELL_DEF_FILE_NAME_3DSZQ,INI.CELL_DEF_FILE_SHEETNAME_3DSZQ,'3DSZQ')};
 %     MAP_COMPUTED_3DSZQ = {read_and_group_computed_timeseries(FILE_3DSZQ,...
 %         INI.CELL_DEF_FILE_DIR_3DSZQ,INI.CELL_DEF_FILE_NAME_3DSZQ,...
 %         INI.CELL_DEF_FILE_SHEETNAME_3DSZQ)};
@@ -158,6 +160,7 @@ function MAP_COMPUTED_OL_DATA = load_OL_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_OL)
 
 MAP_COMPUTED_OL_DATA = 0;
 if L
+%    MAP_COMPUTED_OL = {get_GRIDDED_DATA(FILE_OL,INI,INI.CELL_DEF_FILE_DIR_OL,INI.CELL_DEF_FILE_NAME_OL,INI.CELL_DEF_FILE_SHEETNAME_OL,'OL')};
     MAP_COMPUTED_OL = {get_GRIDDED_DATA(FILE_OL,INI)};
     if ~exist([MODEL_RESULT_DIR '/matlab'],'file'),  ...
             mkdir([MODEL_RESULT_DIR '/matlab']), end

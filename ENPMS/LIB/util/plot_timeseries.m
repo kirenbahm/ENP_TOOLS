@@ -61,18 +61,21 @@ M = INI.GRAPHICS_M;
 MSZ = INI.GRAPHICS_MSZ;
 LW = INI.GRAPHICS_LW;
 
-if (INI.INCLUDE_OBSERVED)
+if INI.INCLUDE_OBSERVED
     ibegin = 1;
 else
     ibegin = 2;
 end
 
 for i = ibegin:n
-    %NTS = NAMES(i);
-    % % %        H = plot_figureV0(H, TSC.(NTS), F, i);
-    % % % this is from plot_figure
-    %TS = TSC.(NTS);
-    TS = TSC.(NAMES(i));
+%    rTS = TSk(:,i);
+%    rTV = TV_STR;
+%    index_nan = isnan(rTS); % find inexes with Nan
+%    rTS(index_nan)=[]; %remove Nan values
+%    rTV(index_nan,:)=[]; %remove dates with Nan values
+%    TS = timeseries(rTS,rTV);
+%    TS.name = char(N(i));
+TS = TSC.(NAMES(i));
     TS.TimeInfo.Format = 'mm/yy';
     FS = 10;
     set(gca,'FontSize',FS,'FontName','times');
@@ -86,8 +89,10 @@ end
 TSss.startdate = INI.ANALYZE_DATE_I;
 TSss.enddate = INI.ANALYZE_DATE_F;
 STS = nummthyr(TSss);
-%HARDCODE:
-tickspacing = 2;
+%HARDCODE: % this is the number of years between tickmarks:
+tickspacing = 1;
+
+
 xint = ceil(tickspacing*(STS.cumtotyrdays(end) / length(STS.yrs)));
 % xtl=STS.yrs(1:tickspacing:length(STS.yrs));
 xtl = num2cell (STS.yrs(1:tickspacing:length(STS.yrs)));
@@ -130,9 +135,15 @@ ylim([aymin aymax]);
 % % LEG = legend(legh, legt,7,'Location','SouthEast');
 % % legend boxoff;
 
+%if (INI.INCLUDE_OBSERVED)
 nn = length(INI.MODEL_RUN_DESC)+1;
 NN(1) = {'Observed'};
 NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
+NN = strrep(NN,'_','\_');
+%else
+%    nn = length(INI.MODEL_RUN_DESC);
+%    NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
+%end
 legt = NN;
 
 %legend(legt,7,'Location','SouthEast');

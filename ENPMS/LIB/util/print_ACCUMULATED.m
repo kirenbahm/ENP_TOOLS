@@ -2,7 +2,7 @@ function [ output_args ] = print_ACCUMULATED(INI,P)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
-FN = [INI.ANALYSIS_DIR_TAG '/DS_ACCUMULATED.txt']
+FN = [INI.ANALYSIS_DIR_TAG '/DS_ACCUMULATED.txt'];
 FID = fopen(FN,'w');
 
 %print header

@@ -97,7 +97,7 @@ M = INI.GRAPHICS_M;
 MSZ = INI.GRAPHICS_MSZ;
 LW = INI.GRAPHICS_LW;
 
-if (INI.INCLUDE_OBSERVED)
+if INI.INCLUDE_OBSERVED
     ibegin = 1;
 else
     ibegin = 2;
@@ -122,9 +122,15 @@ end
 title(STATION.NAME,'FontSize',10,'FontName','Times New Roman','Interpreter','none');
 
 ylabel('Cumulative discharge, Kaf');
+%if (INI.INCLUDE_OBSERVED)
 nn = length(INI.MODEL_RUN_DESC)+1;
 NN(1) = {'Observed'};
 NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
+NN = strrep(NN,'_','\_');
+%else
+%    nn = length(INI.MODEL_RUN_DESC);
+%    NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
+%end
 legt = NN;
 
 legend(legt,'Location','best');
@@ -137,8 +143,10 @@ xlabel('');
 TSss.startdate = INI.ANALYZE_DATE_I;
 TSss.enddate = INI.ANALYZE_DATE_F;
 STS = nummthyr(TSss);
-%HARDCODE:
-tickspacing = 2;
+%HARDCODE: % this is the number of years between tickmarks:
+tickspacing = 1;
+
+
 xint = ceil(tickspacing*(STS.cumtotyrdays(end) / length(STS.yrs)));
 xtl = num2cell (STS.yrs(1:tickspacing:length(STS.yrs)));
 

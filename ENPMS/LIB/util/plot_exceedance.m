@@ -56,7 +56,7 @@ fig = clf;
 
 legnd1 = '';
 
-if (INI.INCLUDE_OBSERVED == 'YES')
+if INI.INCLUDE_OBSERVED
     % plot observed as the first item
     DMATRIX = MAP_NAN(char(MAP_KEYS(1))).TS;
     if ~isempty(DMATRIX)
@@ -115,6 +115,7 @@ else
     NN(1:nn-1) = INI.MODEL_RUN_DESC(1:nn-1);
 end
 
+NN = strrep(NN,'_','\_'); % correct printing of legend with underscore
 legt = NN;
 set(get(gca,'YLabel'),'String',YLABEL,'FontName','times','FontSize',12);
 legend(legt,'Location','NorthEast');

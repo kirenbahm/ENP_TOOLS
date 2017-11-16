@@ -72,7 +72,7 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];
 % CHOOSE STATIONS TO BE ANALYZED
 %---------------------------------------------------------------------
 
-U.SELECTED_STATION_LIST = './EXAMPLE_DATA/TEST-STATIONS.txt';
+U.SELECTED_STATION_LIST = '../EXAMPLE_DATA/TEST-STATIONS.txt';
 
 %---------------------------------------------------------------------
 % CHOOSE WHICH MODULES TO RUN  1=yes, 0=no
@@ -110,16 +110,16 @@ if ~INI.ANALYSIS_EXTRACTED
     U.FILE_OBSERVED = 'DATA_OBS_20150604.MATLAB';
 else
    % U.FILE_OBSERVED = './EXAMPLE_DATA/M01_OBSERVED_DATA_test.MATLAB';
-   U.FILE_OBSERVED = './EXAMPLE_DATA/M06_OBSERVED_DATA_test.MATLAB';
+   U.FILE_OBSERVED = '../EXAMPLE_DATA/M06_OBSERVED_DATA_test.MATLAB';
 end
 
 % Location of observed data metadata
-U.STATION_DATA = './EXAMPLE_DATA/monpts_20160401.xlsx';
+U.STATION_DATA = '../EXAMPLE_DATA/monpts_20160401.xlsx';
 
 % List of station names that have no Obs data, so we can suppress 
 % 'missing obs data' messages for stations we already know don't have 
 % observed data (ie transects, canal junctions where we output wbud info)
-U.NO_OBS_STATION_LIST = './EXAMPLE_DATA/monpts_with_no_obs_data.txt';
+U.NO_OBS_STATION_LIST = '../EXAMPLE_DATA/monpts_with_no_obs_data.txt';
 
 % map of requested seepage, note the scripts are MAPF specfic because they
 % accumulate X and Y seepage values in specific way

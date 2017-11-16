@@ -74,7 +74,6 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];
 
 U.SELECTED_STATION_LIST = './EXAMPLE_DATA/TEST-STATIONS.txt';
 
-
 %---------------------------------------------------------------------
 % CHOOSE WHICH MODULES TO RUN  1=yes, 0=no
 %---------------------------------------------------------------------
@@ -93,11 +92,18 @@ INI.A5    = 1; % A5_create_summary_stat
 % INI.A8    = 1; % A7_SEEPAGE_EXCEL % not implemented yet
 
 %---------------------------------------------------------------------
-% OTHER SETTINGS
+% CHOOSE OPTIONS 1=yes, 0=no
 %---------------------------------------------------------------------
 
-% choose Alternative Analysis option with extracted data
-INI.ANALYSIS_EXTRACTED = 1;
+INI.ANALYSIS_EXTRACTED    = 1; % use Alternative Analysis option with extracted data?
+INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
+INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables. Check if this switch works
+INI.MAKE_STATISTICS_TABLE = 1;  % Make the statistics tables in LaTeX
+INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates the exceedance table.
+%INI.COMPUTE_SENSITIVITES  = 'YES'; % not used? % Compute statistics and generate tables in Latex? Check if this switch works
+%---------------------------------------------------------------------
+% FILE LOCATIONS
+%---------------------------------------------------------------------
 
 % Location of observed data timeseries (in matlab dataset form)
 if ~INI.ANALYSIS_EXTRACTED
@@ -110,12 +116,15 @@ end
 % Location of observed data metadata
 U.STATION_DATA = './EXAMPLE_DATA/monpts_20160401.xlsx';
 
+% List of station names that have no Obs data, so we can suppress 
+% 'missing obs data' messages for stations we already know don't have 
+% observed data (ie transects, canal junctions where we output wbud info)
+U.NO_OBS_STATION_LIST = './EXAMPLE_DATA/monpts_with_no_obs_data.txt';
+
 % map of requested seepage, note the scripts are MAPF specfic because they
 % accumulate X and Y seepage values in specific way
 U.MAPF = 'SEEPAGE_MAP.dfs2';
 
-% save figures in MATLAB format? 1=yes, 0=no
-INI.SAVEFIGS = 1;
 
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------

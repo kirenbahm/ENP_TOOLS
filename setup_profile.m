@@ -25,6 +25,7 @@ end
 
 end
 
+% set up for each computer and path
 %LOCATION OF SCRIPTS FOR ANALYSIS - currently this is the 'ENPMS' directory (end with '\'):
 % INI.MATLAB_SCRIPTS = 'C:\Users\georgio\Desktop\MATLAB_SCRIPTS_03262016\ENPMS\';
 % INI.MATLAB_SCRIPTS = 'E:\ENP_10222017\ENPMS\';

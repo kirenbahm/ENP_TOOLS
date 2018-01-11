@@ -20,7 +20,7 @@ changes introduced to v1:  (keb 7/2011)
   to find station and just issue message if not found
 %}
 %----------------------------------------
-fprintf('\n Beginning A2_generate_timeseries_stat: %s \n',datestr(now));
+fprintf('\n Beginning A2_generate_extracted_stat: %s \n',datestr(now));
 format compact
 
 % load the file with elevation data

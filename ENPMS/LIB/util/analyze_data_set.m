@@ -4,16 +4,16 @@ function INI = analyze_data_set (INI)
 % Run the modules
 %---------------------------------------------------------------
 
-if INI.ANALYSIS_EXTRACTED
-    if INI.A1 ; A1_load_extracted_timeseries(INI); end
+if INI.USE_NEW_CODE
+    if INI.A1 ; A1_load_extracted_timeseries(INI); end % New method
 else
-    if INI.A1 ; A1_load_computed_timeseries(INI); end
+    if INI.A1 ; A1_load_computed_timeseries(INI); end  % Old method
 end
 
-if INI.ANALYSIS_EXTRACTED
-    if INI.A2 ; A2_generate_extracted_stat(INI); end
+if INI.USE_NEW_CODE
+    if INI.A2 ; A2_generate_extracted_stat(INI); end  % New method
 else
-    if INI.A2 ; A2_generate_timeseries_stat(INI); end
+    if INI.A2 ; A2_generate_timeseries_stat(INI); end % Old method
 end
 
 if INI.A2a ; A2a_cumulative_flows(INI); end

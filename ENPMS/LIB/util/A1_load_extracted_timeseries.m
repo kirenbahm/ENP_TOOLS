@@ -159,7 +159,7 @@ end
 %save the structures which are subsequently used in other postprocessing
 %scripts. The data are accessed using load(INI.FILESAVE_TS);
 
-fprintf('\n... Completed A1_load_computed_timeseries() \n');
+fprintf('\n... Completed A1_load_extraced_timeseries() \n');
 fprintf('... Saving data file:\n\t %s\n', char(INI.FILESAVE_TS));
 save(INI.FILESAVE_TS,'MAP_ALL_DATA', '-v7.3');
 

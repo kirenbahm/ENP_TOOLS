@@ -95,10 +95,10 @@ INI.A5    = 1; % A5_create_summary_stat
 % CHOOSE OPTIONS 1=yes, 0=no
 %---------------------------------------------------------------------
 
-INI.ANALYSIS_EXTRACTED    = 1; % use Alternative Analysis option with extracted data?
+INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06)
 INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables. Check if this switch works
-INI.MAKE_STATISTICS_TABLE = 1;  % Make the statistics tables in LaTeX
+INI.MAKE_STATISTICS_TABLE = 0;  % Make the statistics tables in LaTeX
 INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates the exceedance table.
 %INI.COMPUTE_SENSITIVITES  = 'YES'; % not used? % Compute statistics and generate tables in Latex? Check if this switch works
 %---------------------------------------------------------------------
@@ -106,11 +106,11 @@ INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates
 %---------------------------------------------------------------------
 
 % Location of observed data timeseries (in matlab dataset form)
-if ~INI.ANALYSIS_EXTRACTED
-    U.FILE_OBSERVED = 'DATA_OBS_20150604.MATLAB';
+if INI.USE_NEW_CODE
+   % U.FILE_OBSERVED = './EXAMPLE_DATA/M01_OBSERVED_DATA_test.MATLAB'; % Obs data in NEW format
+   U.FILE_OBSERVED = '../EXAMPLE_DATA/M06_OBSERVED_DATA_test.MATLAB';  % Obs data in NEW format
 else
-   % U.FILE_OBSERVED = './EXAMPLE_DATA/M01_OBSERVED_DATA_test.MATLAB';
-   U.FILE_OBSERVED = '../EXAMPLE_DATA/M06_OBSERVED_DATA_test.MATLAB';
+    U.FILE_OBSERVED = 'DATA_OBS_20150604.MATLAB';  % Obs data in OLD format
 end
 
 % Location of observed data metadata

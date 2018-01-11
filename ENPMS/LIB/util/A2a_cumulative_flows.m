@@ -23,7 +23,7 @@ FILESAVE = INI.FILESAVE_STAT;
 
 % to select a list of station either use the line below. For selected
 % stations rerun the entire script sequence A0, A1,...
-%if INI.ANALYSIS_EXTRACTED
+%if INI.USE_NEW_CODE
     STATIONS_LIST = INI.SELECTED_STATIONS;
 %else
 %    STATIONS_LIST = INI.SELECTED_STATIONS.list.stat;

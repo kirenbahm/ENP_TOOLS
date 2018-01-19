@@ -6,7 +6,7 @@ function INI = setup_profile ( INI, PROFILE_NAME )
 if (strcmp(PROFILE_NAME,'test') == 1)
    INI.MODELS_HOME    = 'my_models_home_path';
    INI.MATLAB_SCRIPTS = '.\ENPMS\';
-   INI.ResultDirHome  = ['..\EXAMPLE_DATA\MODELED_DATA\Result\'];
+   INI.ResultDirHome  = ['..\ENP_TOOLS_Sample_Input\Result\'];
    
 elseif (strcmp(PROFILE_NAME,'kiren') == 1)
    INI.MODELS_HOME    = 'C:\Users\kbahm\Desktop\Models\';

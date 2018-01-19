@@ -8,6 +8,7 @@ i = 1;
 for L = LIST_STATIONS
     try
         M = MAP_STATION_STAT(char(L));
+        M.MODELRUN = strrep(M.MODELRUN,'_','\_');
         sz = length(M.PE(:,1));
         C(i:i+sz-1) = M.MODELRUN(1:sz);
         N(i:i+sz-1) = L;

@@ -42,13 +42,13 @@ n = length(INI.MODEL_ALL_RUNS);
 F.TS_DESCRIPTION(1:n)= INI.MODEL_RUN_DESC(1:n);
 F.TS_DESCRIPTION = strrep(F.TS_DESCRIPTION,'_','\_'); % if replace _ with \_ to for latex
 
-if INI.MAKE_STATISTICS_TABLE
+%if INI.MAKE_STATISTICS_TABLE
     fprintf('... Loading Computed and observed and stat data:\n\t %s\n', char(INI.FILESAVE_STAT));
     load(INI.FILESAVE_STAT, '-mat');
     MAP_STATION_STAT = get_map_station_stat(MAP_ALL_DATA,STATIONS_LIST); % stat for selected stations
-else
-    MAP_STATION_STAT = 0;
-end
+%else
+%    MAP_STATION_STAT = 0;
+%end
 
 uniq = unique (INI.SELECTED_STATIONS);
 MAP_KEY = uniq;

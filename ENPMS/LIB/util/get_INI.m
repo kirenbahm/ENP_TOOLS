@@ -20,7 +20,7 @@ INI.PATHDIR = INI.MATLAB_SCRIPTS;
 INI.MATDIR =  [INI.MATLAB_SCRIPTS 'LIB/'];
 INI.SCRIPTDIR   = [INI.MATLAB_SCRIPTS 'DATA_LATEX/'];
 %INI.DATADIR = [INI.MATLAB_SCRIPTS 'DATA_OBSERVATIONS/'];
-INI.DATADIR = ['../EXAMPLE_DATA/'];
+INI.DATADIR = [INI.DATA_COMPUTED];
 
 % read monitoring points either from excel or matlab
 [D,N,X] = fileparts(INI.STATION_DATA);
@@ -43,9 +43,9 @@ else
 end
 
 % Directory to store all analyses
-INI.ANALYSIS_DIR = INI.ANALYSIS_PATH;
-fprintf('Current directory, all analysis will be stored in: %s\n\n',INI.ANALYSIS_DIR);
-INI.ANALYSIS_DIR_TAG = [INI.ANALYSIS_DIR INI.ANALYSIS_TAG];  % postproc directory for postproc run (no edits needed here)
+INI.ANALYSIS_DIR = [INI.POST_PROC_DIR];
+INI.ANALYSIS_DIR_TAG = [INI.POST_PROC_DIR INI.ANALYSIS_TAG ];  % postproc directory for postproc run (no edits needed here)
+fprintf('Current directory, all analysis will be stored in: %s\n\n',INI.ANALYSIS_DIR_TAG);
 INI.DATA_DIR         = [INI.ANALYSIS_DIR_TAG '/data'];  % data dir in output for extracted matlab files
 INI.FIGURES_DIR      = [INI.ANALYSIS_DIR_TAG '/figures'];  % figures dir in output
 INI.FIGURES_DIR_TS   = [INI.ANALYSIS_DIR_TAG '/figures/timeseries'];

@@ -48,7 +48,7 @@ INI = setup_profile(INI,PROFILE_NAME);
 % This tag will be given to the combined output datasets,
 % directory structure, and filenames
 
-INI.ANALYSIS_TAG = 'test_results';
+INI.ANALYSIS_TAG = 'ENP_TOOLS_Sample_Output';
 
 %---------------------------------------------------------------------
 % CHOOSE SIMULATIONS TO BE ANALYZED
@@ -57,8 +57,8 @@ INI.ANALYSIS_TAG = 'test_results';
 % results from different directories or computers to be used without
 % copying the data, i.e. INI.ResultDirHome can vary
 
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.ResultDirHome, 'M01_test', 'Model A'};
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.ResultDirHome, 'M06_test', 'Model B'};
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.ResultDirHome, 'M01_test', 'M3ENP'};
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.ResultDirHome, 'M06_test', 'M3ENP-SF'};
 
 %---------------------------------------------------------------------
 % CHOOSE TIME PERIOD THAT PLOTS AND STATISTICS WILL BE GENERATED FOR
@@ -69,12 +69,8 @@ INI.ANALYZE_DATE_I = [1999 1 1 0 0 0];
 INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];
 
 %---------------------------------------------------------------------
-% CHOOSE STATIONS TO BE ANALYZED
-%---------------------------------------------------------------------
 
-U.SELECTED_STATION_LIST = '../EXAMPLE_DATA/TEST-STATIONS.txt';
 
-%---------------------------------------------------------------------
 % CHOOSE WHICH MODULES TO RUN  1=yes, 0=no
 %---------------------------------------------------------------------
 
@@ -83,13 +79,13 @@ INI.A2    = 1; % A2_generate_timeseries_stat
 INI.A2a   = 1; % A2a_cumulative_flows
 INI.A3    = 1; % A3_create_figures_timeseries
 INI.A3c   = 1; % A3_create_figures_cumulative_timeseries
-% INI.A3a   = 0; % A3a_boxmat
-% INI.A3exp = 0; % A3a_boxmatEXP
+%INI.A3a   = 0; % A3a_boxmat
+%INI.A3exp = 0; % A3a_boxmatEXP
 INI.A4    = 1; % A4_create_figures_exceedance
 INI.A5    = 1; % A5_create_summary_stat
-% INI.A6    = 1; % A6_GW_MAP_COMPARE
-% INI.A7    = 1; % A7_SEEPAGE_MAP
-% INI.A8    = 1; % A7_SEEPAGE_EXCEL % not implemented yet
+%INI.A6    = 0; % A6_GW_MAP_COMPARE
+%INI.A7    = 0; % A7_SEEPAGE_MAP
+%INI.A8    = 0; % A7_SEEPAGE_EXCEL % not implemented yet
 
 %---------------------------------------------------------------------
 % CHOOSE OPTIONS 1=yes, 0=no
@@ -105,25 +101,43 @@ INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates
 % FILE LOCATIONS
 %---------------------------------------------------------------------
 
+% DATA_COMMON is data which is common for all simulations, it includes the
+% main xlsx sheet, all stationd data, and observed data for the domain
+INI.DATA_COMMON = '../ENP_TOOLS_Sample_Input/Data_Common/'; % the default for testing ANALYSIS_TEMPLATE
+%---------------------------------------------------------------------
+%INI.DATA_COMPUTED is the data which is provided here for testing the
+%simulations, it includes also a directory 'Results' which contains dfs
+%files for testing compiling model data
+%---------------------------------------------------------------------
+INI.DATA_COMPUTED = '../ENP_TOOLS_Sample_Input/Model_Output_Processed/'; % the default for testing ANALYSIS_TEMPLATE
+%---------------------------------------------------------------------
+%---------------------------------------------------------------------
+% DATA_POSTPROC is post proc data
+INI.POST_PROC_DIR = ['../']; % the default for testing ANALYSIS_TEMPLATE
+%---------------------------------------------------------------------
+%---------------------------------------------------------------------
+% CHOOSE STATIONS TO BE ANALYZED
+%---------------------------------------------------------------------
+U.SELECTED_STATION_LIST = [INI.DATA_COMMON '/TEST-STATIONS.txt']; 
 % Location of observed data timeseries (in matlab dataset form)
 if INI.USE_NEW_CODE
    % U.FILE_OBSERVED = './EXAMPLE_DATA/M01_OBSERVED_DATA_test.MATLAB'; % Obs data in NEW format
-   U.FILE_OBSERVED = '../EXAMPLE_DATA/M06_OBSERVED_DATA_test.MATLAB';  % Obs data in NEW format
+   U.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];  % Obs data in NEW format
 else
-    U.FILE_OBSERVED = 'DATA_OBS_20150604.MATLAB';  % Obs data in OLD format
+   U.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];  % Obs data in OLD format
 end
 
 % Location of observed data metadata
-U.STATION_DATA = '../EXAMPLE_DATA/monpts_20160401.xlsx';
+U.STATION_DATA = [INI.DATA_COMMON 'monpts_20160401.xlsx']; 
 
 % List of station names that have no Obs data, so we can suppress 
 % 'missing obs data' messages for stations we already know don't have 
 % observed data (ie transects, canal junctions where we output wbud info)
-U.NO_OBS_STATION_LIST = '../EXAMPLE_DATA/monpts_with_no_obs_data.txt';
+U.NO_OBS_STATION_LIST = [INI.DATA_COMMON 'monpts_with_no_obs_data.txt'];
 
 % map of requested seepage, note the scripts are MAPF specfic because they
 % accumulate X and Y seepage values in specific way
-U.MAPF = 'SEEPAGE_MAP.dfs2';
+U.MAPF = [INI.DATA_COMMON 'SEEPAGE_MAP.dfs2'];;
 
 
 %---------------------------------------------------------------------

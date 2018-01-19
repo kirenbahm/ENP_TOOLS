@@ -22,7 +22,7 @@ INI.MAPF = [U.MAPF];
 [D,N,E] = fileparts(char(INI.MAPF));
 INI.fileXL = [D '/' INI.ANALYSIS_TAG '/' INI.ANALYSIS_TAG '_' N '.xlsx'];
 % path for a log file which will record all exceptions
-INI.LOGFILE = [INI.ANALYSIS_PATH  INI.ANALYSIS_TAG '/' INI.ANALYSIS_TAG '_LOGFILE.TXT'];
+INI.LOGFILE = [INI.POST_PROC_DIR  INI.ANALYSIS_TAG '/_LOGFILE.TXT'];
 
 
 % GRAPHICS_PROPERTIES

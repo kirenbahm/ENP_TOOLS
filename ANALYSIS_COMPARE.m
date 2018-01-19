@@ -21,17 +21,7 @@ Originally from Georgio Tachiev and modified by RJF and KEB at NPS.
 Credit also goes to the student that helped organize this for GIT - Tushar Gadkari,
 Other credits go to Marcelo Lago, Amy Cook, and Jordan Barr.
 
-BUGS:
-COMMENTS:
-REVISION HISTORY:
 %}
-
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%  BEGIN USER DEFINITIONS
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-
 %---------------------------------------------------------------------
 % SET UP PROFILE WITH LOCATION OF DIRECTORIES AND SCRIPTS
 %---------------------------------------------------------------------
@@ -69,8 +59,12 @@ INI.ANALYZE_DATE_I = [1999 1 1 0 0 0];
 INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];
 
 %---------------------------------------------------------------------
+% CHOOSE STATIONS TO BE ANALYZED
+%---------------------------------------------------------------------
 
+U.SELECTED_STATION_LIST = '../EXAMPLE_DATA/TEST-STATIONS-short.txt';
 
+%---------------------------------------------------------------------
 % CHOOSE WHICH MODULES TO RUN  1=yes, 0=no
 %---------------------------------------------------------------------
 
@@ -94,9 +88,8 @@ INI.A5    = 1; % A5_create_summary_stat
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06)
 INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables. Check if this switch works
-INI.MAKE_STATISTICS_TABLE = 0;  % Make the statistics tables in LaTeX
-INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates the exceedance table.
-%INI.COMPUTE_SENSITIVITES  = 'YES'; % not used? % Compute statistics and generate tables in Latex? Check if this switch works
+INI.MAKE_STATISTICS_TABLE = 0;
+
 %---------------------------------------------------------------------
 % FILE LOCATIONS
 %---------------------------------------------------------------------
@@ -104,21 +97,15 @@ INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates
 % DATA_COMMON is data which is common for all simulations, it includes the
 % main xlsx sheet, all stationd data, and observed data for the domain
 INI.DATA_COMMON = '../ENP_TOOLS_Sample_Input/Data_Common/'; % the default for testing ANALYSIS_TEMPLATE
-%---------------------------------------------------------------------
-%INI.DATA_COMPUTED is the data which is provided here for testing the
-%simulations, it includes also a directory 'Results' which contains dfs
-%files for testing compiling model data
-%---------------------------------------------------------------------
+
+% DATA_COMPUTED is the data which is provided here for testing the
+% simulations, it includes also a directory 'Results' which contains dfs
+% files for testing compiling model data
 INI.DATA_COMPUTED = '../ENP_TOOLS_Sample_Input/Model_Output_Processed/'; % the default for testing ANALYSIS_TEMPLATE
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
+
 % DATA_POSTPROC is post proc data
 INI.POST_PROC_DIR = ['../']; % the default for testing ANALYSIS_TEMPLATE
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-% CHOOSE STATIONS TO BE ANALYZED
-%---------------------------------------------------------------------
-U.SELECTED_STATION_LIST = [INI.DATA_COMMON '/TEST-STATIONS.txt']; 
+
 % Location of observed data timeseries (in matlab dataset form)
 if INI.USE_NEW_CODE
    % U.FILE_OBSERVED = './EXAMPLE_DATA/M01_OBSERVED_DATA_test.MATLAB'; % Obs data in NEW format
@@ -154,29 +141,51 @@ catch
    addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
-%THIS IS NOT NEEDED
-INI.ANALYSIS_PATH = INI.CURRENT_PATH;
-
-
-% These are the parent directories where the input dfs0 timeseries files are
-% stored. This is used by readxlsmonpts to create the obs data matlab file
-% for postproc
-INI.dfs0MSHEdir = ['C:\home\MODELS\DHIMODEL\INPUTFILES\MSHE\TIMESERIES\'];
-INI.dfs0MSHEdpthdir = ['C:\home\MODELS\DHIMODEL\INPUTFILES\MSHE\TSDEPTH\'];
-INI.dfs0M11dir = ['C:\home\MODELS\DHIMODEL\INPUTFILES\M11\TIMESERIES\'];
-
-% These are used to create txt files that can be imported into the model.
-% This is in the last part of the readXLSmonpts script, but should probably
-% be moved into its own function.
-% Set to 1 to create these files, 0 to not create them
-INI.MakeDetTSInputFiles = 0;
-INI.printMSHEname = ['./detTSmsheALL.txt'];
-INI.printM11name = ['./detTSm11ALL.txt'];
-
 %---------------------------------------------------------------------
 %  INITIALILIZE STRUCTURE INI
 %---------------------------------------------------------------------
 INI = setup_ini(INI,U);
+
+%---------------------------------------------------------------------
+% GET OBS DATA AND MONPTS
+%---------------------------------------------------------------------
+% read monitoring points either from excel or matlab
+[D,N,X] = fileparts(INI.STATION_DATA);
+MATFILE = [INI.DATADIR N '.MATLAB'];
+
+% if there there is an existing MATLAB file read read XL file
+% if the user specifies this file to be regenerated read XL file
+% else load the MATLAB for faster
+% if INI.OVERWRITE_MON_PTS | ~exist(MATFILE,'file')
+%     % read monitoring points from excel file, slower process
+%     INI.MAPXLS = readXLSmonpts(0,INI,INI.STATION_DATA,0);
+%     %save the file in a structure for reading
+%     fprintf('\n--- Saving Monitoring Points data in file: %s\n', char(MATFILE))
+%     MAPXLS = INI.MAPXLS
+%     save(MATFILE,'MAPXLS','-v7.3');
+% else
+    % load Monitoring point data from MATLAB for faster processing
+    load(MATFILE, '-mat');
+    INI.MAPXLS = MAPXLS;
+% end
+
+
+INI.SELECTED_STATIONS = get_station_list(INI.SELECTED_STATION_LIST);
+
+INI.NO_OBS_STATIONS = get_station_list(INI.NO_OBS_STATION_LIST);
+
+%---------------------------------------------------------------
+% SET UP DIRECTORIES AND SUPPORTING FILES
+%---------------------------------------------------------------
+if ~exist(INI.ANALYSIS_DIR,'file'),     mkdir(INI.ANALYSIS_DIR), end  % Create analysis directory if it doesn't exist already
+if ~exist(INI.ANALYSIS_DIR_TAG,'file'), mkdir(INI.ANALYSIS_DIR_TAG), end  % create postproc directory for postproc run (no edits needed here)
+if ~exist(INI.DATA_DIR,'file'),         mkdir(INI.DATA_DIR), end %Create a data dir in output for extracted matlab files
+if ~exist(INI.FIGURES_DIR,'file'),      mkdir(INI.FIGURES_DIR), end  %Create a figures dir in output
+if ~exist(INI.FIGURES_DIR_TS,'file'),   mkdir(INI.FIGURES_DIR_TS), end
+if ~exist(INI.FIGURES_DIR_EXC,'file'),  mkdir(INI.FIGURES_DIR_EXC), end
+if ~exist(INI.FIGURES_DIR_MAPS,'file'), mkdir(INI.FIGURES_DIR_MAPS), end
+% Set up LaTeX directory and supporting files
+if ~exist(INI.LATEX_DIR,'file'),        mkdir(INI.LATEX_DIR);end;
 
 %---------------------------------------------------------------
 % Run the modules

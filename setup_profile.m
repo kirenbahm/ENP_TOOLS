@@ -4,17 +4,14 @@ function INI = setup_profile ( INI, PROFILE_NAME )
 % This is the equivalent of the 'Results' directory (end with '\'):
 
 if (strcmp(PROFILE_NAME,'test') == 1)
-   INI.MODELS_HOME    = 'my_models_home_path';
    INI.MATLAB_SCRIPTS = '.\ENPMS\';
    INI.ResultDirHome  = ['..\ENP_TOOLS_Sample_Input\Result\'];
    
 elseif (strcmp(PROFILE_NAME,'kiren') == 1)
-   INI.MODELS_HOME    = 'C:\Users\kbahm\Desktop\Models\';
    INI.MATLAB_SCRIPTS = 'C:\Users\kbahm\Desktop\Models\ENPMS\';
    INI.ResultDirHome  = [INI.MODELS_HOME 'Result\'];
    
 elseif (strcmp(PROFILE_NAME,'inpeverhydrokc') == 1)
-   INI.MODELS_HOME    = 'E:\home\Models\';
    INI.MATLAB_SCRIPTS = 'E:\home\Tools\ENP_TOOLS\ENPMS\';
    INI.ResultDirHome  = [INI.MODELS_HOME 'Result\'];
    

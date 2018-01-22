@@ -59,12 +59,6 @@ INI.ANALYZE_DATE_I = [1999 1 1 0 0 0];
 INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];
 
 %---------------------------------------------------------------------
-% CHOOSE STATIONS TO BE ANALYZED
-%---------------------------------------------------------------------
-
-U.SELECTED_STATION_LIST = '../EXAMPLE_DATA/TEST-STATIONS-short.txt';
-
-%---------------------------------------------------------------------
 % CHOOSE WHICH MODULES TO RUN  1=yes, 0=no
 %---------------------------------------------------------------------
 
@@ -88,8 +82,9 @@ INI.A5    = 1; % A5_create_summary_stat
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06)
 INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables. Check if this switch works
-INI.MAKE_STATISTICS_TABLE = 0;
-
+INI.MAKE_STATISTICS_TABLE = 0;  % Make the statistics tables in LaTeX
+INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates the exceedance table.
+%INI.COMPUTE_SENSITIVITES  = 'YES'; % not used? % Compute statistics and generate tables in Latex? Check if this switch works
 %---------------------------------------------------------------------
 % FILE LOCATIONS
 %---------------------------------------------------------------------
@@ -105,6 +100,12 @@ INI.DATA_COMPUTED = '../ENP_TOOLS_Sample_Input/Model_Output_Processed/'; % the d
 
 % DATA_POSTPROC is post proc data
 INI.POST_PROC_DIR = ['../']; % the default for testing ANALYSIS_TEMPLATE
+
+%---------------------------------------------------------------------
+% CHOOSE STATIONS TO BE ANALYZED
+%---------------------------------------------------------------------
+
+U.SELECTED_STATION_LIST = [INI.DATA_COMMON '/TEST-STATIONS-short.txt']; 
 
 % Location of observed data timeseries (in matlab dataset form)
 if INI.USE_NEW_CODE
@@ -157,16 +158,16 @@ MATFILE = [INI.DATADIR N '.MATLAB'];
 % if the user specifies this file to be regenerated read XL file
 % else load the MATLAB for faster
 % if INI.OVERWRITE_MON_PTS | ~exist(MATFILE,'file')
-%     % read monitoring points from excel file, slower process
-%     INI.MAPXLS = readXLSmonpts(0,INI,INI.STATION_DATA,0);
+     % read monitoring points from excel file, slower process
+     INI.MAPXLS = readXLSmonpts(0,INI,INI.STATION_DATA,0);
 %     %save the file in a structure for reading
-%     fprintf('\n--- Saving Monitoring Points data in file: %s\n', char(MATFILE))
-%     MAPXLS = INI.MAPXLS
-%     save(MATFILE,'MAPXLS','-v7.3');
+     fprintf('\n--- Saving Monitoring Points data in file: %s\n', char(MATFILE))
+     MAPXLS = INI.MAPXLS
+     save(MATFILE,'MAPXLS','-v7.3');
 % else
     % load Monitoring point data from MATLAB for faster processing
-    load(MATFILE, '-mat');
-    INI.MAPXLS = MAPXLS;
+%    load(MATFILE, '-mat');
+%    INI.MAPXLS = MAPXLS;
 % end
 
 
@@ -180,12 +181,14 @@ INI.NO_OBS_STATIONS = get_station_list(INI.NO_OBS_STATION_LIST);
 if ~exist(INI.ANALYSIS_DIR,'file'),     mkdir(INI.ANALYSIS_DIR), end  % Create analysis directory if it doesn't exist already
 if ~exist(INI.ANALYSIS_DIR_TAG,'file'), mkdir(INI.ANALYSIS_DIR_TAG), end  % create postproc directory for postproc run (no edits needed here)
 if ~exist(INI.DATA_DIR,'file'),         mkdir(INI.DATA_DIR), end %Create a data dir in output for extracted matlab files
+if ~exist(INI.LATEX_DIR,'file'),        mkdir(INI.LATEX_DIR), end
 if ~exist(INI.FIGURES_DIR,'file'),      mkdir(INI.FIGURES_DIR), end  %Create a figures dir in output
 if ~exist(INI.FIGURES_DIR_TS,'file'),   mkdir(INI.FIGURES_DIR_TS), end
 if ~exist(INI.FIGURES_DIR_EXC,'file'),  mkdir(INI.FIGURES_DIR_EXC), end
 if ~exist(INI.FIGURES_DIR_MAPS,'file'), mkdir(INI.FIGURES_DIR_MAPS), end
-% Set up LaTeX directory and supporting files
-if ~exist(INI.LATEX_DIR,'file'),        mkdir(INI.LATEX_DIR);end;
+
+copyfile([INI.SCRIPTDIR 'head.sty'],INI.LATEX_DIR );
+copyfile([INI.SCRIPTDIR 'tail.sty'], INI.LATEX_DIR );
 
 %---------------------------------------------------------------
 % Run the modules

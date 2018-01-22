@@ -39,6 +39,14 @@ INI.LOAD_MSHE     = 1;  % Detailed Timeseries (loads all items)
 INI.LOAD_OL       = 0;  % Overland dfs2 file (loads cells defined in xls spreadsheet)
 INI.LOAD_3DSZQ    = 0;  % Saturated zone dfs3 flow file (loads cells defined in xls spreadsheet)
 
+INI.OVERWRITE_MON_PTS = 0; % this regenerates the monitoring points from
+%                             the corresponding EXCEL file. If this is 0
+%                            monitoring points come from a matlab data file
+%                            MONPOINTS.MATLAB
+INI.OVERWRITE_GRID_XL = 0; % this regenerates the gridded points from
+%                             the corresponding EXCEL file. If this is 0
+%                            monitoring points come from a matlab data file
+%                            the same as the excel file but ext .MATLAB
 %---------------------------------------------------------------------
 % CHOOSE GROUP DEFINITIONS FOR EXTRACTING GRIDDED DATASETS
 % (This gets used if INI.LOAD_OL=1 or INI.LOAD_3DSZQ=1)
@@ -82,7 +90,7 @@ end
 INI.PATHDIR = INI.MATLAB_SCRIPTS;
 INI.MATDIR =  [INI.MATLAB_SCRIPTS 'LIB/'];
 INI.SCRIPTDIR   = [INI.MATLAB_SCRIPTS 'DATA_LATEX/'];
-INI.DATADIR = ['../EXAMPLE_DATA/'];
+INI.DATADIR = ['../ENP_TOOLS_Sample_Input/Model_Output_Processed/'];
 
 
 % Directory to store all analyses
@@ -90,12 +98,12 @@ INI.ANALYSIS_DIR = INI.POST_PROC_DIR;
 fprintf('Current directory, all analysis will be stored in: %s\n\n',INI.ANALYSIS_DIR);
 INI.ANALYSIS_DIR_TAG = [INI.ANALYSIS_DIR INI.ANALYSIS_TAG];  % postproc directory for postproc run (no edits needed here)
 INI.DATA_DIR         = [INI.ANALYSIS_DIR_TAG '/data'];  % data dir in output for extracted matlab files
+INI.LATEX_DIR        = [INI.ANALYSIS_DIR_TAG '/latex/'];
 INI.FIGURES_DIR      = [INI.ANALYSIS_DIR_TAG '/figures'];  % figures dir in output
 INI.FIGURES_DIR_TS   = [INI.ANALYSIS_DIR_TAG '/figures/timeseries'];
 INI.FIGURES_DIR_EXC  = [INI.ANALYSIS_DIR_TAG '/figures/exceedance'];
 INI.FIGURES_DIR_MAPS = [INI.ANALYSIS_DIR_TAG '/figures/maps'];
 INI.FIGURES_RELATIVE_DIR = ['../figures']; % the relative path name to figs dir for includegraphics
-INI.LATEX_DIR        = [INI.ANALYSIS_DIR_TAG '/latex'];
 
 % The computed and observed timeseries data for the observation locations -
 INI.FILESAVE_TS = [INI.ANALYSIS_DIR  INI.ANALYSIS_TAG  '/' INI.ANALYSIS_TAG '_TIMESERIES_DATA.MATLAB'];
@@ -110,8 +118,6 @@ fprintf('INI.LATEX_DIR is %s\n',INI.LATEX_DIR);
 fprintf('INI.ANALYSIS_DIR is %s\n',INI.ANALYSIS_DIR);
 fprintf('INI.MATDIR is %s\n',INI.MATDIR);
 fprintf('==========================\n');
-copyfile([INI.SCRIPTDIR 'head.sty'],INI.LATEX_DIR );
-copyfile([INI.SCRIPTDIR 'tail.sty'], INI.LATEX_DIR );
 
 
 INI.NSIMULATIONS = length(INI.MODEL_SIMULATION_SET);

@@ -74,6 +74,7 @@ INI.A5    = 1; % A5_create_summary_stat
 %INI.A6    = 0; % A6_GW_MAP_COMPARE
 %INI.A7    = 0; % A7_SEEPAGE_MAP
 %INI.A8    = 0; % A7_SEEPAGE_EXCEL % not implemented yet
+INI.A9    = 1; % A9_make_latex_report
 
 %---------------------------------------------------------------------
 % CHOOSE OPTIONS 1=yes, 0=no
@@ -81,7 +82,7 @@ INI.A5    = 1; % A5_create_summary_stat
 
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06)
 INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
-INI.INCLUDE_OBSERVED      = 0; % Include observed in the output figs and tables. Check if this switch works
+INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables. Check if this switch works
 INI.MAKE_STATISTICS_TABLE = 0;  % Make the statistics tables in LaTeX
 INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates the exceedance table.
 %INI.COMPUTE_SENSITIVITES  = 'YES'; % not used? % Compute statistics and generate tables in Latex? Check if this switch works
@@ -181,14 +182,11 @@ INI.NO_OBS_STATIONS = get_station_list(INI.NO_OBS_STATION_LIST);
 if ~exist(INI.ANALYSIS_DIR,'file'),     mkdir(INI.ANALYSIS_DIR), end  % Create analysis directory if it doesn't exist already
 if ~exist(INI.ANALYSIS_DIR_TAG,'file'), mkdir(INI.ANALYSIS_DIR_TAG), end  % create postproc directory for postproc run (no edits needed here)
 if ~exist(INI.DATA_DIR,'file'),         mkdir(INI.DATA_DIR), end %Create a data dir in output for extracted matlab files
-if ~exist(INI.LATEX_DIR,'file'),        mkdir(INI.LATEX_DIR), end
 if ~exist(INI.FIGURES_DIR,'file'),      mkdir(INI.FIGURES_DIR), end  %Create a figures dir in output
 if ~exist(INI.FIGURES_DIR_TS,'file'),   mkdir(INI.FIGURES_DIR_TS), end
 if ~exist(INI.FIGURES_DIR_EXC,'file'),  mkdir(INI.FIGURES_DIR_EXC), end
-if ~exist(INI.FIGURES_DIR_MAPS,'file'), mkdir(INI.FIGURES_DIR_MAPS), end
+%if ~exist(INI.FIGURES_DIR_MAPS,'file'), mkdir(INI.FIGURES_DIR_MAPS), end
 
-copyfile([INI.SCRIPTDIR 'head.sty'],INI.LATEX_DIR );
-copyfile([INI.SCRIPTDIR 'tail.sty'], INI.LATEX_DIR );
 
 %---------------------------------------------------------------
 % Run the modules

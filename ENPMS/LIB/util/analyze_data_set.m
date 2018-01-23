@@ -22,9 +22,11 @@ if INI.A3c ; A3_create_figures_acc_timeseries(INI); end
 if INI.A3a ; A3a_boxmat(INI); end
 if INI.A3exp ; A3a_boxmatEXP(INI); end
 if INI.A4 ; A4_create_figures_exceedance(INI); end
-if INI.A5 ; A5_create_summary_stat(INI); end
+if INI.A5 ; INI = A5_create_summary_stat(INI); end
 if INI.A6; A6_GW_MAP_COMPARE(INI); end
 if INI.A7; A7_MDR_SEEPAGE(INI); end
+if INI.A9; A9_make_latex_report(INI); end
+
 fclose('all');
 
 end

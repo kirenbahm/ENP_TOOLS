@@ -1,4 +1,4 @@
-function [ output_args ] = A5_create_summary_stat( INI )
+function [ INI ] = A5_create_summary_stat( INI )
 %---------------------------------------------
 %{
  FUNCTION DESCRIPTION:
@@ -27,10 +27,6 @@ format compact;
 
 
 %TODO;  replace F with INI
-F.LATEX_DIR = INI.LATEX_DIR;
-F.FIGURES_DIR = [INI.ANALYSIS_DIR_TAG '/figures'];
-F.FIGURES_DIR = INI.FIGURES_DIR;
-F.FIGURES_RELATIVE_DIR = INI.FIGURES_RELATIVE_DIR;
 
 % only do the selected stations
 % STATIONS_LIST = INI.SELECTED_STATIONS.list.stat;
@@ -45,7 +41,7 @@ F.TS_DESCRIPTION = strrep(F.TS_DESCRIPTION,'_','\_'); % if replace _ with \_ to 
 %if INI.MAKE_STATISTICS_TABLE
     fprintf('... Loading Computed and observed and stat data:\n\t %s\n', char(INI.FILESAVE_STAT));
     load(INI.FILESAVE_STAT, '-mat');
-    MAP_STATION_STAT = get_map_station_stat(MAP_ALL_DATA,STATIONS_LIST); % stat for selected stations
+    INI.MAP_STATION_STAT = get_map_station_stat(MAP_ALL_DATA,STATIONS_LIST); % stat for selected stations
 %else
 %    MAP_STATION_STAT = 0;
 %end
@@ -66,9 +62,5 @@ for un = 1:length(uniq)
 end
 MAP_STATION_ORDER = containers.Map(MAP_KEY, MAP_VALUE);
 
-% duplicate arg of INI will be used in future development. rjf
-%generate_latex_filesV3(MAP_STATION_ORDER,MAP_STATION_STAT,INI,INI,F)
-% change the page style
-generate_latex_files(MAP_STATION_ORDER,MAP_STATION_STAT,INI);
 
 end

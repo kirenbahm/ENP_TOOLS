@@ -30,6 +30,7 @@ TMP = [];
 TMP(:,1) = TS(:,length(TS(1,:)));
 TMP(:,2:length(TS(1,:))) = TS(:,1:length(TS(1,:))-1);
 TS = TMP;
+TSk = TS;
 
 for i = 1:n % add only the first n-1 series, the nth series is observed
     % find min and max for plotting
@@ -67,19 +68,29 @@ else
     ibegin = 2;
 end
 
+nn = length(INI.MODEL_RUN_DESC)+1;
+NN(1) = {'Observed'};
+NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
+NN = strrep(NN,'_','\_');
+legt = NN;
 for i = ibegin:n
-%    rTS = TSk(:,i);
-%    rTV = TV_STR;
-%    index_nan = isnan(rTS); % find inexes with Nan
-%    rTS(index_nan)=[]; %remove Nan values
-%    rTV(index_nan,:)=[]; %remove dates with Nan values
-%    TS = timeseries(rTS,rTV);
-%    TS.name = char(N(i));
-TS = TSC.(NAMES(i));
+    rTS = TSk(:,i);
+    rTV = TV_STR;
+    index_nan = isnan(rTS); % find inexes with Nan
+   rTS(index_nan)=[]; %remove Nan values
+    rTV(index_nan,:)=[]; %remove dates with Nan values
+    TS = timeseries(rTS,rTV);
+    TS.name = char(N(i));
+%TS = TSC.(NAMES(i));
     TS.TimeInfo.Format = 'mm/yy';
     FS = 10;
     set(gca,'FontSize',FS,'FontName','times');
     set(gca,'linewidth',LW(i));
+    if isempty(rTS)
+        legt(i) = [];
+        continue
+    end % code to skip timeseries with zero length
+%    if isempty(rTS), continue, end % code to skip timeseries with zero length
     F = plot(TS,'LineWidth',LW(i), 'Linestyle', char(LS(i)), 'Color',char(CO(i)), 'Marker',char(M(i)), 'MarkerSize',MSZ(i),'LineWidth',LW(i));
     hold on
 end
@@ -135,16 +146,16 @@ ylim([aymin aymax]);
 % % LEG = legend(legh, legt,7,'Location','SouthEast');
 % % legend boxoff;
 
-%if (INI.INCLUDE_OBSERVED)
-nn = length(INI.MODEL_RUN_DESC)+1;
-NN(1) = {'Observed'};
-NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
-NN = strrep(NN,'_','\_');
-%else
-%    nn = length(INI.MODEL_RUN_DESC);
-%    NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
-%end
-legt = NN;
+%%if (INI.INCLUDE_OBSERVED)
+%nn = length(INI.MODEL_RUN_DESC)+1;
+%NN(1) = {'Observed'};
+%NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
+%NN = strrep(NN,'_','\_');
+%%else
+%%    nn = length(INI.MODEL_RUN_DESC);
+%%    NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
+%%end
+%legt = NN;
 
 %legend(legt,7,'Location','SouthEast');
 %legend(legt,7,'Location','best');

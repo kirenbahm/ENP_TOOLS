@@ -81,7 +81,7 @@ INI.A5    = 1; % A5_create_summary_stat
 
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06)
 INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
-INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables. Check if this switch works
+INI.INCLUDE_OBSERVED      = 0; % Include observed in the output figs and tables. Check if this switch works
 INI.MAKE_STATISTICS_TABLE = 0;  % Make the statistics tables in LaTeX
 INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots? Also generates the exceedance table.
 %INI.COMPUTE_SENSITIVITES  = 'YES'; % not used? % Compute statistics and generate tables in Latex? Check if this switch works

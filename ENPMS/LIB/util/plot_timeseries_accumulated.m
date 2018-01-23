@@ -122,15 +122,16 @@ end
 title(STATION.NAME,'FontSize',10,'FontName','Times New Roman','Interpreter','none');
 
 ylabel('Cumulative discharge, Kaf');
-%if (INI.INCLUDE_OBSERVED)
-nn = length(INI.MODEL_RUN_DESC)+1;
-NN(1) = {'Observed'};
-NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
-NN = strrep(NN,'_','\_');
-%else
-%    nn = length(INI.MODEL_RUN_DESC);
-%    NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
-%end
+
+if INI.INCLUDE_OBSERVED
+   nn = length(INI.MODEL_RUN_DESC)+1;
+   NN(1) = {'Observed'};
+   NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
+   NN = strrep(NN,'_','\_');
+else
+   nn = length(INI.MODEL_RUN_DESC);
+   NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
+end
 legt = NN;
 
 legend(legt,'Location','best');

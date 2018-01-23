@@ -68,11 +68,17 @@ else
     ibegin = 2;
 end
 
-nn = length(INI.MODEL_RUN_DESC)+1;
-NN(1) = {'Observed'};
-NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
-NN = strrep(NN,'_','\_');
+if INI.INCLUDE_OBSERVED
+   nn = length(INI.MODEL_RUN_DESC)+1;
+   NN(1) = {'Observed'};
+   NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
+   NN = strrep(NN,'_','\_');
+else
+   nn = length(INI.MODEL_RUN_DESC);
+   NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
+end
 legt = NN;
+
 for i = ibegin:n
     rTS = TSk(:,i);
     rTV = TV_STR;
@@ -146,16 +152,6 @@ ylim([aymin aymax]);
 % % LEG = legend(legh, legt,7,'Location','SouthEast');
 % % legend boxoff;
 
-%%if (INI.INCLUDE_OBSERVED)
-%nn = length(INI.MODEL_RUN_DESC)+1;
-%NN(1) = {'Observed'};
-%NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
-%NN = strrep(NN,'_','\_');
-%%else
-%%    nn = length(INI.MODEL_RUN_DESC);
-%%    NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
-%%end
-%legt = NN;
 
 %legend(legt,7,'Location','SouthEast');
 %legend(legt,7,'Location','best');

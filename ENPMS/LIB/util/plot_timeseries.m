@@ -1,137 +1,74 @@
 function [] = plot_timeseries(STATION,INI)
-%{
----------------------------------------------
-% FUNCTION DESCRIPTION:
-%
-% BUGS:
-% COMMENTS:
-%----------------------------------------
-% REVISION HISTORY:
-%
-021812 -v4- changed SIM to INI
-        many style changes
-% changes introduced to v2:  (keb 8/2011)
-%  -script would exit prematurely if a STATION.X_UTM or Y was
-%   not found in the MAP_ALL_DATA container. now using try-catch.
-%----------------------------------------
-%}
+% function plot_timeseries(STATION,INI) prepares timeseries data for plotting
 
-
-TS = STATION.TIMESERIES;
-TV = STATION.TIMEVECTOR;
-n = length(TS(1,:));
-% Legend putting OBSERVED as the first column, so that the legends matches;
-N(1) = {'Observed'};
-N(2:n) = INI.MODEL_RUN_DESC(1:n-1);
-
-TV_STR = datestr(TV,2);
-TSC = tscollection(TV_STR);
-TMP = [];
-TMP(:,1) = TS(:,length(TS(1,:)));
-TMP(:,2:length(TS(1,:))) = TS(:,1:length(TS(1,:))-1);
-TS = TMP;
-TSk = TS;
-
-for i = 1:n % add only the first n-1 series, the nth series is observed
-    % find min and max for plotting
-    minval(i) = min(min(TS(:,i)));
-    maxval(i) = max(max(TS(:,i)));
-    
-    TTS = timeseries(TS(:,i),TV_STR);
-    TTS.name = char(N(i));
-    TTS.TimeInfo.Format = 'mm/yy';
-    TSC = addts(TSC,TTS);
+if ~any(~isnan(STATION.TIMESERIES(:)))
+    fprintf('...%d All timeseries values are NaN, continue\n');
+    return
 end
 
-NAMES =  gettimeseriesnames(TSC);
+fprintf('... Processing timeseries plot: %s\n',  char(STATION.NAME));
 
-set(gcf, 'PaperUnits', 'inches');
-set(gcf, 'PaperPosition', [0,0,8,3]);
-set(gcf, 'Renderer', 'OpenGL');
-set(gcf, 'Color', 'w');
-fig = clf;
-%fh = figure(fig);
-
-% Screen size and position
-% f=[400,150];
-% set(fh,'units','points','position',[750,100,f(1),f(2)]);
-
+% use specified graphic values in setup_ini)
 CO = INI.GRAPHICS_CO;
 LS = INI.GRAPHICS_LS;
 M = INI.GRAPHICS_M;
 MSZ = INI.GRAPHICS_MSZ;
 LW = INI.GRAPHICS_LW;
 
-if INI.INCLUDE_OBSERVED
-    ibegin = 1;
-else
-    ibegin = 2;
+% Timeseries and titles
+TS = STATION.TIMESERIES;
+TV = STATION.TIMEVECTOR;
+[y, m] = datevec(TV);
+YR = unique(y);
+
+n = length(TS(1,:));
+SIM(1) = {'Observed'};
+SIM(2:n) = INI.MODEL_RUN_DESC(1:n-1);
+
+TV_STR = datestr(TV,2);
+TMP = [];
+TMP(:,1) = TS(:,length(TS(1,:)));
+TMP(:,2:length(TS(1,:))) = TS(:,1:length(TS(1,:))-1);
+TS = TMP;
+TSk = TS;
+
+% select combination of timeseries - observed and computed for plotting
+if INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+    m = [1:n]; % observed is in column sz+1
+end
+if INI.INCLUDE_OBSERVED & ~INI.INCLUDE_COMPUTED
+    m = [1];
+end
+if ~INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+    m = [2:n];
 end
 
-if INI.INCLUDE_OBSERVED
-   nn = length(INI.MODEL_RUN_DESC)+1;
-   NN(1) = {'Observed'};
-   NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
-   NN = strrep(NN,'_','\_');
-else
-   nn = length(INI.MODEL_RUN_DESC);
-   NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
-end
-legt = NN;
+LEGEND =[];
+%figure settings;
+clf;
 
-for i = ibegin:n
+for i = m %
     rTS = TSk(:,i);
     rTV = TV_STR;
     index_nan = isnan(rTS); % find inexes with Nan
-   rTS(index_nan)=[]; %remove Nan values
+    rTS(index_nan)=[]; %remove Nan values
     rTV(index_nan,:)=[]; %remove dates with Nan values
-    TS = timeseries(rTS,rTV);
-    TS.name = char(N(i));
-%TS = TSC.(NAMES(i));
-    TS.TimeInfo.Format = 'mm/yy';
-    FS = 10;
-    set(gca,'FontSize',FS,'FontName','times');
-    set(gca,'linewidth',LW(i));
+    TSp.name = char(SIM(i));
+    TSp = timeseries(rTS,rTV);
+    TSp.TimeInfo.Format = 'dd/mm/yy';
+    
     if isempty(rTS)
-        legt(i) = [];
         continue
     end % code to skip timeseries with zero length
-%    if isempty(rTS), continue, end % code to skip timeseries with zero length
-    F = plot(TS,'LineWidth',LW(i), 'Linestyle', char(LS(i)), 'Color',char(CO(i)), 'Marker',char(M(i)), 'MarkerSize',MSZ(i),'LineWidth',LW(i));
+    
+    LEGEND = [LEGEND strrep(SIM(i),'_','\_')];
+    F = plot(TSp,'LineWidth',LW(i), 'Linestyle', char(LS(i)), 'Color',cell2mat(CO(i)), 'Marker',char(M(i)), 'MarkerSize',MSZ(i),'LineWidth',LW(i));
     hold on
 end
 
-%NOTE:  TTS  TS are now identical
-
-TSss.startdate = INI.ANALYZE_DATE_I;
-TSss.enddate = INI.ANALYZE_DATE_F;
-STS = nummthyr(TSss);
-%HARDCODE: % this is the number of years between tickmarks:
-tickspacing = 1;
-
-
-xint = ceil(tickspacing*(STS.cumtotyrdays(end) / length(STS.yrs)));
-% xtl=STS.yrs(1:tickspacing:length(STS.yrs));
-xtl = num2cell (STS.yrs(1:tickspacing:length(STS.yrs)));
-
-xticks = get(gca,'XTickLabel');
-xlimt  = get(gca, 'Xlim');
-%display(STS.cumtotyrdays(end));
-
-% daystart = datenum(STS.startdate); % GIT issue
-% dayend   = datenum(STS.enddate);   % GIT issue
-% %xlim([daystart dayend]);           % GIT issue
-% % set (gca, 'Xlim', ([0,STS.cumtotyrdays(end)]));
-% set(gca,'XTick',(daystart:xint:dayend)); % GIT issue
-% set(gca,'XTickLabel',xtl);               % GIT issue
-
-xlabel('');
-% xlim([0,STS.cumtotyrdays(end)]);
-% set(gca,'XTick',(1:xint:STS.cumtotyrdays(end)))
-% set(gca,'XTickLabel',xtl)
-% xlim([0,length(TS.Time)-1]);
-
-% title(STATION.NAME,'FontSize',12,'FontName','Times New Roman','Interpreter','none');
+FS = INI.GRAPHICS_FS;
+FN = INI.GRAPHICS_FN;
+set(gca,'FontSize',FS,'FontName',INI.GRAPHICS_FN);
 
 % Check if datatype is elevation, if so, add the datum to the y-axis label
 if (strcmp(STATION.DFSTYPE,'Elevation') == 1)
@@ -141,27 +78,28 @@ else
 end
 %   ylabel(strcat(STATION.DFSTYPE, ', ', STATION.UNIT));
 
-minvl = min(minval);
-maxvl = max(maxval);
+set(gcf, 'PaperUnits', 'inches');
+set(gcf, 'PaperPosition', [0,0,8,3]);
+set(gcf, 'Renderer', 'OpenGL');
+set(gcf, 'Color', 'w');
+
+maxvl = max(max(TSk(:,m)));
+minvl = min(min(TSk(:,m)));
 aymin = minvl - 0.1*(maxvl-minvl);
 aymax = maxvl + 0.15*(maxvl-minvl);
 ylim([aymin aymax]);
 
-% % legh = [];
-% % legt = N;
-% % LEG = legend(legh, legt,7,'Location','SouthEast');
-% % legend boxoff;
+xlim([datenum(INI.ANALYZE_DATE_I)-366 datenum(INI.ANALYZE_DATE_F)+366]);
+set(gca, 'xtick', datenum(YR(1)-1:YR(end)+1, 1, 1));
+datetick('x', 'yyyy', 'keeplimits', 'keepticks');
 
-
-%legend(legt,7,'Location','SouthEast');
-%legend(legt,7,'Location','best');
-legend(legt,'Location','best');
+legend(LEGEND,'Location','NorthEast');
 legend boxoff;
+
 grid on;
-s_title = strcat(char(STATION.NAME));
+s_title = char(STATION.NAME);
 title(s_title,'FontSize',10,'FontName','times','Interpreter','none');
 
-grid on;
 try
     if (STATION.Z_GRID > -1.0e-035)
         string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});
@@ -171,11 +109,11 @@ catch
     fprintf(' --> ...WARNING: Missing Z_GRID in station %s\n', char(STATION.NAME))
 end
 
-plotfile = strcat(INI.FIGURES_DIR_TS,'/',STATION.NAME);
-F=strcat(plotfile,'.png'); % or use .png
+plotfilename = strcat(INI.FIGURES_DIR_TS,'/',STATION.NAME);
+F=strcat(plotfilename,'.png'); % or use .png
 %exportfig(char(F),'width',12,'height',5, 'FontSize',18);
-print('-dpng',char(plotfile),'-r300')
-if INI.SAVEFIGS; savefig(char(plotfile)); end;
+print('-dpng',char(plotfilename),'-r300')
+if INI.SAVEFIGS; savefig(char(plotfilename)); end;
 hold off
 
 end

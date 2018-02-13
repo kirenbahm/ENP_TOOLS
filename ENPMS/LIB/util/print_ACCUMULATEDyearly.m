@@ -1,26 +1,33 @@
 function [ output_args ] = print_ACCUMULATEDyearly(INI,P)
-%UNTITLED3 Summary of this function goes here
+%print_ACCUMULATEDyearly prints annual discharges in kaf
 %   Detailed explanation goes here
 
 FN = [INI.ANALYSIS_DIR_TAG '/DS_YEARLY_AVE.txt']
 FID = fopen(FN,'w');
 
 %print header
-fprintf(FID,'Average yearly discharges for the entire simulation period\n');
+fprintf(FID,'Average yearly discharges in kilo acre feet (kaf)\n');
 
-%pring column header
+B = all(P.VEC_YYY_AVE);
+M = P.VEC_YYY_AVE(:,B==1);
+S = P.SRC(B==1);
+
+%print column header
 fprintf(FID,'%20s','Station');
-n = length(P.SRC);
+n = length(S);
+
 for i = 1:n
-    fprintf(FID,'\t%s', char(P.SRC(i)));
+    fprintf(FID,'\t%s', char(S(i)));
 end
+
 fprintf(FID,'\n');
 
-[ni nj] = size(P.VEC_YYY_AVE);
+[ni nj] = size(M);
+
 for i = 1:ni
-    fprintf(FID,'%s', char(P.NAME(i)));
+    fprintf(FID,'%20s', char(P.NAME(i)));
     for j = 1:nj
-        fprintf(FID,'\t%8.2f', P.VEC_YYY_AVE(i,j));
+        fprintf(FID,'\t%8.2f', M(i,j));
     end
     fprintf(FID,'\n');
 end

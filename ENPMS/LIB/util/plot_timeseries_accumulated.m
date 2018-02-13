@@ -1,181 +1,137 @@
 function [] = plot_timeseries_accumulated(STATION,INI)
-%---------------------------------------------
-% FUNCTION DESCRIPTION:
-%
-% BUGS:
-% COMMENTS:
-%----------------------------------------
-%{
- REVISION HISTORY:
- v8: added check to see if the whole timeseries was NaNs. If so, change from zeros
-    back to NaNs to avoid nonexistent timeseries plotting on graph
-    (added v8 by keb)
-    if sum(INAN) == length(TS) ACCUMULATED_ACFT = TS(dfsstart:length(TS(:,1)),i) ; end
-
-20130617 -v5- added switch to exclude observed
- v3 changes: adjusted the start date of the accumulation to the start of the observed data
- changes introduced to v1:  (keb 8/2011)
-  -changed conversion factor from cfs->af/yr to cfs->kaf/day,
-   also changed y-axis label and plot title
-
-v3 changes: adjusted the start date of the accumulation to the start of the observed data
- changes introduced to v1:  (keb 8/2011)
-  -changed conversion factor from cfs->af/yr to cfs->kaf/day,
-   also changed y-axis label and plot title
-%}
-%----------------------------------------
-fprintf('\n\tAccumulated timeseries plot: %s',  char(STATION.NAME))
-
-%conversion from cfs to kaf/day
-CFS_KAFDY = 0.001982;
-
-%create time series:
-TS = STATION.TIMESERIES;
-TV = STATION.TIMEVECTOR;
-n = length(TS(1,:));
-N(1) = {'Observed'};
-N(2:n) = INI.MODEL_RUN_DESC(1:n-1);
-
-% putting OBSERVED as the first column, so that the legends matches;
-TMP = [];
-TMP(:,1) = TS(:,length(TS(1,:)));
-TMP(:,2:length(TS(1,:))) = TS(:,1:length(TS(1,:))-1);
-TS = TMP;
-%%%%%%%%%%
-
-%find the start date of the observed data
-% % dfsstart=1;
-% % for ii = 1 : length(TS(:,1))
-% %     if (~isnan(TS(ii,1)))
-% %           break
-% %     end
-% %     dfsstart = ii;
-% % end
-
-valsum = sum(~isnan(TS),2); % valid number of time series per row
-dfsstart = find(valsum > 0,1,'first');
-%dfsstart = find(~isnan(TS),1,'first');
-
-
-%TV_STR = datestr(TV,2);
-TV_STR = datestr(TV(dfsstart:length(TS(:,1))),2);
-
-TSC = tscollection(TV_STR);
-
-for i = 1:n % add only the first n-1 series, the nth series is observed
-    %    TS_NANS = TS(:,i);
-    TS_NANS = TS(dfsstart:length(TS(:,1)),i);
-    INAN = isnan(TS_NANS);
-    TS_NANS(INAN) = 0;
-    ACCUMULATED = cumsum(TS_NANS);
-    ACCUMULATED_ACFT = ACCUMULATED * CFS_KAFDY;
-    % check if the whole timeseries was NaNs. If so, change from zeros
-    % back to NaNs to avoid nonexistent timeseries plotting on graph
-    % (added v8 by keb)
-    if sum(INAN) == length(TS) ACCUMULATED_ACFT = TS(dfsstart:length(TS(:,1)),i) ; end
-    TTS = timeseries(ACCUMULATED_ACFT,TV_STR);
-    TTS.name = char(N(i));
-    TTS.TimeInfo.Format = 'mm/yy';
-    TSC = addts(TSC,TTS);
+% function plot_timeseries_accumulated(STATION,INI) prepares timeseries data for cumulative plotting
+if ~any(~isnan(STATION.TIMESERIES(:)))
+    fprintf('...%d All timeseries values are NaN, continue\n');
+    return
 end
 
-NAMES =  gettimeseriesnames(TSC);
+fprintf('... Processing accumulated timeseries plot: %s\n',  char(STATION.NAME))
 
-set(gcf, 'PaperUnits', 'inches');
-%set(gcf, 'PaperPositionMode', 'manual');
-set(gcf, 'PaperPosition', [0,0,8,3]);
-set(gcf, 'Renderer', 'OpenGL');
-set(gcf, 'Color', 'w');
-fig = clf;
-%fh = figure(fig);
-%     f=[800,300];
-%     set(fh,'units','points','position',[750,100,f(1),f(2)]);
-
+% use specified graphic values in setup_ini)
 CO = INI.GRAPHICS_CO;
 LS = INI.GRAPHICS_LS;
 M = INI.GRAPHICS_M;
 MSZ = INI.GRAPHICS_MSZ;
 LW = INI.GRAPHICS_LW;
 
-if INI.INCLUDE_OBSERVED
-    ibegin = 1;
-else
-    ibegin = 2;
+%conversion from cfs to kaf/day
+CFS_KAFDY = 0.001982;
+
+% Timeseries and titles
+TS = STATION.TIMESERIES;
+TV = STATION.TIMEVECTOR;
+[y, m] = datevec(TV);
+YR = unique(y);
+
+n = length(TS(1,:));
+SIM(1) = {'Observed'};
+SIM(2:n) = INI.MODEL_RUN_DESC(1:n-1);
+
+TV_STR = datestr(TV,2);
+TMP = [];
+TMP(:,1) = TS(:,length(TS(1,:)));
+TMP(:,2:length(TS(1,:))) = TS(:,1:length(TS(1,:))-1);
+TS = TMP;
+TSk = TS;
+
+% select combination of timeseries - observed and computed for plotting
+if INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+    m = [1:n]; % observed is in column sz+1
+end
+if INI.INCLUDE_OBSERVED & ~INI.INCLUDE_COMPUTED
+    m = [1];
+end
+if ~INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+    m = [2:n];
 end
 
-for i = ibegin:n
-    NTS = NAMES(i);
-    %%%        H = plot_figureV0(H, TSC.(NTS), F, i);
-    %this is from plot_figure
-    TS = TSC.(NTS);
-    TS.TimeInfo.Format = 'mm/yy';
-    FS = 10;
-    set(gca,'FontSize',FS,'FontName','times');
-    set(gca,'linewidth',LW(i));
-    F = plot(TS,'LineWidth',LW(i), 'Linestyle', char(LS(i)), 'Color',char(CO(i)), 'Marker',char(M(i)), 'MarkerSize',MSZ(i),'LineWidth',LW(i));
-    hold on
-    % add cumulative sum value to right edge of plot, where each series intersects it
-    myvalue = TS.Data(end)-mod(TS.Data(end),1);
-    text('String',myvalue,'Position',[datenum(INI.ANALYZE_DATE_F)+25 TS.Data(end)],'Color',char(CO(i)));
+LEGEND =[];
+fig = clf;
+%figure settings;
+clf;
+
+totQacc(1:n) = NaN;
+
+for i = m %
+    rTS = TSk(:,i);
+    rTV = TV_STR;
+    dNUM = datenum(rTV); % convert sdates to dates
+    ind_dates = find(dNUM < datenum(INI.ANALYZE_DATE_I));
+    rTS(ind_dates)=NaN;
+    ind_dates = find(dNUM > datenum(INI.ANALYZE_DATE_F));
+    rTS(ind_dates)=NaN;  
+    
+    index_nan = isnan(rTS); % find inexes with Nan
+    rTS(index_nan)=[]; %remove Nan values
+    rTV(index_nan,:)=[]; %remove dates with Nan values
+    % compute accumulated as sumation of deltaT*Q(t)
+    
+    if isempty(rTS)
+        continue
+    end % code to skip timeseries with zero length
+
+    dNUM = datenum(rTV);
+    deltaT = [0; dNUM(2:end) - dNUM(1:end-1)]; % compute difference in time for non-nan values 
+    Qt = deltaT.*rTS*CFS_KAFDY; % compute scalar product of flow as per deltaT (based on daily values
+    Qacc = cumsum(Qt);
+    
+    TSp = timeseries(Qacc,rTV);
+    TSp.name = char(SIM(i));
+    TSp.TimeInfo.Format = 'dd/mm/yy';
+    
+    LEGEND = [LEGEND strrep(SIM(i),'_','\_')];
+    F = plot(TSp,'LineWidth',LW(i), 'Linestyle', char(LS(i)), 'Color',cell2mat(CO(i)), 'Marker',char(M(i)), 'MarkerSize',MSZ(i),'LineWidth',LW(i));
+    totQacc(i) = Qacc(end);
+    hold on;
 end
+
+FS = INI.GRAPHICS_FS;
+FN = INI.GRAPHICS_FN;
+set(gca,'FontSize',FS,'FontName',INI.GRAPHICS_FN);
+
+formatStr = '\tCumulative values on %s:';
+str_1 = sprintf(formatStr,datestr(INI.ANALYZE_DATE_F));
+str_T = strvcat(str_1);
+
+ii = 0;
+for i = m
+    ii = ii + 1;
+    formatStr = '\tTotal %s = %+5.2f kaf';
+    str_2 = sprintf(formatStr,char(SIM(ii)),totQacc(ii));
+    str_T = strvcat(str_T, str_2);
+end
+
+set(gcf, 'PaperUnits', 'inches');
+set(gcf, 'PaperPosition', [0,0,8,3]);
+set(gcf, 'Renderer', 'OpenGL');
+set(gcf, 'Color', 'w');
+
+xlim([datenum(INI.ANALYZE_DATE_I)-366 datenum(INI.ANALYZE_DATE_F)+366]);
+set(gca, 'xtick', datenum(YR(1)-1:YR(end)+1, 1, 1));
+datetick('x', 'yyyy', 'keeplimits', 'keepticks');
+
+AX = gca;
+YLIM = AX.YLim;
+XLIM = AX.XLim;
+xT = XLIM(1) + 0.02*(XLIM(2) - XLIM(1));
+yT = YLIM(1) + 0.85*(YLIM(2) - YLIM(1));
+text(xT,yT, str_T);
 
 title(STATION.NAME,'FontSize',10,'FontName','Times New Roman','Interpreter','none');
 
 ylabel('Cumulative discharge, Kaf');
 
-if INI.INCLUDE_OBSERVED
-   nn = length(INI.MODEL_RUN_DESC)+1;
-   NN(1) = {'Observed'};
-   NN(2:nn) = INI.MODEL_RUN_DESC(1:nn-1);
-   NN = strrep(NN,'_','\_');
-else
-   nn = length(INI.MODEL_RUN_DESC);
-   NN(1:nn) = INI.MODEL_RUN_DESC(1:nn);
-end
-legt = NN;
-
-legend(legt,'Location','best');
-
-xlabel('');
-% xlim([0,length(TS.Time)-1]);
-%
-
-% % % xlim([0,length(TS.Time)-1]);
-TSss.startdate = INI.ANALYZE_DATE_I;
-TSss.enddate = INI.ANALYZE_DATE_F;
-STS = nummthyr(TSss);
-%HARDCODE: % this is the number of years between tickmarks:
-tickspacing = 1;
-
-
-xint = ceil(tickspacing*(STS.cumtotyrdays(end) / length(STS.yrs)));
-xtl = num2cell (STS.yrs(1:tickspacing:length(STS.yrs)));
-
-xticks = get(gca,'XTickLabel');
-xlimt  = get(gca, 'Xlim');
-%display(STS.cumtotyrdays(end));
-
-% daystart = datenum(STS.startdate);
-% dayend   = datenum(STS.enddate);
-% xlim([daystart dayend]);
-% % set (gca, 'Xlim', ([0,STS.cumtotyrdays(end)]))
-% set(gca,'XTick',(daystart:xint:dayend));
-% set(gca,'XTickLabel',xtl);
-
 grid on;
+legend(LEGEND,'Location','SouthEast')
 legend boxoff;
 
 plotfile = strcat(INI.FIGURES_DIR_TS,'/',STATION.NAME,'-acc');
 F=strcat(plotfile,'.png'); % or use .png
 %exportfig(char(F),'width',12,'height',5, 'FontSize',18);
 print('-dpng',char(plotfile),'-r300');
-% % saveas(gcf,char(FIGURE_FILE),'bmp');
-% % save2pdf(char(FIGURE_FILE),gcf,600);
-%    print_figureV0(FIGURE_FILE);
 if INI.SAVEFIGS; savefig(char(plotfile)); end;
 
 hold off
-%end
 
 end
 

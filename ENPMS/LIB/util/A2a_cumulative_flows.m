@@ -23,8 +23,9 @@ FILESAVE = INI.FILESAVE_STAT;
 
 % to select a list of station either use the line below. For selected
 % stations rerun the entire script sequence A0, A1,...
+
 %if INI.USE_NEW_CODE
-    STATIONS_LIST = INI.SELECTED_STATIONS;
+STATIONS_LIST = INI.SELECTED_STATIONS;
 %else
 %    STATIONS_LIST = INI.SELECTED_STATIONS.list.stat;
 %end
@@ -38,7 +39,7 @@ FILESAVE = INI.FILESAVE_STAT;
 % 11 dfs0 result files.
 
 i = 1;
-% sumarize data and save in STATIN structure
+% sumarize data and save in STATION structure
 for M = STATIONS_LIST
     try
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values

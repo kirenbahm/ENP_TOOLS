@@ -30,7 +30,6 @@ STATIONS_LIST = INI.SELECTED_STATIONS;
 
 for M = STATIONS_LIST
     try
-        fprintf('\n...processing exceedance plot for station: %s', char(M));
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
         try
             plot_exceedance(STATION,INI);

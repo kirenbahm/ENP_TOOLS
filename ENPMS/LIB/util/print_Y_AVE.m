@@ -6,7 +6,7 @@ FN = [INI.ANALYSIS_DIR_TAG '/DS_Y_AVE.txt']
 FID = fopen(FN,'w');
 
 %print header
-fprintf(FID,'Average annual\n');
+fprintf(FID,'Average annual stages and discharges in ft and cfs\n');
 
 sz = length(INI.MODEL_ALL_RUNS);
 P.SRC(1:sz) = INI.MODEL_RUN_DESC(1:sz);
@@ -20,24 +20,45 @@ P.SRC(sz+1) = {'Observed'}; % this is in the last column
 % end
 % fprintf(FID,'\n');
 
-i = 1;
+i = 0;
 for M = STATIONS_LIST
     try
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
         % summarize discharges
         %         if strcmp(STATION.DFSTYPE,'Discharge')
+        i = i + 1;
         P.NAME{i} = STATION.NAME;
-        fprintf(FID,'\n%s\n', char(STATION.NAME));
-        for k = 1:sz+1 % observed is in column sz+1
-            fprintf(FID,'%s\t', char(P.SRC(k)));
+        
+        [YR, MO] = datevec(STATION.TIMEVECTOR);
+        YR = unique(YR);
+        YR = num2str(YR);
+        w = length(YR);
+        
+        fprintf(FID,'\n%s \t', char(STATION.NAME));
+        for w = 1:length(YR)
+            fprintf(FID,'%s\t', char(YR(w,:)));
+        end
+        fprintf(FID,'\n');
+
+        if INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+            m = [1:sz+1]; % observed is in column sz+1
+        end
+        if INI.INCLUDE_OBSERVED & ~INI.INCLUDE_COMPUTED
+            m = [sz+1];
+        end
+        if ~INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+            m = [1:sz];
+        end
+        
+        for k = m % observed is in column sz+1
+            fprintf(FID,'%s \t', char(P.SRC(k)));
             MM = size(STATION.QYM(k).VEC_Y_AVE);
-            for m = 1:MM(1)
-                p = STATION.QYM(k).VEC_Y_AVE(m);
-                fprintf(FID,'\t%8.2f', p);
+            for mm = 1:MM(1)
+                p = STATION.QYM(k).VEC_Y_AVE(mm);
+                fprintf(FID,'%8.2f\t', p);
             end
             fprintf(FID,'\n');
         end
-        i = i + 1;
         %         end
     catch
         fprintf('...%d\t Exception for %s in print_M_AVE()\n', i, char(M));

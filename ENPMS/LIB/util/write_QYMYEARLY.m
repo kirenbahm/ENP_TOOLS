@@ -19,17 +19,26 @@ P.SRC(1:sz) = INI.MODEL_RUN_DESC(1:sz);
 P.SRC(sz+1) = {'Observed'}; % this is in the last column
 
 % extract accumulated
-i = 1;
+i = 0;
 for M = STATIONS_LIST
     try
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
         % summarize discharges
         if strcmp(STATION.DFSTYPE,'Discharge')
-            P.NAME(i) = STATION.NAME;
-            for k = 1:sz+1 % observed is in column sz+1
+            i = i + 1;
+            P.NAME{i} = STATION.NAME;
+            if INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+                m = [1:sz+1]; % observed is in column sz+1
+            end 
+            if INI.INCLUDE_OBSERVED & ~INI.INCLUDE_COMPUTED 
+                m = [sz+1]; 
+            end 
+            if ~INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
+                m = [1:sz];
+            end            
+            for k = m % observed is in column sz+1
                 P.VEC_YYY_AVE(i,k) = STATION.QYM(k).VEC_YYY_AVE*CFS_KAFDY;
             end
-            i = i + 1;
         end
     catch
         fprintf('\n...%d\t Cannot find %s in MAP_ALL_DATA container, write_QYMYEARLY()', i, char(M));

@@ -27,21 +27,6 @@ load(FILEDATA, '-mat');
 % STATIONS_LIST = INI.SELECTED_STATIONS.list.stat;
 STATIONS_LIST = INI.SELECTED_STATIONS;
 
-% i = 0;
-% for M = STATIONS_LIST
-%     %    pause(0.01)
-%     if isKey(MAP_ALL_DATA,char(M))
-%         fprintf('...%d processing timeseries plot: %s\n', i, char(M));
-%         try
-%             STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
-%             i = i + 1;
-%             plot_timeseries(STATION,INI); % comment to plot only accumulated
-%         catch
-%             fprintf(' --> ...WARNING: A3: exception in plot_timeseries(%s)\n', char(M))
-%         end
-%     end
-% end
-
 i = 0;
 for M = STATIONS_LIST
     %    pause(0.01)
@@ -55,7 +40,7 @@ for M = STATIONS_LIST
                     strcmp(STATION.DFSTYPE,'groundwater flow in x-direction') | ...
                     strcmp(STATION.DFSTYPE,'groundwater flow in y-direction') | ...
                     strcmp(STATION.DFSTYPE,'groundwater flow in z-direction')
-                fprintf('... processing accumulated timeseries : %s\n',   char(M))
+                %fprintf('... processing accumulated timeseries : %s\n',   char(M))
                 plot_timeseries_accumulated(STATION,INI);
             end
         catch

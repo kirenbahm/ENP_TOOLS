@@ -12,8 +12,17 @@ copyfile([INI.SCRIPTDIR 'tail.sty'], INI.LATEX_DIR );
 %F.TS_DESCRIPTION(1:n)= INI.MODEL_RUN_DESC(1:n);
 F.TS_DESCRIPTION = strrep(INI.MODEL_RUN_DESC,'_','\_'); % if replace _ with \_ to for latex
 
+fprintf('... Loading Computed and observed and stat data:\n\t %s\n', char(INI.FILESAVE_STAT));
+
+load(INI.FILESAVE_STAT, '-mat');
+
+STATIONS_LIST = INI.SELECTED_STATIONS;
+
+MAP_STATION_STAT = get_map_station_stat(MAP_ALL_DATA,STATIONS_LIST); % stat for selected stations
+
 uniq = unique (INI.SELECTED_STATIONS);
 MAP_KEY = uniq;
+
 for un = 1:length(uniq)
     a=1;
     VALUE = {};  %empty the cell array
@@ -27,6 +36,10 @@ for un = 1:length(uniq)
 end
 MAP_STATION_ORDER = containers.Map(MAP_KEY, MAP_VALUE);
 
-generate_latex_files(MAP_STATION_ORDER,INI.MAP_STATION_STAT,INI);
+if INI.LATEX_REPORT_BY_AREA
+    generate_latex_files_by_area(MAP_STATION_ORDER,MAP_STATION_STAT,INI);
+else
+    generate_latex_files(MAP_STATION_ORDER,INI.MAP_STATION_STAT,INI);
+end
 
 end

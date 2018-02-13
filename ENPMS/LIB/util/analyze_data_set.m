@@ -1,7 +1,23 @@
 function INI = analyze_data_set (INI)
 
+%---------------------------------------------------------------------
+%  INITIALILIZE STRUCTURE INI
+%---------------------------------------------------------------------
+try
+    INI = setup_ini(INI);
+    INI.SELECTED_STATIONS = get_station_list(INI.SELECTED_STATION_FILE);
+catch INI
+    fprintf('\nException in readMSHE_WM(INI), i=%d\n', i);
+    msgException = getReport(INI,'extended','hyperlinks','on')
+end
+
+INI.MAKE_STATISTICS_TABLE = 1; % Make the statistics tables in LaTeX. should be always 1
+INI.MAKE_EXCEEDANCE_PLOTS = 1; % Generate exceedance curve plots. should be always 1
+
+fprintf('\n %s Intialized all data for %.3g seconds\n',datestr(now), toc);
+
 %---------------------------------------------------------------
-% Run the modules
+% Run selected modules
 %---------------------------------------------------------------
 
 if INI.USE_NEW_CODE
@@ -19,12 +35,12 @@ end
 if INI.A2a ; A2a_cumulative_flows(INI); end
 if INI.A3 ; A3_create_figures_timeseries(INI); end
 if INI.A3c ; A3_create_figures_acc_timeseries(INI); end
-if INI.A3a ; A3a_boxmat(INI); end
-if INI.A3exp ; A3a_boxmatEXP(INI); end
+if INI.A3B ; A3B_BoxPlot(INI); end
 if INI.A4 ; A4_create_figures_exceedance(INI); end
 if INI.A5 ; INI = A5_create_summary_stat(INI); end
-if INI.A6; A6_GW_MAP_COMPARE(INI); end
-if INI.A7; A7_MDR_SEEPAGE(INI); end
+% if INI.A6; A6_GW_MAP_COMPARE(INI); end
+%if INI.A7; A7_MDR_SEEPAGE(INI); end
+%if INI.A7; A7_MDR_SEEPAGE(INI); end
 if INI.A9; A9_make_latex_report(INI); end
 
 fclose('all');

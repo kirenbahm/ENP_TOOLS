@@ -31,8 +31,8 @@ for FIGURE = LIST_STATIONS
     
     RFIGURE = strrep(FIGURE, '_', '\_');
     rfig = strrep(RFIGURE, '\_', '');
- 
-% additional plots can be listed below using the same pattern 
+    
+    % additional plots can be listed below using the same pattern
     FF{1} = ['/timeseries/' char(FIGURE) '.png'];
     FF{2} = ['/timeseries/' char(FIGURE) '-acc.png'];
     FF{3} = ['/exceedance/' char(FIGURE) '.png'];
@@ -46,6 +46,8 @@ for FIGURE = LIST_STATIONS
     ii = 0;
     figure_per_page = 3;
     
+    head_figure(fidTEX,RFIGURE,rfig);
+
     for LATEXFIG = FF
         ii = ii + 1;
         FILE_FIGURE = [INI.FIGURES_DIR char(LATEXFIG)];
@@ -54,11 +56,11 @@ for FIGURE = LIST_STATIONS
             continue
         end
         
-        i = i + 1;        
+        i = i + 1;
         
-        if ~mod(i+figure_per_page-1,figure_per_page)
-            head_figure(fidTEX,RFIGURE,rfig);
-        end
+%         if ~mod(i+figure_per_page-1,figure_per_page)
+%             head_figure(fidTEX,RFIGURE,rfig);
+%         end
         
         FILE_RELATIVE_TS = [INI.FIGURES_RELATIVE_DIR char(LATEXFIG)];
         
@@ -70,17 +72,15 @@ for FIGURE = LIST_STATIONS
         fprintf(fidTEX,'%s\n',ROW3);
         fprintf(fidTEX,'%s\n\n',ROW4);
         
-        if ~mod(i+figure_per_page,figure_per_page) | ii == length(FF) 
-            % this is needed to print tail for max fig per page or end of
-            % FF
-            tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
-        end
-        
+%         if ~mod(i+figure_per_page,figure_per_page) | ii == length(FF);
+%             % this is needed to print tail for max fig per page or end of FF
+%             tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
+%         end
     end
-    
+    tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
 end
 
-fprintf(fidTEX,'%s\n','\clearpage');
+fprintf(fidTEX,'%s\n\n','\clearpage');
 
 end
 

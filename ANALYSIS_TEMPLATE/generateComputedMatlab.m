@@ -26,7 +26,9 @@ INI.CURRENT_PATH =[char(pwd()) '/']; % path string of folder MAIN
 %---------------------------------------------------------------------
 % 1. SETUP Location of ENPMS Scripts
 %---------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = 'D:\Users\NYN\Desktop\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
+INI.MATLAB_SCRIPTS = 'F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
+assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
+
 % Initialize path of ENPMS Scripts
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
@@ -37,12 +39,15 @@ end
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data  
 %---------------------------------------------------------------------
-INI.DATA_COMMON = '../ENP_DATA_COMMON/'; 
+INI.DATA_COMMON = 'F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_DATA_COMMON/'; 
+assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
+
 
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
 INI.DATA_COMPUTED = './ANALYSIS1/COMPUTED/';
+assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------
 % 4. CHOOSE SIMULATIONS TO BE ANALYZED
@@ -54,16 +59,19 @@ INI.DATA_COMPUTED = './ANALYSIS1/COMPUTED/';
 
 i = 0;
 % i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.ResultDirHome, 'M01_test', 'M3ENP'};
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['D:\Users\NYN\Desktop\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M06','_', 'V0102_00WM_000_CAL'];
-% i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['D:\Users\NYN\Desktop\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M06','_', 'V01xx_00WM_CAL2'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M01','_', 'V09xx_00WM_01'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M01','_', 'V0920_00WM'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M06','_', 'V01xx_00WM_CAL_M0'];
 
 %---------------------------------------------------------------------
 % 5. Process transects and seepage maps
 %---------------------------------------------------------------------
 INI.READ_TRANSECTS = 1;
-INI.TRANSECT = [ INI.DATA_COMMON 'M06_TRANSECTS.xlsx'];
+INI.TRANSECT = [ INI.DATA_COMMON 'M01_TRANSECTS.xlsx'];
+assert(exist(INI.TRANSECT,'file') == 2, 'File not found.' );
 INI.READ_SEEPAGE_MAP = 0;
-INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M06_SEEPAGE_MAP.xlsx'];
+INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
+assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality
@@ -75,7 +83,7 @@ INI.SAVE_IN_MATLAB = 1; % (DEFAULT) force recreate and write matlab database
 INI.PLOT_COMPUTED = 1; % The user does not plot computed data
 INI.PLOT_COMPUTED = 0; %  (DEFAULT) The user plots computed data 
 
-INI.CONVERT_M11CHAINAGES = 0.3048; %INI.CONVERT_M11CHAINAGES = 1; (valid for all selected simulations)
+INI.CONVERT_M11CHAINAGES = 1; %INI.CONVERT_M11CHAINAGES = 1; (valid for all selected simulations)
 
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
@@ -500,6 +508,7 @@ mapM11CompP = containers.Map;
 % check if file exist;
 if exist(INI.fileM11WM, 'file')
     DATA = read_file_DFS0(INI.fileM11WM);
+    DATA.V(abs(DATA.V)<1e-8) = NaN; % remove non-physical values < 1e-8
 fprintf('--- reading file M11 results::%s\n',char(INI.fileM11WM));
 else
     fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(INI.fileM11WM));

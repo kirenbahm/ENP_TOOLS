@@ -19,6 +19,7 @@ while  (~feof(fid))
         trash=1;   
   else
   	 i = i + 1;
+    % tmp= tmp(~isspace(tmp)); %remove spaces or tabs, can not have spaces
     station_name_list{i} = tmp; 
   end
 end

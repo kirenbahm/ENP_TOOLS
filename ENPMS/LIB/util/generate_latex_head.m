@@ -18,23 +18,24 @@ fprintf(fidTEX,'%s\n\n',row1);
 row3 =['Plots of monitoring points (surface water stages and/or groundwater heads) and canal structures (headwater, discharge and tailwater). Statistics include the Nash-Sutcliffe, Bias and Root Mean Square Error values. No.~Points are number of points in the data set and No.~NaN are number of no-data points in the observed data timeseries. Suffix of ol means the station surface water timeseries is used. L1 means the upper aquifer layer timeseries is used. The lower aquifer layer timeseries is used for all other values.   '];
 fprintf(fidTEX,'%s\n\n',row3);
 
-
-% include the readme file
-for i = 1:SIM.NSIMULATIONS
-   try % added 2011-10-13 keb so doesn't boot out if no readme exists
-      rowt = ['\paragraph{Simulation run readme: ' SIM.MODEL_SIMULATION_SET{i}{3} '}']; % added 2011-10-12 keb
-      fprintf(fidTEX,'%s\n',rowt);
-      rdme = [SIM.readme SIM.MODEL_SIMULATION_SET{i}{4} '/' SIM.MODEL_SIMULATION_SET{i}{3} '/readme.txt'];
-      copyfile( rdme, SIM.LATEX_DIR )
-
-      movefile ([SIM.LATEX_DIR  '/readme.txt'],[SIM.LATEX_DIR '/' SIM.MODEL_SIMULATION_SET{i}{3} '-readme.txt']);
-      readmefile = [SIM.MODEL_SIMULATION_SET{i}{3} '-readme.txt'];
-      rowi = ['\vskip 0.1in \verbatiminput{' readmefile '}'];
-      fprintf(fidTEX,'%s\n\n',rowi);
-   catch
-      rowi = ['\vskip 0.1in \emph{readme file not found.}'];
-      fprintf(fidTEX,'%s\n\n',rowi);
-   end
+% 
+% % include the readme file
+% for i = 1:SIM.NSIMULATIONS
+%    try % added 2011-10-13 keb so doesn't boot out if no readme exists
+%        TEXT = strrep(SIM.MODEL_SIMULATION_SET{i}{3}, '_', '\_');
+%       rowt = ['\paragraph{Simulation run readme: ' TEXT '}']; % added 2011-10-12 keb
+%       fprintf(fidTEX,'%s\n',rowt);
+%       rdme = [SIM.readme SIM.MODEL_SIMULATION_SET{i}{4} '/' SIM.MODEL_SIMULATION_SET{i}{3} '/readme.txt'];
+%       copyfile( rdme, SIM.LATEX_DIR )
+% 
+%       movefile ([SIM.LATEX_DIR  '/readme.txt'],[SIM.LATEX_DIR '/' SIM.MODEL_SIMULATION_SET{i}{3} '-readme.txt']);
+%       readmefile = [SIM.MODEL_SIMULATION_SET{i}{3} '-readme.txt'];
+%       rowi = ['\vskip 0.1in \verbatiminput{' readmefile '}'];
+%       fprintf(fidTEX,'%s\n\n',rowi);
+%    catch
+%       rowi = ['\vskip 0.1in \emph{readme file not found.}'];
+%       fprintf(fidTEX,'%s\n\n',rowi);
+%    end
 
 
 end

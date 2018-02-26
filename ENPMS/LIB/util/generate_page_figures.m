@@ -46,8 +46,11 @@ for FIGURE = LIST_STATIONS
     ii = 0;
     figure_per_page = 3;
     
-    head_figure(fidTEX,RFIGURE,rfig);
+%     head_figure(fidTEX,RFIGURE,rfig);
 
+    ik = 0;
+
+    print_tail = 0;
     for LATEXFIG = FF
         ii = ii + 1;
         FILE_FIGURE = [INI.FIGURES_DIR char(LATEXFIG)];
@@ -56,11 +59,17 @@ for FIGURE = LIST_STATIONS
             continue
         end
         
+        print_tail = 1;
         i = i + 1;
         
-%         if ~mod(i+figure_per_page-1,figure_per_page)
-%             head_figure(fidTEX,RFIGURE,rfig);
-%         end
+        %         if ~mod(i+figure_per_page-1,figure_per_page)
+        %             head_figure(fidTEX,RFIGURE,rfig);
+        %         end
+        
+        if ~mod(ik,figure_per_page)
+            head_figure(fidTEX,RFIGURE,rfig);
+        end
+        ik = ik + 1;
         
         FILE_RELATIVE_TS = [INI.FIGURES_RELATIVE_DIR char(LATEXFIG)];
         
@@ -72,12 +81,20 @@ for FIGURE = LIST_STATIONS
         fprintf(fidTEX,'%s\n',ROW3);
         fprintf(fidTEX,'%s\n\n',ROW4);
         
-%         if ~mod(i+figure_per_page,figure_per_page) | ii == length(FF);
-%             % this is needed to print tail for max fig per page or end of FF
-%             tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
-%         end
+        %         if ~mod(i+figure_per_page,figure_per_page) | ii == length(FF);
+        %             % this is needed to print tail for max fig per page or end of FF
+        %             tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
+        %         end
+        if ~mod(ik,figure_per_page)
+            tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
+            print_tail = 0;
+        end
+        
     end
-    tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
+    if print_tail
+        tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE);
+        print_tail = 0;
+    end
 end
 
 fprintf(fidTEX,'%s\n\n','\clearpage');

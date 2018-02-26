@@ -85,6 +85,10 @@ for i = m %
     hold on;
 end
 
+if ~exist('F') 
+    return
+end
+
 FS = INI.GRAPHICS_FS;
 FN = INI.GRAPHICS_FN;
 set(gca,'FontSize',FS,'FontName',INI.GRAPHICS_FN);

@@ -8,7 +8,7 @@ if ~any(~isnan(STATION.TIMESERIES(:)))
 end
 
 
-fprintf('... Processing accumulated timeseries plot: %s\n',  char(STATION.NAME))
+fprintf('... Processing exceedance plot: %s\n',  char(STATION.NAME))
 
 % use specified graphic values in setup_ini)
 CO = INI.GRAPHICS_CO;

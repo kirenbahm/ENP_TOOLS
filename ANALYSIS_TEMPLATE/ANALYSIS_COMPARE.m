@@ -35,7 +35,7 @@ i = 0; % initialize simulation count
 %---------------------------------------------------------------------
 % 1. SETUP Location of ENPMS Scripts
 %---------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = 'D:\Users\NYN\Desktop\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
+INI.MATLAB_SCRIPTS = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
 assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
 % Initialize path of ENPMS Scripts 
 try
@@ -47,30 +47,29 @@ end
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data and observed matlab data file
 %---------------------------------------------------------------------
-INI.DATA_COMMON = 'F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_DATA_COMMON\'; 
+INI.DATA_COMMON = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Data_Common\'; 
 assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
-INI.FILE_OBSERVED = [INI.DATA_COMMON '/ENP_OBSERVED_DATA_06132017.MATLAB'];
+INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
 assert(exist(INI.FILE_OBSERVED,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = './ANALYSIS1/COMPUTED/';
+INI.DATA_COMPUTED = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------
 % 4. Set a tag for analysis reference (creates also a directory to store all)
 %---------------------------------------------------------------------
-INI.ANALYSIS_TAG = 'ANALYSIS2';
-INI.POST_PROC_DIR = ['./'];
+INI.ANALYSIS_TAG = 'ANALYSIS';
+INI.POST_PROC_DIR = ['F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Output/'];
 % INI.ANALYSIS_PATH = INI.CURRENT_PATH; 
 
 %---------------------------------------------------------------------
 % 5. Choose simulations to be analyzed (must be present in INI.DATA_COMPUTED
 %---------------------------------------------------------------------
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_V09xx_00WM_01', 'M3ENP_NEW'};
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_V0920_00WM', 'M3ENP_ORIG'};
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_V01xx_00WM_CAL_M0', 'M3ENP_SF'};
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test', 'M01'};
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'};
 % 
 %---------------------------------------------------------------------
 % 6. Select time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC
@@ -83,9 +82,7 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% end of simulation
 % 7. Select a list of stations to be analyzed
 %---------------------------------------------------------------------
 
-% INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/ENP_ALL_STATIONS.txt']; 
-% INI.SELECTED_STATION_FILE = [INI.POST_PROC_DIR '/ENP_SOME_STATIONS2.txt']; 
-INI.SELECTED_STATION_FILE = [INI.POST_PROC_DIR '/DET_AREAS.txt']; 
+INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/TEST-STATIONS-short.txt']; 
 assert(exist(INI.SELECTED_STATION_FILE,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
@@ -112,7 +109,7 @@ INI.A9    = 1; % A9_make_latex_report %
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06) always 1
 INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables.
-INI.INCLUDE_COMPUTED      = 0; % Include computed in the output figs and tables.
+INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 
 %---------------------------------------------------------------
 % Run selected modules

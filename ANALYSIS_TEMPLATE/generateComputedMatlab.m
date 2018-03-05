@@ -26,7 +26,7 @@ INI.CURRENT_PATH =[char(pwd()) '/']; % path string of folder MAIN
 %---------------------------------------------------------------------
 % 1. SETUP Location of ENPMS Scripts
 %---------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = 'F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
+INI.MATLAB_SCRIPTS = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
 assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
 
 % Initialize path of ENPMS Scripts
@@ -39,18 +39,24 @@ end
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data  
 %---------------------------------------------------------------------
-INI.DATA_COMMON = 'F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_DATA_COMMON/'; 
+INI.DATA_COMMON = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Data_Common/'; 
 assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
 
 
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = './ANALYSIS1/COMPUTED/';
+INI.DATA_COMPUTED = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------
-% 4. CHOOSE SIMULATIONS TO BE ANALYZED
+% 4. Assign the Excel file with all stations:
+%---------------------------------------------------------------------
+INI.fileCompCoord = [INI.DATA_COMMON 'OBSERVED_DATA_MODEL_test.xlsx'];
+assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
+
+%---------------------------------------------------------------------
+% 5. CHOOSE SIMULATIONS TO BE ANALYZED
 %---------------------------------------------------------------------
 % This setup allows results from different directories or computers to be used 
 % copying the data, i.e. INI.MODEL_SIMULATION_SET{i} can vary with respect
@@ -59,19 +65,20 @@ assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 i = 0;
 % i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.ResultDirHome, 'M01_test', 'M3ENP'};
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M01','_', 'V09xx_00WM_01'];
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M01','_', 'V0920_00WM'];
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M06','_', 'V01xx_00WM_CAL_M0'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test'];
+% i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M06','_', 'V01xx_00WM_CAL_M0'];
 
 %---------------------------------------------------------------------
 % 5. Process transects and seepage maps
 %---------------------------------------------------------------------
 INI.READ_TRANSECTS = 1;
-INI.TRANSECT = [ INI.DATA_COMMON 'M01_TRANSECTS.xlsx'];
+INI.TRANSECT = [ INI.DATA_COMMON 'Transects_v14.xlsx'];
 assert(exist(INI.TRANSECT,'file') == 2, 'File not found.' );
-INI.READ_SEEPAGE_MAP = 0;
-INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
-assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+
+% INI.READ_SEEPAGE_MAP = 0;
+% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
+% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality
@@ -111,8 +118,6 @@ function INI = extractComputedData(INI)
 %Additional set up of default files user should not modify aything below
 %---------------------------------------------------------------------
 
-% assign the Excel file with all stations:
-INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS.xlsx'];
 %Create an excel log file for stations requested and matched to chainages
 INI.LOG_XLSX = [INI.DATA_COMPUTED 'LOG.xlsx'];
 

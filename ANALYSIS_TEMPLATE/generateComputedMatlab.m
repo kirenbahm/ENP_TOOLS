@@ -78,17 +78,17 @@ i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\
 % 6. Process transects
 %---------------------------------------------------------------------
 INI.READ_TRANSECTS = 0;
-INI.TRANSECT = [ INI.DATA_COMMON 'Transects_v14.xlsx'];
+INI.TRANSECT = [ INI.DATA_COMMON 'Transects_v16.xlsx'];
 assert(exist(INI.TRANSECT,'file') == 2, 'File not found.' );
  
 %---------------------------------------------------------------------
 % 6. Process and seepage maps
 %---------------------------------------------------------------------
 INI.READ_SEEPAGE_MAP = 0;
-INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
-assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
-INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M06_SEEPAGE_MAP.dfs2'];
-assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
+% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M06_SEEPAGE_MAP.dfs2'];
+% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality

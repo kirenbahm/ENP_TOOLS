@@ -110,8 +110,8 @@ set(gcf, 'PaperPosition', [0,0,8,3]);
 set(gcf, 'Renderer', 'OpenGL');
 set(gcf, 'Color', 'w');
 
-xlim([datenum(INI.ANALYZE_DATE_I)-366 datenum(INI.ANALYZE_DATE_F)+366]);
-set(gca, 'xtick', datenum(YR(1)-1:YR(end)+1, 1, 1));
+
+% set(gca, 'xtick', datenum(YR(1)-1:YR(end)+1, 1, 1));
 datetick('x', 'yyyy', 'keeplimits', 'keepticks');
 
 AX = gca;

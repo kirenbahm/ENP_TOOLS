@@ -93,8 +93,8 @@ aymin = minvl - 0.1*(maxvl-minvl);
 aymax = maxvl + 0.15*(maxvl-minvl);
 ylim([aymin aymax]);
 
-xlim([datenum(INI.ANALYZE_DATE_I)-366 datenum(INI.ANALYZE_DATE_F)+366]);
-set(gca, 'xtick', datenum(YR(1)-1:YR(end)+1, 1, 1));
+
+%set(gca, 'xtick', datenum(YR(1)-1:YR(end)+1, 1, 1));
 datetick('x', 'yyyy', 'keeplimits', 'keepticks');
 
 legend(LEGEND,'Location','NorthEast');

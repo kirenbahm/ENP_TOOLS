@@ -168,9 +168,9 @@ fclose('all');
 %test code
 try
     STATION = MAP_ALL_DATA (char(K));
-    K = '3A28';
-    STATION = MAP_ALL_DATA (char(K));
     K = 'G211_Q';
+    STATION = MAP_ALL_DATA (char(K));
+    K = 'G211_TW';
     STATION = MAP_ALL_DATA (char(K));
 catch
 end

@@ -51,7 +51,7 @@ if ~INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
 end
 
 DATA = [];
-for i = 1:Z
+for i = Z
     T = STATION.TIMEVECTOR;
     V = VV(:,i);    
     index_nan = isnan(V);

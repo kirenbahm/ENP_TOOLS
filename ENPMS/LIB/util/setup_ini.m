@@ -107,7 +107,7 @@ INI.SCRIPTDIR   = [INI.MATLAB_SCRIPTS 'DATA_LATEX/'];
 % Directory to store all analyses
 INI.ANALYSIS_DIR = INI.POST_PROC_DIR;
 fprintf('Current directory, all analysis will be stored in: %s\n\n',INI.ANALYSIS_DIR);
-INI.ANALYSIS_DIR_TAG = [INI.ANALYSIS_DIR INI.ANALYSIS_TAG];  % postproc directory for postproc run (no edits needed here)
+INI.ANALYSIS_DIR_TAG = [INI.ANALYSIS_DIR];  % postproc directory for postproc run (no edits needed here)
 INI.DATA_DIR         = [INI.ANALYSIS_DIR_TAG '/data'];  % data dir in output for extracted matlab files
 INI.LATEX_DIR        = [INI.ANALYSIS_DIR_TAG '/latex/'];
 INI.FIGURES_DIR      = [INI.ANALYSIS_DIR_TAG '/figures'];  % figures dir in output

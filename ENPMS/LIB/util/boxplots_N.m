@@ -13,17 +13,28 @@ POS(1:M+1:end)=[];
 % DATA AND GROUP 
 X=[];
 GROUP=[];
-
+KEEP_POS = [];
+IND_DEL = [];
+kk = 0; % adjust positions
 for ii=1:L % years or months
     for jj=1:M % number of simulations
         TMP=DATA{ii,jj};
-        X=vertcat(X,TMP(:));
-        GROUP=vertcat(GROUP,ones(size(TMP(:)))*jj+(ii-1)*M);
+        if ~isempty(TMP)
+            kk = kk + 1; % increment POS
+            X=vertcat(X,TMP(:));
+            GROUP=vertcat(GROUP,ones(size(TMP(:)))*jj+(ii-1)*M);
+            KEEP_POS = [KEEP_POS jj+(ii-1)*M];
+        else
+            IND_DEL = [IND_DEL jj+(ii-1)*M];
+%             POS(kk)=[];
+%             kk = kk - 1; % Erase POS
+        end
     end
 end
+POSMOD = POS(KEEP_POS);
 
 % PLOT
-hh = boxplot(X,GROUP, 'positions', POS,'Notch','on','Whisker',2);
+hh = boxplot(X,GROUP, 'positions', POSMOD,'Notch','on','Whisker',2);
 
 % SET X Labels
 TMP=reshape(POS,M,[]);

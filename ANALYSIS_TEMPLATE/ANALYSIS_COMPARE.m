@@ -35,7 +35,7 @@ i = 0; % initialize simulation count
 %---------------------------------------------------------------------
 % 1. SETUP Location of ENPMS Scripts
 %---------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
+INI.MATLAB_SCRIPTS = '..\ENPMS\';
 assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
 % Initialize path of ENPMS Scripts 
 try
@@ -47,7 +47,7 @@ end
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data and observed matlab data file
 %---------------------------------------------------------------------
-INI.DATA_COMMON = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Data_Common\'; 
+INI.DATA_COMMON = '..\..\ENP_TOOLS_Sample_Input\Data_Common/'; 
 assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
 INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
 assert(exist(INI.FILE_OBSERVED,'file') == 2, 'File not found.' );
@@ -55,14 +55,14 @@ assert(exist(INI.FILE_OBSERVED,'file') == 2, 'File not found.' );
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
+INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------
 % 4. Set a tag for analysis reference (creates also a directory to store all)
 %---------------------------------------------------------------------
-INI.ANALYSIS_TAG = 'ANALYSIS';
-INI.POST_PROC_DIR = ['F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Output/'];
+INI.ANALYSIS_TAG = 'ENP_TOOLS_Sample_Output';
+INI.POST_PROC_DIR = ['..\..\' INI.ANALYSIS_TAG '/'];
 % INI.ANALYSIS_PATH = INI.CURRENT_PATH; 
 
 %---------------------------------------------------------------------

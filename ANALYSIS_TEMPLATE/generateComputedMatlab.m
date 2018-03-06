@@ -12,10 +12,15 @@ function [ output_args ] = generateComputedMatlab( input_args )
 % 1. Location of ENPMS scripts e.g. 'some path\ENP_TOOLS\ENPMS\'
 % 2. Location of common data (spreadsheet with chainages ij-coordinates for
 % each model e.g. 'some path/DATA_COMMON/'
-% 3. Location of where the computed data will be saved, e.g. './ANALYSIS1/COMPUTED/'
+% 3. Location of where the computed data will be saved, in this directory
+% also a LOG.xlsx file is saved with list of MIKE 11 requested, found and
+% not found
 % 4. list of paths of computed data and simulation to be analyzed
-% 5. Select if data for transects and seepage map will be used to extract
-% values
+% 5 Assig the excel file with all data items
+% 5. Select transects will be used to extract values
+% 6. Select seepage map will be used to extract values  
+% 7 Set conversion factor for chainages between M11 in feet and in m (check
+% the res11 file to determine if chainages are in feet
 
 %The path to each simulation is provided in lines 54 and further
 % do not change here
@@ -26,7 +31,7 @@ INI.CURRENT_PATH =[char(pwd()) '/']; % path string of folder MAIN
 %---------------------------------------------------------------------
 % 1. SETUP Location of ENPMS Scripts
 %---------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS\ENPMS\';
+INI.MATLAB_SCRIPTS = '..\ENPMS\';
 assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
 
 % Initialize path of ENPMS Scripts
@@ -39,14 +44,13 @@ end
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data  
 %---------------------------------------------------------------------
-INI.DATA_COMMON = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Data_Common/'; 
+INI.DATA_COMMON = '..\..\ENP_TOOLS_Sample_Input\Data_Common/'; 
 assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
-
 
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = 'F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
+INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------
@@ -54,6 +58,9 @@ assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 %---------------------------------------------------------------------
 INI.fileCompCoord = [INI.DATA_COMMON 'OBSERVED_DATA_MODEL_test.xlsx'];
 assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
+% Set conversion factor for chainages between M11 in feet and in m (check
+% the res11 file to determine if chainages are in feet
+INI.CONVERT_M11CHAINAGES = 0.3048; %INI.CONVERT_M11CHAINAGES = 1; (valid for ft input)
 
 %---------------------------------------------------------------------
 % 5. CHOOSE SIMULATIONS TO BE ANALYZED
@@ -64,21 +71,24 @@ assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
 % Once data are extracted, simulation files may be deleted
 
 i = 0;
-% i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.ResultDirHome, 'M01_test', 'M3ENP'};
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP_2018\MODELS_20180101\GIT_ENP_MODELS\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test'];
-% i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['F:\ENP\MODELS_20180101\GIT_ENP_MODELS\ENP_MODELS\Result\', 'M06','_', 'V01xx_00WM_CAL_M0'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test'];
 
 %---------------------------------------------------------------------
-% 5. Process transects and seepage maps
+% 6. Process transects
 %---------------------------------------------------------------------
-INI.READ_TRANSECTS = 1;
+INI.READ_TRANSECTS = 0;
 INI.TRANSECT = [ INI.DATA_COMMON 'Transects_v14.xlsx'];
 assert(exist(INI.TRANSECT,'file') == 2, 'File not found.' );
-
-% INI.READ_SEEPAGE_MAP = 0;
-% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
-% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+ 
+%---------------------------------------------------------------------
+% 6. Process and seepage maps
+%---------------------------------------------------------------------
+INI.READ_SEEPAGE_MAP = 0;
+INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
+assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M06_SEEPAGE_MAP.dfs2'];
+assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality
@@ -90,19 +100,73 @@ INI.SAVE_IN_MATLAB = 1; % (DEFAULT) force recreate and write matlab database
 INI.PLOT_COMPUTED = 1; % The user does not plot computed data
 INI.PLOT_COMPUTED = 0; %  (DEFAULT) The user plots computed data 
 
-INI.CONVERT_M11CHAINAGES = 1; %INI.CONVERT_M11CHAINAGES = 1; (valid for all selected simulations)
-
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------
 
 try
+    if INI.READ_TRANSECTS, INI = extractTransects(INI), end
     INI = extractComputedData(INI);
 catch INI
     S = 'extractComputedData(INI)';
     fprintf('...exception in::%s\n',char(S));
     msgException = getReport(INI,'extended','hyperlinks','on')
 end
+
+end
+
+%---------------------------------------------------------------------
+% function INI = extractComputedData(INI)
+%---------------------------------------------------------------------
+function INI = extractTransects(INI);
+
+i = 0;
+for D = INI.MODEL_SIMULATION_SET
+    
+    i = i + 1; % Increment model run counter
+    
+    MODEL_RESULT_DIR = INI.MODEL_SIMULATION_SET{i};
+    
+    %     FILE_MOLUZ         = [MODEL_RESULT_DIR '/' char(D) 'DetailedTS_OL.dfs0']; %MIKE 2014 filename
+    %     if ~exist(FILE_MOLUZ,'file')
+    %         FILE_MOLUZ       = [MODEL_RESULT_DIR '/' char(D) 'DetailedTS.dfs0']; %MIKE 2011 filename
+    %     end
+    %     FILE_M11           = [MODEL_RESULT_DIR '/' char(D) 'DetailedTS_M11.dfs0'];
+    %     FILE_MSHE          = [MODEL_RESULT_DIR '/' char(D) 'DetailedTS_SZ.dfs0'];
+    [D1 D2 D3] = fileparts(char(D));
+    FILE_OL            = [char(D) '.she - Result Files/' char(D2) '_overland.dfs2'];
+    FILE_3DSZ          = [char(D) '.she - Result Files/' char(D2) '_3DSZ.dfs3'];
+    FILE_3DSZQ         = [char(D) '.she - Result Files/' char(D2) '_3DSZflow.dfs3'];
+    assert(exist(FILE_OL,'file') == 2, 'File not found.' );
+    assert(exist(FILE_3DSZQ,'file') == 2, 'File not found.' );
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Load model output data
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%     % Load DetailedTS_OL data
+%     L = INI.LOAD_MOLUZ;
+%     MAP_COMPUTED_MOLUZ_DATA(i) = load_TS_OL (L,MODEL_RESULT_DIR,FILE_MOLUZ);
+%         
+%     % Load DetailedTS_M11 data
+%     L = INI.LOAD_M11;
+%     MAP_COMPUTED_M11_DATA(i) = load_TS_M11(L,MODEL_RESULT_DIR,FILE_M11);
+%     
+%     % Load DetailedTS_SZ data
+%     L = INI.LOAD_MSHE;
+%     MAP_COMPUTED_MSHE_DATA(i) = load_TS_MSHE(L,MODEL_RESULT_DIR,FILE_MSHE);
+        
+    % Load and group OL gridded data
+    %L = INI.LOAD_OL;
+    MAP_COMPUTED_OL_DATA(i) = load_OL_GRIDDED(1,INI,MODEL_RESULT_DIR,FILE_OL);
+    
+    % Load and group 3DSZQ gridded data
+    %L = INI.LOAD_3DSZQ;
+    MAP_COMPUTED_3DSZQ_DATA(i) = load_SZ_GRIDDED(1,INI,MODEL_RESULT_DIR,FILE_3DSZQ);
+        
+end
+
+
 
 end
 
@@ -135,9 +199,13 @@ for i = 1:nn
     INI.XLSCOMP = [INI.MODEL '_MODEL_COMP'];
     INI.LOG_XLSX_SH = char(INI.simMODEL);
     INI.ALTERNATIVE = INI.simMODEL;
+    
+    % read excel file with coordinates
     INI = readFileCompCoord(INI);
+    
     INI.simRESULT = [INI.MODEL_SIMULATION_SET{i} '.she - Result Files\'];
     INI.DATABASE_COMP = char(strcat(INI.DATA_COMPUTED,'COMPUTED_',INI.simMODEL,'.MATLAB'));
+    
     INI.simRESULTmatlab = [INI.simRESULT 'matlab\'];
 
     % files for extracting computed data
@@ -196,62 +264,62 @@ end
 % function MAP_COMPUTED_3DSZQ_DATA = load_SZ_GRIDDED
 %---------------------------------------------------------------------
 
-% function MAP_COMPUTED_3DSZQ_DATA = load_SZ_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_3DSZQ)
-% 
-% MAP_COMPUTED_3DSZQ = 0;
-% if L
-%     MAP_COMPUTED_3DSZQ = {get_GRIDDED_DATA(FILE_3DSZQ,INI)};
-% %     MAP_COMPUTED_3DSZQ = {read_and_group_computed_timeseries(FILE_3DSZQ,...
-% %         INI.CELL_DEF_FILE_DIR_3DSZQ,INI.CELL_DEF_FILE_NAME_3DSZQ,...
-% %         INI.CELL_DEF_FILE_SHEETNAME_3DSZQ)};
-%     if ~exist([MODEL_RESULT_DIR '/matlab'],'file'),  ...
-%             mkdir([MODEL_RESULT_DIR '/matlab']), end
-%     save([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_3DSZQ.MATLAB'],...
-%         'MAP_COMPUTED_3DSZQ', '-v7.3');
-%     INI.MAP_COMPUTED_3DSZQ_DATA = MAP_COMPUTED_3DSZQ;
-% else
-%     try
-%         load([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_3DSZQ.MATLAB'],'-mat');
-%         INI.MAP_COMPUTED_3DSZQ_DATA=MAP_COMPUTED_3DSZQ;
-%     catch
-%         MAP_COMPUTED_3DSZQ_DATA = 0;
-%         fprintf('\n... Exception in load_SZ_GRIDDED() \n')
-%         fprintf('\n... -> MAP_COMPUTED_3DSZQ.MATLAB not loaded, continuing with MAP_COMPUTED_3DSZQ_DATA = 0 \n')
-%     end;
-% end
-% 
-% 
-% end
+function MAP_COMPUTED_3DSZQ_DATA = load_SZ_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_3DSZQ)
+
+MAP_COMPUTED_3DSZQ = 0;
+if L
+    MAP_COMPUTED_3DSZQ = {get_GRIDDED_DATA(FILE_3DSZQ,INI)};
+%     MAP_COMPUTED_3DSZQ = {read_and_group_computed_timeseries(FILE_3DSZQ,...
+%         INI.CELL_DEF_FILE_DIR_3DSZQ,INI.CELL_DEF_FILE_NAME_3DSZQ,...
+%         INI.CELL_DEF_FILE_SHEETNAME_3DSZQ)};
+    if ~exist([MODEL_RESULT_DIR '/matlab'],'file'),  ...
+            mkdir([MODEL_RESULT_DIR '/matlab']), end
+    save([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_3DSZQ.MATLAB'],...
+        'MAP_COMPUTED_3DSZQ', '-v7.3');
+    INI.MAP_COMPUTED_3DSZQ_DATA = MAP_COMPUTED_3DSZQ;
+else
+    try
+        load([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_3DSZQ.MATLAB'],'-mat');
+        INI.MAP_COMPUTED_3DSZQ_DATA=MAP_COMPUTED_3DSZQ;
+    catch
+        MAP_COMPUTED_3DSZQ_DATA = 0;
+        fprintf('\n... Exception in load_SZ_GRIDDED() \n')
+        fprintf('\n... -> MAP_COMPUTED_3DSZQ.MATLAB not loaded, continuing with MAP_COMPUTED_3DSZQ_DATA = 0 \n')
+    end;
+end
+
+
+end
 
 %---------------------------------------------------------------------
 % function MAP_COMPUTED_OL_DATA =load_OL_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_OL)
 %---------------------------------------------------------------------
 
-% function MAP_COMPUTED_OL_DATA = load_OL_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_OL)
-% 
-% MAP_COMPUTED_OL_DATA = 0;
-% 
-% if L
-%     MAP_COMPUTED_OL = {get_GRIDDED_DATA(FILE_OL,INI)};
-%     if ~exist([MODEL_RESULT_DIR '/matlab'],'file'),  ...
-%             mkdir([MODEL_RESULT_DIR '/matlab']), end
-% %         MAP_COMPUTED_OL = {read_and_group_computed_timeseries...
-% %             (FILE_OL,INI.CELL_DEF_FILE_DIR_OL,INI.CELL_DEF_FILE_NAME_OL,...
-% %             INI.CELL_DEF_FILE_SHEETNAME_OL)};
-%     save([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_OL.MATLAB'],...
-%         'MAP_COMPUTED_OL', '-v7.3');
-%     INI.MAP_COMPUTED_OL_DATA = MAP_COMPUTED_OL;
-% else
-%     try
-%         load([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_OL.MATLAB'],'-mat');
-%         INI.MAP_COMPUTED_OL_DATA=MAP_COMPUTED_OL;
-%     catch
-%         fprintf('\n... Exception in load_OL_GRIDDED()')
-%         fprintf('\n... -> MAP_COMPUTED_OL.MATLAB not loaded, continuing with MAP_COMPUTED_OL_DATA = 0 \n')
-%     end;
-% end
-% 
-% end
+function MAP_COMPUTED_OL_DATA = load_OL_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_OL)
+
+MAP_COMPUTED_OL_DATA = 0;
+
+if L
+    MAP_COMPUTED_OL = {get_GRIDDED_DATA(FILE_OL,INI)};
+    if ~exist([MODEL_RESULT_DIR '/matlab'],'file'),  ...
+            mkdir([MODEL_RESULT_DIR '/matlab']), end
+%         MAP_COMPUTED_OL = {read_and_group_computed_timeseries...
+%             (FILE_OL,INI.CELL_DEF_FILE_DIR_OL,INI.CELL_DEF_FILE_NAME_OL,...
+%             INI.CELL_DEF_FILE_SHEETNAME_OL)};
+    save([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_OL.MATLAB'],...
+        'MAP_COMPUTED_OL', '-v7.3');
+    INI.MAP_COMPUTED_OL_DATA = MAP_COMPUTED_OL;
+else
+    try
+        load([MODEL_RESULT_DIR '/matlab/MAP_COMPUTED_OL.MATLAB'],'-mat');
+        INI.MAP_COMPUTED_OL_DATA=MAP_COMPUTED_OL;
+    catch
+        fprintf('\n... Exception in load_OL_GRIDDED()')
+        fprintf('\n... -> MAP_COMPUTED_OL.MATLAB not loaded, continuing with MAP_COMPUTED_OL_DATA = 0 \n')
+    end;
+end
+
+end
 
 %---------------------------------------------------------------------
 % function INI = plot_all(INI)
@@ -423,7 +491,11 @@ for i=0:nsteps-1
     %fprintf('%s %s %i %s %i\n', ds, ' Step: ', i+1, '/', TS.S.nsteps);
     T = T + TS.S.TIMESTEPD;
     ds = datestr(T);
-    fprintf('... Reading SZ Values: %s: %s %i %s %i\n', ds, ' Step: ', i, '/', TS.S.nsteps)
+    
+    b = 10; % print only every 10 days
+    if ~mod(i,b)
+        fprintf('... Reading SZ Values: %s: %s %i %s %i\n', ds, ' Step: ', i, '/', TS.S.nsteps);
+    end
     SZ_ELEV = double(TS.S.DFS.ReadItemTimeStep(1,i).To3DArray());
 %     OL_DEPTH = double(TS.S.dfs2.ReadItemTimeStep(1,i).To2DArray());
     j = 0;
@@ -512,9 +584,9 @@ mapM11CompP = containers.Map;
 
 % check if file exist;
 if exist(INI.fileM11WM, 'file')
+    fprintf('--- Reading file M11 results::%s\n',char(INI.fileM11WM));
     DATA = read_file_DFS0(INI.fileM11WM);
     DATA.V(abs(DATA.V)<1e-8) = NaN; % remove non-physical values < 1e-8
-fprintf('--- reading file M11 results::%s\n',char(INI.fileM11WM));
 else
     fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(INI.fileM11WM));
     return
@@ -522,7 +594,7 @@ end
 
 SZ = size(DATA.V);
 %xlswrite(char(INI.fileCompCoord),DATA.NAME','ALL_COMPUTED','B2');
-fprintf('--- M11 results:: %d Computational Points with %d Timesteps\n',SZ(2),SZ(1));
+fprintf('--- M11 results have %d Computational Points with %d Timesteps\n',SZ(2),SZ(1));
 
 % create a map of chainages with Station Names as values
 mapM11chain = getMapM11Chainages(INI);
@@ -543,9 +615,19 @@ for i=1:SZ(2)
     
     try
         XSEL{i} = M11CHAIN;
-        NAME = mapM11chain(char(M11CHAIN));
+        if isKey(mapM11chain,char(M11CHAIN))
+            NAME = mapM11chain(char(M11CHAIN));
+        else
+            %fprintf('-%d- WARNING: Computed nodes Not-Mapped to requested M11 Stations \t%s:: \t NOT found::\n',i,char(M11CHAIN));
+            % dont print too much output not needed, it s recorded in
+            % LOG.xlsx
+            fn = fn + 1;
+            XNFOUND{fn} = M11CHAIN;
+            continue
+        end
+        
         fi = fi + 1;
-        fprintf('-%d::Computational Node %s:: mapped to::%s\n',fi,char(NAME),char(M11CHAIN));
+        fprintf('-%d\t\t Requested M11 Station \t%s \t mapped to:\t%s\n',fi,char(NAME),char(M11CHAIN));
         STATION = INI.mapCompSelected(char(NAME));
         STATION.M11NAME = STATION.STATION_NAME;
         STATION.M11UNIT = DATA.UNIT(i);
@@ -568,7 +650,7 @@ for i=1:SZ(2)
         NAME_FOUND(fi) = NAME;
     catch
         fn = fn + 1;
-        %fprintf('-%d- Computational Node %s:: mapped to::%s\n',i,char(NAME),char(M11CHAIN));
+        fprintf('-%d- WARNING:: Exception in reading M11 in %s for requested station %s\n',i,char(NAME),char(M11CHAIN));
         XNFOUND{fn} = M11CHAIN;
     end
 end
@@ -596,9 +678,14 @@ XNFOUND = sort(XNFOUND');
 xlswrite(char(INI.LOG_XLSX),{'NOTFOUND'},char(XLSH),'G1');
 xlswrite(char(INI.LOG_XLSX),XNFOUND,char(XLSH),'G2');
 
+fprintf('--- Summary of M11 results from file %s \n',char(INI.fileM11WM));
+fprintf('    - %d Requested M11 stations\n', length(mapM11chain));
+fprintf('    - %d Computed nodes mapped to requested M11 Stations \n',length(XFOUND));
+fprintf('    - %d Computed nodes Not-Mapped to requested M11 Stations\n',length(mapM11chain)-length(XFOUND));
 S = strcat(INI.LOG_XLSX, '\', XLSH);
-fprintf('\n--- Review Sheet %s for summary of requested, found, not found M11 chainages::\n', char(S));
-fprintf('FILE::%s:: SHEET::%s\n', char(INI.fileCompCoord),['ALL_COMPUTED_' INI.MODEL]);
+fprintf('    - Review LOG File %s for summary of Requested, Mapped, Not-Mapped M11 chainages::\n', char(S));
+fprintf('    - Review Sheet::%s for exact listing of matched M11 computation nodes and stations\n\n', ['ALL_COMPUTED_' INI.MODEL]);
+
 end 
 
 %---------------------------------------------------------------------
@@ -611,7 +698,7 @@ function INI = readFileCompCoord(INI)
 
 INI.mapCompSelected = containers.Map;
 [NUM,TXT,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
-fprintf('--- reading file::%s\n', char(INI.fileCompCoord));
+fprintf('--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
 
 for i = 2:length(RAW)
     try
@@ -657,6 +744,7 @@ for i = 2:length(RAW)
     end
 end
 
+fprintf('--- Stations file::%s: has %i stations\n\n', char(INI.fileCompCoord), length(INI.mapCompSelected));
 
 end
 

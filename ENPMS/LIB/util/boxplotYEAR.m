@@ -122,7 +122,7 @@ TITLE=strcat(STATION.STATION_NAME,{' '}, LL);
 title(TITLE);
 ylabel(LL);
 
-
+hold on
 if strcmp(STATION.DATATYPE,'Elevation')
     if ~isnan(STATION.Z)
         %string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});

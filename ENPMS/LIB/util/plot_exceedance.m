@@ -3,11 +3,9 @@ function [] = plot_exceedance(STATION,INI)
 % simulation interval
 
 if ~any(~isnan(STATION.TIMESERIES(:)))
-    fprintf('...%d All timeseries values are NaN, continue\n');
+    fprintf('...All timeseries values are NaN, continue\n');
     return
 end
-
-fprintf('... Processing exceedance plot: %s\n',  char(STATION.NAME))
 
 % use specified graphic values in setup_ini) look for definitions in
 % setu_INI() lines 20-40

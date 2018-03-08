@@ -2,7 +2,7 @@ function [output_args] = generate_area_tables(AREA,MAP_STATION_STAT,LIST_STATION
 %generate_area_tables(M, MS, STATION_LIST,INI,fidTEX) FFF
 %rjf; from generate_latex_areasV0
 
-fprintf ('...Including statistics tables for area %s\n',char(AREA));
+fprintf (' (including statistics tables)');
 
 fprintf(fidTEX,'%s\n','\clearpage');
 row2 =['\subsection{Statistics Tables for Area ' char(AREA) '}'];
@@ -27,7 +27,7 @@ for L = LIST_STATIONS
             NDATA(i:i+sz-1,1:9) = 0;
             PE(i:i+sz-1,1:9) = 0;
         catch
-            fprintf ('...skipping MAP_STATION_STAT(%s), not in container\n',char(L));
+            fprintf ('...skipping MAP_STATION_STAT(%s), not in container',char(L));
         end
     end
 end

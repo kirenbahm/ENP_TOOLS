@@ -1,6 +1,11 @@
 
 function INI = setup_ini(INI,U)
 
+fprintf('\n--------------------');
+fprintf('\nBeginning setup_ini     (%s)',datestr(now));
+fprintf('\n--------------------');
+
+INI.DEBUG = 0;  % set this to 1 to generate extra output for debugging
 
 % setup_ini(INI) SETS UP additionall options which rarely change but if
 % user decides to modify some of the options here, there sill be impact on
@@ -17,7 +22,7 @@ INI.DATADIR = INI.DATA_COMPUTED;
 % % % INI.fileXL = [D '/' INI.ANALYSIS_TAG '/' INI.ANALYSIS_TAG '_' N '.xlsx'];
 
 % path for a log file which will record all exceptions
-INI.LOGFILE = [INI.POST_PROC_DIR  INI.ANALYSIS_TAG '/_LOGFILE.TXT'];
+INI.LOGFILE = [INI.POST_PROC_DIR  INI.ANALYSIS_TAG '\_LOGFILE.TXT'];
 
 % GRAPHICS_PROPERTIES Color order
 INI.GRAPHICS_CO = {'r', 'k', 'b', '[0 0.5 0]', ...
@@ -86,18 +91,18 @@ INI.OVERWRITE_GRID_XL = 0; % this regenerates the gridded points from
 %  INITIALILIZE STRUCTURE INI
 %---------------------------------------------------------------------
 
-fprintf('... ANALYZING SIMULATIONS:\n');
+fprintf('\n\n--Analyzing simulations:\n');
 if isfield(INI,'MODEL_SIMULATION_SET')
     for i = 1:length(INI.MODEL_SIMULATION_SET)
         A = INI.MODEL_SIMULATION_SET{1,i}{1,1};
         B = INI.MODEL_SIMULATION_SET{1,i}{1,2};
         C = INI.MODEL_SIMULATION_SET{1,i}{1,3};
         INI.MODEL_SIMULATION_SET{1,i}{1,1} = [A B '.she - Result Files'];
-        fprintf('SIMULATION: %s LEGEND: %s\n', B, C);
+        fprintf('\tSIMULATION: %-20s LEGEND: %s\n', B, C);
     end
 else
     INI.MODEL_SIMULATION_SET = [];
-    fprintf('... INI.MODEL_SIMULATION_SET = [], only oberved will be plotted:\n');
+    fprintf('\tOBSERVED DATA ONLY\n');
 end
 
 INI.PATHDIR = INI.MATLAB_SCRIPTS;
@@ -106,7 +111,7 @@ INI.SCRIPTDIR   = [INI.MATLAB_SCRIPTS 'DATA_LATEX/'];
 
 % Directory to store all analyses
 INI.ANALYSIS_DIR = INI.POST_PROC_DIR;
-fprintf('Current directory, all analysis will be stored in: %s\n\n',INI.ANALYSIS_DIR);
+fprintf('\n--All analysis will be stored in:\n\t%s\n\n',INI.ANALYSIS_DIR);
 INI.ANALYSIS_DIR_TAG = [INI.ANALYSIS_DIR];  % postproc directory for postproc run (no edits needed here)
 INI.DATA_DIR         = [INI.ANALYSIS_DIR_TAG '/data'];  % data dir in output for extracted matlab files
 INI.LATEX_DIR        = [INI.ANALYSIS_DIR_TAG '/latex/'];
@@ -118,9 +123,9 @@ INI.FIGURES_DIR_MAPS = [INI.ANALYSIS_DIR_TAG '/figures/maps'];
 INI.FIGURES_RELATIVE_DIR = ['../figures']; % the relative path name to figs dir for includegraphics
 
 % The computed and observed timeseries data for the observation locations -
-INI.FILESAVE_TS = [INI.ANALYSIS_DIR_TAG  '/' INI.ANALYSIS_TAG '_TIMESERIES_DATA.MATLAB'];
+INI.FILESAVE_TS = [INI.ANALYSIS_DIR_TAG INI.ANALYSIS_TAG '_TIMESERIES_DATA.MATLAB'];
 % The computed and observed statistics data
-INI.FILESAVE_STAT = [INI.ANALYSIS_DIR_TAG '/' INI.ANALYSIS_TAG   '_TIMESERIES_STAT.MATLAB'];
+INI.FILESAVE_STAT = [INI.ANALYSIS_DIR_TAG INI.ANALYSIS_TAG   '_TIMESERIES_STAT.MATLAB'];
 
 %---------------------------------------------------------------
 % SET UP DIRECTORIES AND SUPPORTING FILES
@@ -137,13 +142,11 @@ if ~exist(INI.FIGURES_DIR_MAPS,'file'), mkdir(INI.FIGURES_DIR_MAPS), end
 if ~exist(INI.LATEX_DIR,'file'),mkdir(INI.LATEX_DIR);end;
 if ~exist(INI.ANALYSIS_DIR_TAG, 'dir'), mkdir(char(INI.ANALYSIS_DIR_TAG)),end;
 
-fprintf('DIRECTORIES FOR STORING ANALYSIS:?\n');
-fprintf('==========================\n');
-fprintf('INI.SCRIPTDIR is %s\n',INI.SCRIPTDIR);
-fprintf('INI.LATEX_DIR is %s\n',INI.LATEX_DIR);
-fprintf('INI.ANALYSIS_DIR is %s\n',INI.ANALYSIS_DIR);
-fprintf('INI.MATDIR is %s\n',INI.MATDIR);
-fprintf('==========================\n');
+fprintf('--DIRECTORIES FOR STORING ANALYSIS:\n');
+fprintf('\tINI.SCRIPTDIR is %s\n',INI.SCRIPTDIR);
+fprintf('\tINI.LATEX_DIR is %s\n',INI.LATEX_DIR);
+fprintf('\tINI.ANALYSIS_DIR is %s\n',INI.ANALYSIS_DIR);
+fprintf('\tINI.MATDIR is %s\n',INI.MATDIR);
 
 % initialize simulation variables
 INI.NSIMULATIONS = length(INI.MODEL_SIMULATION_SET);

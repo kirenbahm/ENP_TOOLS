@@ -10,6 +10,8 @@ function [ output_args ] = write_QYMYEARLY(MAP_ALL_DATA,INI,STATIONS_LIST)
 % DS.VEC_YM_AVE -> size = colxrow = number of years x 12 months
 % DS.VEC_YM_TOT -> size = colxrow = number of years x 12 monhts
 
+fprintf('\n\n--Writing QYM yearly:');
+
 %extract only discharges into arrays for printing (instead of printing one
 %line per iteration
 CFS_KAFDY = 0.001982;
@@ -41,14 +43,14 @@ for M = STATIONS_LIST
             end
         end
     catch
-        fprintf('\n...%d\t Cannot find %s in MAP_ALL_DATA container, write_QYMYEARLY()', i, char(M));
+        fprintf('\n\t Warning: Cannot find %s in MAP_ALL_DATA container', char(M));
     end
 end
 
 try
     print_ACCUMULATEDyearly(INI,P);
 catch
-    fprintf('\n...%d\t No P.VEC_YY_AVE computed, write_QYMYEARLY()\n');
+    fprintf('\n\t Calculation of P.VEC_YY_AVE failed');
 end
 
 

@@ -11,6 +11,8 @@ function [ output_args ] = write_QYM(MAP_ALL_DATA,INI,STATIONS_LIST)
 % DS.VEC_YM_AVE -> size = colxrow = number of years x 12 months
 % DS.VEC_YM_TOT -> size = colxrow = number of years x 12 monhts
 
+fprintf('\n\n--Writing QYM:');
+
 %extract only discharges into arrays for printing (instead of printing one
 %line per iteration
 CFS_KAFDY = 0.001982;
@@ -42,14 +44,14 @@ for M = STATIONS_LIST
             end
         end
     catch
-        fprintf('\n...%d\t Excepton for %s in write_QYM()', i, char(M));
+        fprintf('\n\t Exception for station %s', char(M));
     end
 end
 
 try
     print_ACCUMULATED(INI,P);
 catch
-    fprintf('\n...%d\t No P.ACCUMULATED computed, write_QYM()\n');
+    fprintf('\n\t Calculation of P.ACCUMULATED failed');
 end
 
 

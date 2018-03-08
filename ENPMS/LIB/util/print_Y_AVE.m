@@ -2,7 +2,9 @@ function [ output_args ] = print_M_AVE(MAP_ALL_DATA,INI,STATIONS_LIST)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
-FN = [INI.ANALYSIS_DIR_TAG '/DS_Y_AVE.txt']
+fprintf('\n\n--Printing Y Avg:');
+
+FN = [INI.ANALYSIS_DIR_TAG '/DS_Y_AVE.txt'];
 FID = fopen(FN,'w');
 
 %print header
@@ -61,7 +63,7 @@ for M = STATIONS_LIST
         end
         %         end
     catch
-        fprintf('...%d\t Exception for %s in print_M_AVE()\n', i, char(M));
+        fprintf('\n\t Exception for station %s', char(M));
     end
 end
 

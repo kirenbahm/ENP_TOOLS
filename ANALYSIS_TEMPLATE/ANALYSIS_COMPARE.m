@@ -137,4 +137,5 @@ end
 
 fprintf('\n %s Successful completion of all for %.3g seconds\n',datestr(now), toc);
 
+fprintf('\n\n *** ANALYSIS_COMPARE completed ***\n\n');
 end

@@ -2,13 +2,14 @@ function [] = generate_latex_files(MO,MS,INI)
 %021812 - changed to only using INI
 % added (currently unused) INI to input args in prepaation of future changes rjf 12/19/2011
 
-fprintf('... Generating the LATEX file\n');
+fprintf('\n\n--Generating the LATEX file:');
 fidTEX = generate_latex_head(INI);
 
 FILEDATA = INI.FILESAVE_TS;
-%fprintf('... Loading Computed and observed data:\n\t %s\n', char(FILEDATA));
+fprintf('\n\n--Loading Computed and observed data from file:\n\t%s', char(FILEDATA));
 load(FILEDATA, '-mat');
 
+fprintf('\n\n--Generating figures and tables:');
 for M = keys(MO)
 % % % try
     STATION_LIST = MO(char(M));

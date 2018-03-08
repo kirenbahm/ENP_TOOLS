@@ -1,12 +1,11 @@
 function [] = plot_timeseries(STATION,INI)
 % function plot_timeseries(STATION,INI) prepares timeseries data for plotting
 
+
 if ~any(~isnan(STATION.TIMESERIES(:)))
-    fprintf('...%d All timeseries values are NaN, continue\n');
+    fprintf('\t--> All timeseries values are NaN');
     return
 end
-
-fprintf('... Processing timeseries plot: %s\n',  char(STATION.NAME));
 
 % use specified graphic values in setup_ini)
 CO = INI.GRAPHICS_CO;
@@ -110,7 +109,7 @@ try
         add_ground_level(0,0.9,STATION.Z_GRID,[188/256 143/256 143/256],2,'--',12,string_ground_level);
     end
 catch
-    fprintf(' --> ...WARNING: Missing Z_GRID in station %s\n', char(STATION.NAME))
+    fprintf(' --> WARNING: Missing Z_GRID in station %s', char(STATION.NAME))
 end
 
 plotfilename = strcat(INI.FIGURES_DIR_TS,'/',STATION.NAME);

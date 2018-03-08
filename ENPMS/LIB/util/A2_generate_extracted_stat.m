@@ -20,7 +20,9 @@ changes introduced to v1:  (keb 7/2011)
   to find station and just issue message if not found
 %}
 %----------------------------------------
-fprintf('\n Beginning A2_generate_extracted_stat: %s \n',datestr(now));
+fprintf('\n------------------------------------');
+fprintf('\nBeginning A2_generate_extracted_stat    (%s)',datestr(now));
+fprintf('\n------------------------------------');
 format compact
 
 % load the file with elevation data
@@ -31,7 +33,7 @@ format compact
 %load the file with observed and computed data
 %%%FILEDATA = [INI.ANALYSIS_DIR_TAG '/' INI.ANALYSIS_TAG '_TIMESERIES_DATA.MATLAB'];
 FILEDATA = INI.FILESAVE_TS;
-fprintf('--- Loading Computed and observed data:\n\t %s\n', char(FILEDATA));
+fprintf('\n\n--Loading computed and observed data from file:\n\t %s', char(FILEDATA));
 load(FILEDATA, '-mat');
 
 %setup the file where data will be saved as a structure which can be loaded
@@ -61,10 +63,11 @@ TIMESERIES(1:1:length(TIMEVECTOR),1:1:nD) = NaN;
 
 STATIONS_LIST = INI.SELECTED_STATIONS;
 
+fprintf('\n--Processing station data:');
 for M =  STATIONS_LIST % {'3A28'} % % this uses only the list of the selected stations
     i = i + 1;
     M = strtrim(M);
-    fprintf('..%d\t station: %s\n', i, char(M));
+    fprintf('\n %4d  %-25s', i, char(M));
     try
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
         STATION.TIMEVECTOR = TIMEVECTOR;
@@ -80,18 +83,20 @@ for M =  STATIONS_LIST % {'3A28'} % % this uses only the list of the selected st
         end
         MAP_ALL_DATA(char(M)) = STATION; % modify the value for this key
     catch
-        fprintf(' %d\t data for %s not found in MAP_ALL_DATA container\n', i, char(M));
+        fprintf('\t---> data for \"%s\" not found in MAP_ALL_DATA container', char(M));
     end
 end
+fprintf('\n');
 
 i = 1;
+fprintf('\n--Processing station stats:');
 for M =  STATIONS_LIST% {'3A28'} %%  % this uses only the list of the selected stations
+    fprintf('\n %4d  %-25s', i, char(M));
     try
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
         STATION.NAME = STATION.STATION_NAME;
         try
             TS_NAN_STR = remove_nan(STATION,INI); % remove pairs that have NaN
-            fprintf('\n...%d processing station stats: %s', i, char(STATION.NAME));
             STATION.TS_NAN = TS_NAN_STR;
             STATION = get_station_stat(STATION); % make all station stats;
             try
@@ -101,15 +106,16 @@ for M =  STATIONS_LIST% {'3A28'} %%  % this uses only the list of the selected s
             end
             MAP_ALL_DATA(char(M)) = STATION; % modify the value for this key
         catch
-            fprintf('\n...%d No observations, skipping station: %s', i, char(STATION.NAME));
+            fprintf('\t---> No observations, skipping \"%s\"',char(STATION.NAME));
         end
     catch
-        fprintf('\n...%d\t Cannot find %s in MAP_ALL_DATA container', i, char(M));
+        fprintf('\t---> Cannot find \"%s\" in MAP_ALL_DATA container', char(M));
     end
     i = i + 1;
 end
+fprintf('\n')
 
-fprintf('\n--- Saving data in file: %s\n', char(FILESAVE))
+fprintf('\n--Saving data in file:\n\t %s\n', char(FILESAVE))
 save(FILESAVE,'MAP_ALL_DATA','-v7.3');
 %test code
 try

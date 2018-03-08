@@ -2,7 +2,7 @@ function [ output_args ] = print_ACCUMULATEDyearly(INI,P)
 %print_ACCUMULATEDyearly prints annual discharges in kaf
 %   Detailed explanation goes here
 
-FN = [INI.ANALYSIS_DIR_TAG '/DS_YEARLY_AVE.txt']
+FN = [INI.ANALYSIS_DIR_TAG '/DS_YEARLY_AVE.txt'];
 FID = fopen(FN,'w');
 
 %print header

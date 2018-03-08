@@ -24,7 +24,9 @@ function A1_load_extracted_timeseries(INI)
 %
 %----------------------------------------
 
-fprintf('\n\n Beginning A1_load_extraced_timeseries(): %s \n\n',datestr(now));
+fprintf('\n--------------------------------------');
+fprintf('\nBeginning A1_load_extracted_timeseries    (%s)',datestr(now));
+fprintf('\n--------------------------------------');
 format compact
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,7 +57,7 @@ KEYS = '';
 for D = INI.MODEL_ALL_RUNS
     i = i + 1; % Increment model run counter
     MFILE = [INI.DATA_COMPUTED 'COMPUTED_' char(D) '.MATLAB'];
-    fprintf('... Loading computed data from file:\n\t %s\n', char(MFILE));
+    fprintf('\n\n--Loading computed data from file:\n\t %s', char(MFILE));
 %     if exist(MFILE,'file') == 2;
     MAPS(i) = load(char(MFILE), '-mat','mapCompSelected');
 %     else
@@ -68,7 +70,7 @@ end
 % load observed
 i = i + 1;
 FILE_OBSERVED = INI.FILE_OBSERVED;
-fprintf('... Loading observed data from file:\n\t %s\n', char(INI.FILE_OBSERVED));
+fprintf('\n\n--Loading observed data from file:\n\t %s', char(INI.FILE_OBSERVED));
 load(FILE_OBSERVED, '-mat','MAP_OBS');
 KEYS = [KEYS MAP_OBS.keys];
 KEYS = unique(KEYS);
@@ -80,11 +82,16 @@ nD = length(INI.MODEL_ALL_RUNS)+1;
 TIMEVECTOR =  [datenum(tStart):1:datenum(tEnd)]';
 TIMESERIES(1:1:length(TIMEVECTOR),1:1:nD) = NaN;
 
+fprintf('\n\n--Processing computed data:');
 for D = INI.MODEL_ALL_RUNS
     i = i + 1; % Increment model run counter
+    fprintf('\n\tRun \"%s\"', char(D));
+    
     mapCompSelected = MAPS(i).mapCompSelected;
     for K = KEYS %{'G211_Q', 'TR_Q'}  %
-        fprintf('... processing computed:%s, run:%s\n', char(K),char(D));
+        if INI.DEBUG
+           fprintf('\n%s', char(K));
+        end
         
         if ~isKey(MAP_ALL_DATA,(char(K)))
             STATION = [];
@@ -126,6 +133,7 @@ for D = INI.MODEL_ALL_RUNS
         MAP_ALL_DATA (char(K)) = STATION;
     end
 end
+fprintf('\n');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % combine all above data arrays into one container, and trim or expand 
@@ -149,7 +157,7 @@ for K = KEYS
             STATION.DATA(i).TIMEVECTOR = [];
         end
     else
-        fprintf('\n... Warning: %s in bserved not in computed, skipped \n', char(K));
+        fprintf('\n... Warning: %s in bserved not in computed, skipped.', char(K));
     end
     
     MAP_ALL_DATA (char(K)) = STATION;
@@ -161,8 +169,8 @@ end
 %save the structures which are subsequently used in other postprocessing
 %scripts. The data are accessed using load(INI.FILESAVE_TS);
 
-fprintf('\n... Completed A1_load_extracted_timeseries() \n');
-fprintf('... Saving data file:\n\t %s\n', char(INI.FILESAVE_TS));
+%fprintf('\n... Completed A1_load_extracted_timeseries() \n');
+fprintf('\n\n--Saving computed and observed data in file:\n\t %s', char(INI.FILESAVE_TS));
 save(INI.FILESAVE_TS,'MAP_ALL_DATA', '-v7.3');
 
 fclose('all');

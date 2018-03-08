@@ -2,7 +2,7 @@ function INI = boxplotYEAR(STATION,INI)
 % Fucntion which formats data to be provided for boxplot by year
 
 if ~any(~isnan(STATION.TIMESERIES(:)))
-    fprintf('...%d All timeseries values are NaN, continue\n');
+    fprintf('...All timeseries values are NaN, continue');
     return
 end
 

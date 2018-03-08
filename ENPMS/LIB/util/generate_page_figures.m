@@ -9,7 +9,7 @@ if INI.LATEX_REPORT_BY_AREA
     fprintf(fidTEX,'%s\n\n',row2);
 end
 
-fprintf ('...Timeseries for area %s\n',char(AREA));
+fprintf ('\n\t Timeseries for area %s',char(AREA));
 page3 = 0;
 done =0;	%check if the page
 %has no more figures (if there is only 1 or2)

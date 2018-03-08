@@ -56,6 +56,7 @@ for i = Z
     T(index_nan,:)=[]; %remove dates with Nan values
     [y, m] = datevec(T);
     YR = unique(y);
+
     kk = 0;
     for k = min(YR):max(YR) % group data according to months or years
         kk = kk + 1;
@@ -66,6 +67,7 @@ end
 
 C = []; % colors
 COLORS_V = cell2mat(INI.GRAPHICS_CO(Z)')';
+
 nsim = size(DATA);
 
 for ii = 1:nsim(2)
@@ -83,7 +85,6 @@ end % code to skip timeseries with zero length
 
 % Input arguments to boxplots_N with a Year label 
 XLABEL = num2str(YYYY);
-
 ALPHA = INI.COLORS_ALPHA;
 DATA = DATA';
 

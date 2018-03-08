@@ -118,7 +118,7 @@ end
 function tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE)
 
 % add caption
-ROW5 =[' \caption[Station ' char(RFIGURE) ']{Station: ' char(RFIGURE) ', AREA: ' char(RLABEL) '}'];
+ROW5 =[' \caption[Station ' char(RFIGURE) ']{Station: ' char(RFIGURE)];
 %   ROW5 =[' \caption[ ' char(RFIGURE) ']{' char(RFIGURE) '}'];
 fprintf(fidTEX,'%s\n',ROW5);
 

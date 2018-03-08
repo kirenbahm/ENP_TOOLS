@@ -1,15 +1,22 @@
 function [ output_args ] = print_ACCUMULATED(INI,P)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+% print_ACCUMULATED(INI,P) prints cumulative values at the end of the time period
+% Input argument P is a structure with 
+% P.SRC - simulations, 
+% P.NAME - station, 
+% P.ACCUMULATED computed values, 
 
+% file where this information is saved
 FN = [INI.ANALYSIS_DIR_TAG '/DS_ACCUMULATED.txt'];
 FID = fopen(FN,'w');
 
 %print header
 fprintf(FID,'Cumulative discharges in kilo acre feet (kaf) at the end of the simulation period\n');
 
-B = all(P.ACCUMULATED);
+% check for NAN's and select only data that are not NAN
+B = all(P.ACCUMULATED,1);
+% M is a row of non NAN's
 M = P.ACCUMULATED(:,B==1);
+% select the simulations with no NANA's
 S = P.SRC(B==1);
 
 %print column header

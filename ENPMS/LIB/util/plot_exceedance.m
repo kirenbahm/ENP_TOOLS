@@ -9,8 +9,9 @@ end
 
 fprintf('... Processing exceedance plot: %s\n',  char(STATION.NAME))
 
-% use specified graphic values in setup_ini)
-CO = INI.GRAPHICS_CO;
+% use specified graphic values in setup_ini) look for definitions in
+% setu_INI() lines 20-40
+CO = INI.GRAPHICS_CO;  
 LS = INI.GRAPHICS_LS;
 M = INI.GRAPHICS_M;
 MSZ = INI.GRAPHICS_MSZ;
@@ -19,14 +20,16 @@ LW = INI.GRAPHICS_LW;
 %conversion from cfs to kaf/day
 CFS_KAFDY = 0.001982;
 
-% Timeseries and titles
+% Timeseries and titles - time vector and time series for the station
 TS = STATION.TIMESERIES;
 TV = STATION.TIMEVECTOR;
 
+% shift simulation titles and place in first position observed
 n = length(TS(1,:));
 SIM(1) = {'Observed'};
 SIM(2:n) = INI.MODEL_RUN_DESC(1:n-1);
 
+%  shift timseries vector and place in first position observed
 TV_STR = datestr(TV,2);
 TMP = [];
 TMP(:,1) = TS(:,length(TS(1,:)));
@@ -36,7 +39,7 @@ TSk = TS;
 
 % select combination of timeseries - observed and computed for plotting
 if INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
-    m = [1:n]; % observed is in column sz+1
+    m = [1:n]; % m is for selections of which timeseries to use (obs. comp.)
 end
 if INI.INCLUDE_OBSERVED & ~INI.INCLUDE_COMPUTED
     m = [1];
@@ -45,6 +48,7 @@ if ~INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
     m = [2:n];
 end
 
+% initialize arrays
 LEGEND =[];
 nDP(1:n) = 0;
 maxrTS(1:n) = 0;
@@ -60,34 +64,39 @@ for i = m %
     rTS = TSk(:,i);
     rTV = TV_STR;
     dNUM = datenum(rTV); % convert sdates to dates
-    ind_dates = find(dNUM < datenum(INI.ANALYZE_DATE_I));
+    % plot only data that is defined in ANALYZE_COMPARE
+    ind_dates = find(dNUM < datenum(INI.ANALYZE_DATE_I)); 
     rTS(ind_dates)=NaN;
     ind_dates = find(dNUM > datenum(INI.ANALYZE_DATE_F));
     rTS(ind_dates)=NaN;
     
+    % remove any NAN's
     index_nan = isnan(rTS); % find inexes with Nan
     rTS(index_nan)=[]; %remove Nan values
     rTV(index_nan,:)=[]; %remove dates with Nan values
-    
+
+    % if the the timeseris is empty after removal NAN's continue 
     if isempty(rTS)
         continue
     end % code to skip timeseries with zero length
 
-    % sort descending
+    % compute probability exceedance first sort descending
     SORT_TS = sort(rTS(:),1,'descend');
     D = length(rTS)+1;
+    % determine rank of data (highest at the top)
     RANK = 1:D-1;
     RANK = RANK';
     P_COMP = RANK/D;
     
     LEGEND = [LEGEND strrep(SIM(i),'_','\_')];  
+    % plot data 
     F = plot(P_COMP,SORT_TS,'LineWidth',LW(i), 'Linestyle', char(LS(i)), 'Color',cell2mat(CO(i)), 'Marker',char(M(i)), 'MarkerSize',MSZ(i),'LineWidth',LW(i));
     hold on;
     nDP(i) = length(SORT_TS);
     maxrTS(i) = SORT_TS(1);
 end
 
-if ~exist('F') 
+if ~exist('F'); 
     return
 end
 
@@ -127,12 +136,14 @@ grid on;
 legend(LEGEND,'Location','NorthEast')
 legend boxoff;
 
+% Z_GRID Should be plotted as well
 try
     STATION.Z_GRID = cell2mat(INI.MAPXLS.MSHE(char(STATION.NAME)).gridgse);
 catch
     STATION.Z_GRID = -1.0e-35;
 end
 
+% add ground surface elevation
 hold on
 if strcmp(STATION.DATATYPE,'Elevation')
     if ~isnan(STATION.Z)

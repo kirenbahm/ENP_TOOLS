@@ -7,7 +7,6 @@ if ~any(~isnan(STATION.TIMESERIES(:)))
     return
 end
 
-
 fprintf('... Processing exceedance plot: %s\n',  char(STATION.NAME))
 
 % use specified graphic values in setup_ini)
@@ -134,10 +133,10 @@ catch
     STATION.Z_GRID = -1.0e-35;
 end
 
-if (STATION.Z_GRID > -1.0e-035)
+if (STATION.Z > -1.0e-035)
     %string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});
     string_ground_level = '';
-    add_ground_level(0,0.15,STATION.Z_GRID,[188/256 143/256 143/256],2,'--',12,string_ground_level);
+    add_ground_level(0,0.15,STATION.Z,[188/256 143/256 143/256],2,'--',12,string_ground_level);
 end
 
 plotfile = strcat(INI.FIGURES_DIR_EXC,'/',STATION.NAME);

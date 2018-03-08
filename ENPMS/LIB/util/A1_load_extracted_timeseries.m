@@ -105,6 +105,7 @@ for D = INI.MODEL_ALL_RUNS
                 STATION.Y_UTM = S.Y_UTM;
                 STATION.I = S.I;
                 STATION.J = S.J;
+                STATION.Z = S.Z;
                 STATION.Z_GRID = NaN;
                 STATION.Z_SURVEY = NaN;
                 STATION.N_AREA = S.N_AREA;
@@ -139,6 +140,7 @@ for K = KEYS
         try
             ST = MAP_OBS(char(K));
             STATION.Z_GRID = ST.Z_GRID; % assign from observed
+            STATION.Z = ST.Z;
             STATION.Z_SURVEY = ST.Z_SURVEY;
             STATION.DATA(i).TIMESERIES = ST.DOBSERVED;
             STATION.DATA(i).TIMEVECTOR = ST.TIMEVECTOR;
@@ -170,7 +172,7 @@ try
     STATION = MAP_ALL_DATA (char(K));
     K = 'G211_Q';
     STATION = MAP_ALL_DATA (char(K));
-    K = 'G211_TW';
+    K = 'A13';
     STATION = MAP_ALL_DATA (char(K));
 catch
 end

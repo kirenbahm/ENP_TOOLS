@@ -19,6 +19,9 @@ DFS0.UNIT = STATION.UNIT;
 
 TS = STATION.TIMESERIES;
 TV = STATION.TIMEVECTOR;
+[YYYY,M] = datevec(TV);
+YYYY = unique(YYYY); % list of years
+
 n = length(TS(1,:));
 SIM(1) = {'Observed'};
 SIM(2:n) = INI.MODEL_RUN_DESC(1:n-1);
@@ -29,16 +32,6 @@ TMP(:,1) = TS(:,length(TS(1,:)));
 TMP(:,2:length(TS(1,:))) = TS(:,1:length(TS(1,:))-1);
 TS = TMP;
 VV = TS;
-
-% if nn(2) ~= length(INI.MODEL_RUN_DESC)
-%     VV = [STATION.TIMESERIES(:,end) STATION.TIMESERIES(:,1:end-1)];
-%     SIM = ['Observed',INI.MODEL_RUN_DESC];
-%     COLORS_V = cell2mat(INI.GRAPHICS_CO(1:nn(2))')';
-% %     COLORS_V = [COLORS_V(:,end) COLORS_V(:,1:end-1)];
-% else 
-%     SIM = INI.MODEL_RUN_DESC;
-%     COLORS_V = cell2mat(INI.GRAPHICS_CO(2:nn(2))')';
-% end
 
 if INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
     Z = [1:n]; % observed is in column sz+1
@@ -51,7 +44,11 @@ if ~INI.INCLUDE_OBSERVED & INI.INCLUDE_COMPUTED
 end
 
 DATA = [];
+SIM = SIM(Z);
+
+ii = 0;
 for i = Z
+    ii = ii + 1;
     T = STATION.TIMEVECTOR;
     V = VV(:,i);    
     index_nan = isnan(V);
@@ -59,29 +56,38 @@ for i = Z
     T(index_nan,:)=[]; %remove dates with Nan values
     [y, m] = datevec(T);
     YR = unique(y);
-    
     kk = 0;
     for k = min(YR):max(YR) % group data according to months or years
         kk = kk + 1;
         ind = find(y==k);
-        DATA{i,kk} = V(ind);
+        DATA{ii,kk} = V(ind);
     end
 end
 
+C = []; % colors
 COLORS_V = cell2mat(INI.GRAPHICS_CO(Z)')';
-SIM = SIM(Z);
+nsim = size(DATA);
+
+for ii = 1:nsim(2)
+    for i = 1:nsim(1)
+        if ~isempty(cell2mat(DATA(i,ii)))
+            C = [C COLORS_V(:,i)];
+        end
+    end
+end
+C = fliplr(C);
 
 if isempty(DATA)
     return
 end % code to skip timeseries with zero length
 
 % Input arguments to boxplots_N with a Year label 
-XLABEL = num2str(YR);
+XLABEL = num2str(YYYY);
 
 ALPHA = INI.COLORS_ALPHA;
 DATA = DATA';
 
-boxplots_N(DATA,XLABEL,SIM, COLORS_V, ALPHA);
+boxplots_N(DATA,XLABEL,SIM, C, ALPHA,COLORS_V);
 
 FS = INI.GRAPHICS_FS;
 FN = INI.GRAPHICS_FN;
@@ -100,6 +106,7 @@ if max_p == min_p
     return
 end
 
+xLim = get(gca,'XLim');
 yLim = get(gca,'YLim');
 
 set(gca,'YLim', [min_p max_p]);
@@ -113,6 +120,15 @@ end
 TITLE=strcat(STATION.STATION_NAME,{' '}, LL);
 title(TITLE);
 ylabel(LL);
+
+hold on
+if strcmp(STATION.DATATYPE,'Elevation')
+    if ~isnan(STATION.Z)
+        %string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});
+        string_ground_level = '';
+        add_ground_level(0,0.15,STATION.Z,[188/256 143/256 143/256],2,'--',12,string_ground_level);
+    end
+end
 
 F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.png');
 print('-dpng',char(F),'-r300');

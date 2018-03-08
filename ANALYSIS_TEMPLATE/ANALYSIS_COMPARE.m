@@ -89,9 +89,9 @@ assert(exist(INI.SELECTED_STATION_FILE,'file') == 2, 'File not found.' );
 % 8. Select modules for POSTPROC
 %---------------------------------------------------------------------
 
-INI.A1    = 1; % A1_load_computed_timeseries - this needs checking if all simulation set exsist
-INI.A2    = 1; % A2_generate_timeseries_stat - this needs checking if all simulation set exsist
-INI.A2a   = 1; % A2a_cumulative_flows - this needs checking if all simulation set exsist
+INI.A1    = 0; % A1_load_computed_timeseries - this needs checking if all simulation set exsist
+INI.A2    = 0; % A2_generate_timeseries_stat - this needs checking if all simulation set exsist
+INI.A2a   = 0; % A2a_cumulative_flows - this needs checking if all simulation set exsist
 INI.A3    = 1; % A3_create_figures_timeseries
 INI.A3c   = 1; % A3_create_figures_cumulative_timeseries
 INI.A3B   = 1; % A3B_BoxPlot
@@ -107,7 +107,7 @@ INI.A9    = 1; % A9_make_latex_report %
 % CHOOSE OPTIONS 1=yes, 0=no
 %---------------------------------------------------------------------
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06) always 1
-INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
+INI.SAVEFIGS              = 1; % save figures in MATLAB format? 
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables.
 INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 

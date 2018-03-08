@@ -1,4 +1,4 @@
-function boxplots_N(DATA,LABELS,SIM,COLORS_V,ALPHA)
+function boxplots_N(DATA,LABELS,SIM,C,ALPHA,COLORS_V)
 % Fnction plotting n time series per month or year
 % requires data to be formatted in specific way
 
@@ -43,24 +43,23 @@ labelpos = sum(TMP,1)./M;
 set(gca,'xtick',labelpos);
 set(gca,'xticklabel',LABELS);
 
-% This setting considers random colors uncommenting provides colors from
-% setup_ini
-cmap = hsv(M)'; %assume random collors
-cmap=vertcat(cmap,ones(1,M)*0.5);
-COLORS_V = cmap;
-%%%%%%%%%%%%%% 
-
-% replicate colors for each simulation and group
-C=repmat(COLORS_V, 1, L);
-
 % Apply colors
 h = findobj(gca,'Tag','Box');
+% h = fliplr(h);
+% C= fliplr(C)
+
 for jj=1:length(h)
-   patch(get(h(jj),'XData'),get(h(jj),'YData'),C(1:3,jj)','FaceAlpha',ALPHA);
+   p(jj) = patch(get(h(jj),'XData'),get(h(jj),'YData'),C(1:3,jj)','FaceAlpha',ALPHA);
 end
 
-legend(fliplr(SIM));
-% legend((SIM));
+legend((SIM));
+[~,h_legend] = legend(SIM);
+PatchInLegend = findobj(h_legend, 'type', 'patch');
+
+for i = 1:M
+    set(PatchInLegend(i), 'FaceColor', COLORS_V(:,i)); 
+end 
+
 %legend boxoff; uncomment if leged should ot have a box
 
 end

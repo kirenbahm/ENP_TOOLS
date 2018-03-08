@@ -50,7 +50,7 @@ assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Output\Model_Output_Processed/';
+INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Output\';
 assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------

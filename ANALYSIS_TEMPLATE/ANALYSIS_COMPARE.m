@@ -16,13 +16,16 @@ i = 0; % initialize simulation count
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------
 
+%  Master script for initializing postprocessing variables and calling other
+%  postproc, graphing, and statistics calculation scripts.
 %  This function reads computed data from simulations as a MATLAB file, 
-%  reads observed data from MATLAB file
-
+%  and also reads observed data from MATLAB file
+%
+% The user will need to setup these items in the script below:
 % 1. Location of ENPMS scripts e.g. 'some path\ENP_TOOLS\ENPMS\'
 % 2. Location of common data (spreadsheet with chainages ij-coordinates for
-% each model e.g. 'some path/DATA_COMMON/'
-% 3. Location of where the computed data will be saved, e.g. './ANALYSIS1/COMPUTED/'
+%     each model e.g. 'some path/DATA_COMMON/'
+% 3. Location to read inputfiles containing computed Matlab data
 % 4. A tag for analysis reference (creates also a directory to store all)
 % 5. Simulations to be analyzed (must be present in INI.DATA_COMPUTED
 % 6. Time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC
@@ -31,7 +34,11 @@ i = 0; % initialize simulation count
 % 9. Additional settings 
 
 %---------------------------------------------------------------------
-% USER SET UP items 1-9
+%---------------------------------------------------------------------
+%  BEGIN USER DEFINITIONS (Items 1-9)
+%---------------------------------------------------------------------
+%---------------------------------------------------------------------
+
 %---------------------------------------------------------------------
 % 1. SETUP Location of ENPMS Scripts
 %---------------------------------------------------------------------
@@ -45,38 +52,40 @@ catch
 end
 
 %---------------------------------------------------------------------
-% 2. Set Location of Common Data and observed matlab data file
+% 2. Set Location of Common Data and observed matlab data inputfiles
 %---------------------------------------------------------------------
 INI.DATA_COMMON = '..\..\ENP_TOOLS_Sample_Input\Data_Common/'; 
 assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
+
 INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
 assert(exist(INI.FILE_OBSERVED,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
-% 3. Set location to store computed Matlab datafile for each simulation
+% 3. Set location to read inputfiles containing computed Matlab data
 %---------------------------------------------------------------------
 INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------
-% 4. Set a tag for analysis reference (creates also a directory to store all)
+% 4. Set a tag for this analysis
+%     (This tag will be used to name the output directory, combined 
+%      output datasets, and other filenames)
 %---------------------------------------------------------------------
 INI.ANALYSIS_TAG = 'ENP_TOOLS_Sample_Output';
 INI.POST_PROC_DIR = ['..\..\' INI.ANALYSIS_TAG '/'];
-% INI.ANALYSIS_PATH = INI.CURRENT_PATH; 
 
 %---------------------------------------------------------------------
-% 5. Choose simulations to be analyzed (must be present in INI.DATA_COMPUTED
+% 5. Choose simulations to be analyzed 
 %---------------------------------------------------------------------
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test', 'M01'};
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'};
 % 
 %---------------------------------------------------------------------
-% 6. Select time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC
+% 6. Select time period for analysis
 %---------------------------------------------------------------------
 
-INI.ANALYZE_DATE_I = [2000 1 1 0 0 0];  % begining of simulation
-INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% end of simulation
+INI.ANALYZE_DATE_I = [2000 1 1 0 0 0];  % begining of analysis period
+INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 
 %---------------------------------------------------------------------
 % 7. Select a list of stations to be analyzed
@@ -86,7 +95,7 @@ INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/TEST-STATIONS-short.txt'];
 assert(exist(INI.SELECTED_STATION_FILE,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
-% 8. Select modules for POSTPROC
+% 8. Select modules to run  (1=yes, 0=no)
 %---------------------------------------------------------------------
 
 INI.A1    = 1; % A1_load_computed_timeseries - this needs checking if all simulation set exsist
@@ -99,21 +108,26 @@ INI.A4    = 1; % A4_create_figures_exceedance
 INI.A5    = 1; % A5_create_summary_stat
 %INI.A6    = 0; % A6_GW_MAP_COMPARE
 %INI.A7    = 0; % A7_SEEPAGE_MAP
-%INI.A8    = 0; % A8_SEEPAGE_EXCEL % not implemented yet
-INI.A9    = 1; % A9_make_latex_report % 
+%INI.A8    = 0; % A8_SEEPAGE_EXCEL
+INI.A9    = 1; % A9_make_latex_report
 
 %---------------------------------------------------------------------
 % 9 Additional settings, DEFAULT can be modified for additional functionality 
-% CHOOSE OPTIONS 1=yes, 0=no
+% (1=yes, 0=no)
 %---------------------------------------------------------------------
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06) always 1
 INI.SAVEFIGS              = 0; % save figures in MATLAB format? 
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables.
 INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 
-%---------------------------------------------------------------
+
+%---------------------------------------------------------------------
+%---------------------------------------------------------------------
+%  END USER DEFINITIONS
+%---------------------------------------------------------------------
+%---------------------------------------------------------------------
+
 % Run selected modules
-%---------------------------------------------------------------
 try
     INI = analyze_data_set(INI);
 catch INI

@@ -45,14 +45,10 @@ set(gca,'xticklabel',LABELS);
 
 % Apply colors
 h = findobj(gca,'Tag','Box');
-% h = fliplr(h);
-% C= fliplr(C)
-
 for jj=1:length(h)
    p(jj) = patch(get(h(jj),'XData'),get(h(jj),'YData'),C(1:3,jj)','FaceAlpha',ALPHA);
 end
 
-legend((SIM));
 [~,h_legend] = legend(SIM);
 PatchInLegend = findobj(h_legend, 'type', 'patch');
 

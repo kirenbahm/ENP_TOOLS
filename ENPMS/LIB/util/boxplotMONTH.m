@@ -130,6 +130,8 @@ if strcmp(STATION.DATATYPE,'Elevation')
     end
 end
 
+F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.fig');
+savefig(char(F));
 F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-MO','.png');
 print('-dpng',char(F),'-r300');
 hold off

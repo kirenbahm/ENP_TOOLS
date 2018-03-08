@@ -122,7 +122,7 @@ TITLE=strcat(STATION.STATION_NAME,{' '}, LL);
 title(TITLE);
 ylabel(LL);
 
-hold on
+
 if strcmp(STATION.DATATYPE,'Elevation')
     if ~isnan(STATION.Z)
         %string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});
@@ -131,8 +131,11 @@ if strcmp(STATION.DATATYPE,'Elevation')
     end
 end
 
+F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.fig');
+savefig(char(F));
 F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.png');
 print('-dpng',char(F),'-r300');
+
 hold off
 
 end

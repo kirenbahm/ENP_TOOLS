@@ -89,11 +89,11 @@ assert(exist(INI.SELECTED_STATION_FILE,'file') == 2, 'File not found.' );
 % 8. Select modules for POSTPROC
 %---------------------------------------------------------------------
 
-INI.A1    = 0; % A1_load_computed_timeseries - this needs checking if all simulation set exsist
-INI.A2    = 0; % A2_generate_timeseries_stat - this needs checking if all simulation set exsist
-INI.A2a   = 0; % A2a_cumulative_flows - this needs checking if all simulation set exsist
-INI.A3    = 0; % A3_create_figures_timeseries
-INI.A3c   = 0; % A3_create_figures_cumulative_timeseries
+INI.A1    = 1; % A1_load_computed_timeseries - this needs checking if all simulation set exsist
+INI.A2    = 1; % A2_generate_timeseries_stat - this needs checking if all simulation set exsist
+INI.A2a   = 1; % A2a_cumulative_flows - this needs checking if all simulation set exsist
+INI.A3    = 1; % A3_create_figures_timeseries
+INI.A3c   = 1; % A3_create_figures_cumulative_timeseries
 INI.A3B   = 1; % A3B_BoxPlot
 INI.A4    = 1; % A4_create_figures_exceedance
 INI.A5    = 1; % A5_create_summary_stat

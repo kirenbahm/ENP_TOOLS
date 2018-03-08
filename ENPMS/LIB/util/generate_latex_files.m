@@ -12,31 +12,20 @@ load(FILEDATA, '-mat');
 for M = keys(MO)
 % % % try
     STATION_LIST = MO(char(M));
-%     FFIG = 'obsolete';
-		%group subsection
-% 	fprintf(fidTEX,'%s\n','\clearpage');
-% 	row2 =['\subsection{' char(M) '}'];
-% 	fprintf(fidTEX,'%s\n\n',row2);
-
-		% add subsubsection timeseries
-    generate_page_figures(M, STATION_LIST,MAP_ALL_DATA,INI,fidTEX);
-% %     if (strcmp(INI.MAKE_EXCEEDANCE_PLOTS,'YES') == 1 )
-% %             % add subsubsection exceedance
-% %         fprintf('... Including exceedance plots in the LATEX file\n');
-% %         generate_area_figures_exceedanceV2(M, STATION_LIST,INI,fidTEX);
-% %     end
-    
-    if INI.MAKE_STATISTICS_TABLE
-		% add subsubsection statistics
-        fprintf('... Including statistics in the LATEX file\n');
-    	fprintf(fidTEX,'%s\n','\clearpage');
-    	row2 =['\section{Statistics Tables}'];
-    	fprintf(fidTEX,'%s\n\n',row2);
-    	generate_area_tables(M, MS, STATION_LIST,INI,fidTEX);
+    if ~isKey(MAP_ALL_DATA,M)
+        continue
     end
-% % % catch
-% % %   fprintf ('...skipping in latex  %s\n',char(M));
-% % % end
+    
+    generate_page_figures(M, STATION_LIST,MAP_ALL_DATA,INI,fidTEX);
+    
+% %     if INI.MAKE_STATISTICS_TABLE
+% 		% add subsubsection statistics
+%         fprintf('... Including statistics in the LATEX file\n');
+%     	fprintf(fidTEX,'%s\n','\clearpage');
+%     	row2 =['\section{Statistics Tables}'];
+%     	fprintf(fidTEX,'%s\n\n',row2);
+%     	generate_area_tables(M, MS, STATION_LIST,INI,fidTEX);
+% %     end
 
 end
 generate_latex_tail(fidTEX);

@@ -1,16 +1,21 @@
 function [] = generate_page_figures(AREA,LIST_STATIONS,MAP_ALL_DATA,INI,fidTEX)
 % function to generate figures for each station
 
+AREALABEL = strrep(char(AREA), '_', '\_');
 fprintf(fidTEX,'%s\n','\clearpage');
-row2 =['\section{Area ' char(AREA) ': Timeseries, Stage Duration or Cumulative Flows}'];
-fprintf(fidTEX,'%s\n\n',row2);
+
+if INI.LATEX_REPORT_BY_AREA
+    row2 =['\section{Area ' char(AREALABEL) ': Timeseries, Stage Duration or Cumulative Flows}'];
+    fprintf(fidTEX,'%s\n\n',row2);
+end
 
 fprintf ('...Timeseries for area %s\n',char(AREA));
 page3 = 0;
 done =0;	%check if the page
 %has no more figures (if there is only 1 or2)
 
-RLABEL = sprintf('%s ',char(AREA));
+
+RLABEL = sprintf('%s ',char(AREALABEL));
 
 % Provide Latex script for the folowing:
 % timeseries/STATION.png

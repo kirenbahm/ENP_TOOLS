@@ -12,6 +12,9 @@ load(FILEDATA, '-mat');
 for M = keys(MO)
 % % % try
     STATION_LIST = MO(char(M));
+    if ~isKey(MAP_ALL_DATA,M)
+        continue
+    end
 %     FFIG = 'obsolete';
 		%group subsection
 % 	fprintf(fidTEX,'%s\n','\clearpage');

@@ -94,7 +94,7 @@ for i = m %
     maxrTS(i) = SORT_TS(1);
 end
 
-if ~exist('F'); 
+if ~exist('F') 
     return
 end
 
@@ -109,9 +109,11 @@ str_T = strvcat(str_1);
 ii = 0;
 for i = m
     ii = ii + 1;
-    formatStr = '\t%s = %d points';
-    str_2 = sprintf(formatStr,char(SIM(ii)),nDP(ii));
-    str_T = strvcat(str_T, str_2);
+    if nDP(ii) > 0
+        formatStr = '\t%s = %d points';
+        str_2 = sprintf(formatStr,char(SIM(ii)),nDP(ii));
+        str_T = strvcat(str_T, str_2);
+    end
 end
 
 AX = gca;

@@ -123,9 +123,9 @@ INI.FIGURES_DIR_MAPS = [INI.ANALYSIS_DIR_TAG '/figures/maps'];
 INI.FIGURES_RELATIVE_DIR = ['../figures']; % the relative path name to figs dir for includegraphics
 
 % The computed and observed timeseries data for the observation locations -
-INI.FILESAVE_TS = [INI.ANALYSIS_DIR_TAG INI.ANALYSIS_TAG '_TIMESERIES_DATA.MATLAB'];
+INI.FILESAVE_TS = [INI.ANALYSIS_DIR_TAG  '/' INI.ANALYSIS_TAG '_TIMESERIES_DATA.MATLAB'];
 % The computed and observed statistics data
-INI.FILESAVE_STAT = [INI.ANALYSIS_DIR_TAG INI.ANALYSIS_TAG   '_TIMESERIES_STAT.MATLAB'];
+INI.FILESAVE_STAT = [INI.ANALYSIS_DIR_TAG '/' INI.ANALYSIS_TAG   '_TIMESERIES_STAT.MATLAB'];
 
 %---------------------------------------------------------------
 % SET UP DIRECTORIES AND SUPPORTING FILES

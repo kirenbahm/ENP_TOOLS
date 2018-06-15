@@ -1,4 +1,4 @@
-function [] = A3_create_figures_acc_timeseries( INI )
+function [INI] = A3_create_figures_acc_timeseries( INI )
 
 fprintf('\n-------------------------------------------');
 fprintf('\nBeginning A3_create_figures_acc_timeseries    (%s)',datestr(now));
@@ -12,6 +12,9 @@ load(FILEDATA, '-mat');
 
 % only do the selected stations
 % STATIONS_LIST = INI.SELECTED_STATIONS.list.stat;
+KEYS = keys(MAP_ALL_DATA);
+ind = ismember(INI.SELECTED_STATIONS,KEYS);
+INI.SELECTED_STATIONS = INI.SELECTED_STATIONS(ind);
 STATIONS_LIST = INI.SELECTED_STATIONS;
 
 fprintf('\n\n--Plotting accumulated station timeseries:');

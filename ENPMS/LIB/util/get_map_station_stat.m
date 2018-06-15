@@ -22,7 +22,6 @@ function [MAP_STATION_STAT] = get_map_station_stat(MAP_ALL_DATA,STATIONS_LIST)
 i = 1;
 %%%for M = keys(MAP_ALL_DATA)
 for M = STATIONS_LIST
-   fprintf('\n\t%-25s', char(M));
    try
       STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
       try
@@ -37,10 +36,10 @@ for M = STATIONS_LIST
             i = i + 1;
         end
       catch
-        fprintf('...get_map_station_stat: No mapped data for %s, skipped', char(M));
+        fprintf('...get_map_station_stat: No mapped data for %s, skipped\n', char(M));
       end
    catch
-      fprintf('...Cannot find %s in MAP_ALL_DATA container', char(M));
+      fprintf('...%d Cannot find %s in MAP_ALL_DATA container\n', i, char(M));
    end
 
 end
@@ -48,7 +47,7 @@ end
 try
   MAP_STATION_STAT = containers.Map(MAP_KEY, MAP_VALUE);
 catch
-  fprintf('\n\n...Cannot make MAP_STATION_STAT\n');
+  fprintf('...Cannot make MAP_STATION_STAT\n');
   MAP_STATION_STAT = 0
 end
 

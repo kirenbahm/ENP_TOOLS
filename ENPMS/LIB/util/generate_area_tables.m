@@ -39,6 +39,8 @@ for i = 1:length(INI.MODEL_ALL_RUNS)
 end
 MAP_DESCR = containers.Map(MAP_KEY, MAP_VALUE);
 
+
+
 print_table_stat_header(fidTEX,AREA);
 STEND = '\\';
 N_TMP = '';

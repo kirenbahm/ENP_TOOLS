@@ -1,4 +1,4 @@
-function [] = A7_MDR_SEEPAGE(INI)
+function [INI] = A7_MDR_SEEPAGE(INI)
 fprintf('\n\n Beginning A7_MDR_SEEPAGE(): %s \n\n',datestr(now));
 
 

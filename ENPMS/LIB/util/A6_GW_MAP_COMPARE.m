@@ -1,4 +1,4 @@
-function [] = A6_GW_MAP_COMPARE(INI)
+function [INI] = A6_GW_MAP_COMPARE(INI)
 fprintf('\n\n Beginning A6_GW_MAP_COMPARE(): %s \n\n',datestr(now));
 
 % this function will read the dates from an excel file and will provide

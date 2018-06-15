@@ -1,11 +1,11 @@
 function [] = plot_timeseries_accumulated(STATION,INI)
 % function plot_timeseries_accumulated(STATION,INI) prepares timeseries data for cumulative plotting
-
-
 if ~any(~isnan(STATION.TIMESERIES(:)))
     fprintf('\t--> All timeseries values are NaN');
     return
 end
+
+fprintf('... Processing accumulated timeseries plot: %s\n',  char(STATION.NAME))
 
 % use specified graphic values in setup_ini)
 CO = INI.GRAPHICS_CO;
@@ -100,9 +100,11 @@ str_T = strvcat(str_1);
 ii = 0;
 for i = m
     ii = ii + 1;
-    formatStr = '\tTotal %s = %+5.2f kaf';
-    str_2 = sprintf(formatStr,char(SIM(ii)),totQacc(ii));
-    str_T = strvcat(str_T, str_2);
+    if ~isnan(totQacc(ii))
+        formatStr = '\tTotal %s = %+5.2f kaf';
+        str_2 = sprintf(formatStr,char(SIM(ii)),totQacc(ii));
+        str_T = strvcat(str_T, str_2);
+    end
 end
 
 set(gcf, 'PaperUnits', 'inches');

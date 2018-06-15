@@ -43,7 +43,6 @@ i = 0; % initialize simulation count
 % 1. SETUP Location of ENPMS Scripts
 %---------------------------------------------------------------------
 INI.MATLAB_SCRIPTS = '..\ENPMS\';
-assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
 % Initialize path of ENPMS Scripts 
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
@@ -55,16 +54,13 @@ end
 % 2. Set Location of Common Data and observed matlab data inputfiles
 %---------------------------------------------------------------------
 INI.DATA_COMMON = '..\..\ENP_TOOLS_Sample_Input\Data_Common/'; 
-assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
 
 INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
-assert(exist(INI.FILE_OBSERVED,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
 % 3. Set location to read inputfiles containing computed Matlab data
 %---------------------------------------------------------------------
 INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
-assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 %---------------------------------------------------------------------
 % 4. Set a tag for this analysis
@@ -75,13 +71,13 @@ INI.ANALYSIS_TAG = 'ENP_TOOLS_Sample_Output';
 INI.POST_PROC_DIR = ['..\..\' INI.ANALYSIS_TAG '/'];
 
 %---------------------------------------------------------------------
-% 5. Choose simulations to be analyzed 
+% 5. Choose simulations to be analyzed (must be present in INI.DATA_COMPUTED
 %---------------------------------------------------------------------
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test', 'M01'};
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'};
 % 
 %---------------------------------------------------------------------
-% 6. Select time period for analysis
+% 6. Select time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC
 %---------------------------------------------------------------------
 
 INI.ANALYZE_DATE_I = [2000 1 1 0 0 0];  % begining of analysis period
@@ -92,7 +88,6 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 %---------------------------------------------------------------------
 
 INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/TEST-STATIONS-short.txt']; 
-assert(exist(INI.SELECTED_STATION_FILE,'file') == 2, 'File not found.' );
 
 %---------------------------------------------------------------------
 % 8. Select modules to run  (1=yes, 0=no)
@@ -108,8 +103,8 @@ INI.A4    = 1; % A4_create_figures_exceedance
 INI.A5    = 1; % A5_create_summary_stat
 %INI.A6    = 0; % A6_GW_MAP_COMPARE
 %INI.A7    = 0; % A7_SEEPAGE_MAP
-%INI.A8    = 0; % A8_SEEPAGE_EXCEL
-INI.A9    = 1; % A9_make_latex_report
+%INI.A8    = 0; % A8_SEEPAGE_EXCEL % not implemented yet
+INI.A9    = 1; % A9_make_latex_report % 
 
 %---------------------------------------------------------------------
 % 9 Additional settings, DEFAULT can be modified for additional functionality 
@@ -120,15 +115,17 @@ INI.SAVEFIGS              = 0; % save figures in MATLAB format?
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables.
 INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 
+INI.DEBUG                 = 1; % for debug mode
 
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------
 %  END USER DEFINITIONS
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------
-
 % Run selected modules
+%---------------------------------------------------------------
 try
+    INI = fileAssertions(INI);
     INI = analyze_data_set(INI);
 catch INI
     fprintf('\nException in readMSHE_WM(INI), i=%d\n', i);
@@ -138,4 +135,20 @@ end
 fprintf('\n %s Successful completion of all for %.3g seconds\n',datestr(now), toc);
 
 fprintf('\n\n *** ANALYSIS_COMPARE completed ***\n\n');
+end
+
+
+function INI = fileAssertions(INI);
+% Move all file assertions here
+
+assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
+
+assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
+
+assert(exist(INI.FILE_OBSERVED,'file') == 2, 'File not found.' );
+
+assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
+
+assert(exist(INI.SELECTED_STATION_FILE,'file') == 2, 'File not found.' );
+
 end

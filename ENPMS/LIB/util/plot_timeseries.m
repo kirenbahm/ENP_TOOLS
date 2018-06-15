@@ -1,11 +1,12 @@
 function [] = plot_timeseries(STATION,INI)
 % function plot_timeseries(STATION,INI) prepares timeseries data for plotting
 
-
 if ~any(~isnan(STATION.TIMESERIES(:)))
     fprintf('\t--> All timeseries values are NaN');
     return
 end
+
+fprintf('... Processing timeseries plot: %s\n',  char(STATION.NAME));
 
 % use specified graphic values in setup_ini)
 CO = INI.GRAPHICS_CO;

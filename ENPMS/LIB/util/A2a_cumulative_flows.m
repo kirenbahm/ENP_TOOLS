@@ -1,4 +1,4 @@
-function [ output_args ] = A2a_cumulative_flows(INI)
+function [ INI ] = A2a_cumulative_flows(INI)
 
 fprintf('\n--------------------------------');
 fprintf('\nBeginning A2a_cumulative_flows    (%s)',datestr(now));
@@ -27,22 +27,13 @@ FILESAVE = INI.FILESAVE_STAT;
 % stations rerun the entire script sequence A0, A1,...
 
 %if INI.USE_NEW_CODE
+KEYS = keys(MAP_ALL_DATA);
+ind = ismember(INI.SELECTED_STATIONS,KEYS);
+INI.SELECTED_STATIONS = INI.SELECTED_STATIONS(ind);
 STATIONS_LIST = INI.SELECTED_STATIONS;
-%else
-%    STATIONS_LIST = INI.SELECTED_STATIONS.list.stat;
-%end
-
-% STATIONS_LIST = MAP_ALL_DATA.keys;
-
-%do it with the map
-%keys(INI.SELECTED_STATIONS.MAP)
-
-% this processes the statistics of all stations from the MIKE SHE and MIKE
-% 11 dfs0 result files.
 
 i = 1;
 % sumarize data and save in STATION structure
-fprintf('\n\n--Summarizing data:');
 for M = STATIONS_LIST
     try
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
@@ -56,12 +47,12 @@ end
 
 write_QYM(MAP_ALL_DATA,INI,STATIONS_LIST);
 write_QYMYEARLY(MAP_ALL_DATA,INI,STATIONS_LIST);
-
 print_M_AVE(MAP_ALL_DATA,INI,STATIONS_LIST);
 print_Y_AVE(MAP_ALL_DATA,INI,STATIONS_LIST);
 
 fprintf('\n\n--Saving data in file:\n\t%s', char(FILESAVE))
 save(FILESAVE,'MAP_ALL_DATA','-v7.3');
 fprintf('\n\n');
+
 end
 

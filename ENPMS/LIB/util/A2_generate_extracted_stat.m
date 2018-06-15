@@ -1,4 +1,4 @@
-function [ output_args ] = A2_generate_extracted_stat(INI)
+function [ INI ] = A2_generate_extracted_stat(INI)
 %---------------------------------------------
 %{
  FUNCTION DESCRIPTION:
@@ -61,10 +61,13 @@ nD = length(INI.MODEL_ALL_RUNS)+1;
 TIMEVECTOR =  [datenum(tStart):1:datenum(tEnd)]';
 TIMESERIES(1:1:length(TIMEVECTOR),1:1:nD) = NaN;
 
+KEYS = keys(MAP_ALL_DATA);
+ind = ismember(INI.SELECTED_STATIONS,KEYS);
+INI.SELECTED_STATIONS = INI.SELECTED_STATIONS(ind);
 STATIONS_LIST = INI.SELECTED_STATIONS;
-
 fprintf('\n--Processing station data:');
-for M =  STATIONS_LIST % {'3A28'} % % this uses only the list of the selected stations
+
+for M =  STATIONS_LIST % {'{'T19'}'} % % this uses only the list of the selected stations
     i = i + 1;
     M = strtrim(M);
     fprintf('\n %4d  %-25s', i, char(M));
@@ -86,10 +89,8 @@ for M =  STATIONS_LIST % {'3A28'} % % this uses only the list of the selected st
         fprintf('\t---> data for \"%s\" not found in MAP_ALL_DATA container', char(M));
     end
 end
-fprintf('\n');
 
 i = 1;
-fprintf('\n--Processing station stats:');
 for M =  STATIONS_LIST% {'3A28'} %%  % this uses only the list of the selected stations
     fprintf('\n %4d  %-25s', i, char(M));
     try
@@ -113,7 +114,6 @@ for M =  STATIONS_LIST% {'3A28'} %%  % this uses only the list of the selected s
     end
     i = i + 1;
 end
-fprintf('\n')
 
 fprintf('\n--Saving data in file:\n\t %s\n', char(FILESAVE))
 save(FILESAVE,'MAP_ALL_DATA','-v7.3');

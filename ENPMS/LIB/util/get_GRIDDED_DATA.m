@@ -1,4 +1,4 @@
-function [MAP_COMPUTED_GROUPS] = get_GRIDDED_DATA(FILE_DFS, INI)
+function MAP_COMPUTED_GROUPS = get_GRIDDED_DATA(FILE_DFS, INI)
 
 
 %  UNDER CONSTRUCTION
@@ -53,6 +53,9 @@ FT2M = 0.3048;
 CFS2M3 = (0.3048^3);
 CellAreaFt = (400/FT2M)^2;
 
+FILE_DIR =  INI.CELL_DEF_FILE_DIR_3DSZQ;
+FILE_NAME_GROUP_DEFS = INI.CELL_DEF_FILE_NAME_3DSZQ;
+FILE_SHEETNAME = INI.CELL_DEF_FILE_SHEETNAME_3DSZQ;
 
 % for z-direction flow in mm/day, converted to cubic feet per second integrated over cell face:
 MMperDYToFT3perSperCell = (0.001/FT2M)*CellAreaFt/86400;
@@ -77,6 +80,7 @@ numcols = 6; % number of columns in Excel file with data (columns 7+ are current
 % 14: Minute (usually 0)
 % 15: Second (usually 0)
 % 16: Value
+
 myStation = 1;
 myYear = 7;
 myMonth = 8;
@@ -98,7 +102,7 @@ end
 % % Load group definition data from Excel or Matlab file
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-XLARRAY = load_XL_GRID(INI);
+XLARRAY = load_XL_GRID(FILE_DFS, INI);
 
 % Assign each vector to corresponding array column
 MyRequestedStnNames=XLARRAY(:,1);
@@ -107,8 +111,6 @@ cols0=XLARRAY(:,3);
 lyrs1=XLARRAY(:,4);
 multip=XLARRAY(:,5);
 itms1=XLARRAY(:,6);
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % step 1: get timeseries data
@@ -138,7 +140,7 @@ end
 
 dfs_day_begin = floor(datenum(DfsTimeVector(1,:)));
 dfs_day_end   = floor(datenum(DfsTimeVector(NumDfsSteps,:)));
-num_dfs_days  = dfs_day_end - dfs_day_begin;
+num_dfs_days  = dfs_day_end - dfs_day_begin + 1;
 DfsDatesVector = datevec(linspace(dfs_day_begin,dfs_day_end,num_dfs_days));
 
 TS.startdate = dfs_day_begin;   %start extract on this date
@@ -206,11 +208,6 @@ if DFS3
 end
 
 
-
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ds  = datestr(clock);
@@ -228,11 +225,6 @@ ds  = datestr(clock);
 fprintf('%s:: Creating a MAP of computed from: %s\n',ds, char(FNAME))
 MAP_COMPUTED_GROUPS = create_MAP_COMPUTED(TS,GROUPS,ARRAY_GROUPS,TV,itms1,DfsDatesVector);
 %---------------------------------------------------------------
-
-
-
-%---------------------------------------------------------------
-
 end
 
 function MAP_COMPUTED_GROUPS = create_MAP_COMPUTED(TS,GROUPS,ARRAY,TV,itms1,DV)
@@ -340,14 +332,21 @@ end
 
 end
 
-function XLARRAY = load_XL_GRID(INI)
+function XLARRAY = load_XL_GRID(FILE_DFS, INI)
 
 FILE_DIR =  INI.CELL_DEF_FILE_DIR_3DSZQ;
 FILE_NAME_GROUP_DEFS = INI.CELL_DEF_FILE_NAME_3DSZQ;
-FILE_SHEETNAME = INI.CELL_DEF_FILE_SHEETNAME_3DSZQ;
 
 FILE_XL_GRID = [ FILE_DIR FILE_NAME_GROUP_DEFS '.xlsx'];
 MATFILE = [ FILE_DIR FILE_NAME_GROUP_DEFS '.MATLAB'];
+
+[DIR,FNAME,FEXT] = fileparts(FILE_DFS);
+if strcmp(FEXT,'.dfs2')
+    FILE_SHEETNAME = [INI.CELL_DEF_FILE_SHEETNAME_OL];
+end
+if strcmp(FEXT,'.dfs3')
+    FILE_SHEETNAME = [INI.CELL_DEF_FILE_SHEETNAME_3DSZQ];
+end
 
 try
 % if there there is an existing MATLAB file read read XL file

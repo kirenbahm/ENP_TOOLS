@@ -1,11 +1,11 @@
 function [] = plot_timeseries_accumulated(STATION,INI)
 % function plot_timeseries_accumulated(STATION,INI) prepares timeseries data for cumulative plotting
+
+
 if ~any(~isnan(STATION.TIMESERIES(:)))
     fprintf('\t--> All timeseries values are NaN');
     return
 end
-
-fprintf('... Processing accumulated timeseries plot: %s\n',  char(STATION.NAME))
 
 % use specified graphic values in setup_ini)
 CO = INI.GRAPHICS_CO;

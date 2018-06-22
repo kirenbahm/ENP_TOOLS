@@ -34,6 +34,7 @@ STATIONS_LIST = INI.SELECTED_STATIONS;
 
 i = 1;
 % sumarize data and save in STATION structure
+fprintf('\n\n--Summarizing data:');
 for M = STATIONS_LIST
     try
         STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
@@ -47,6 +48,7 @@ end
 
 write_QYM(MAP_ALL_DATA,INI,STATIONS_LIST);
 write_QYMYEARLY(MAP_ALL_DATA,INI,STATIONS_LIST);
+
 print_M_AVE(MAP_ALL_DATA,INI,STATIONS_LIST);
 print_Y_AVE(MAP_ALL_DATA,INI,STATIONS_LIST);
 

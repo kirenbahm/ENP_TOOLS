@@ -89,8 +89,10 @@ for M =  STATIONS_LIST % {'{'T19'}'} % % this uses only the list of the selected
         fprintf('\t---> data for \"%s\" not found in MAP_ALL_DATA container', char(M));
     end
 end
+fprintf('\n');
 
 i = 1;
+fprintf('\n--Processing station stats:');
 for M =  STATIONS_LIST% {'3A28'} %%  % this uses only the list of the selected stations
     fprintf('\n %4d  %-25s', i, char(M));
     try
@@ -114,6 +116,7 @@ for M =  STATIONS_LIST% {'3A28'} %%  % this uses only the list of the selected s
     end
     i = i + 1;
 end
+fprintf('\n')
 
 fprintf('\n--Saving data in file:\n\t %s\n', char(FILESAVE))
 save(FILESAVE,'MAP_ALL_DATA','-v7.3');

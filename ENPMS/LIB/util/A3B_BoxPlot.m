@@ -17,6 +17,7 @@ ind = ismember(INI.SELECTED_STATIONS,KEYS);
 INI.SELECTED_STATIONS = INI.SELECTED_STATIONS(ind);
 STATIONS_LIST = INI.SELECTED_STATIONS;
 
+fprintf('\n\n--Processing boxplots:');
 i = 0;
 for M = STATIONS_LIST
     if isKey(MAP_ALL_DATA,char(M))
@@ -24,15 +25,15 @@ for M = STATIONS_LIST
         try
             STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
             i = i + 1;
-            fprintf('...%d processing boxplots: %s\n', i, char(M));
-            INI = boxplotMONTH(STATION,INI); %
-            INI = boxplotYEAR(STATION,INI); %
+            INI = boxplotMONTH(STATION,INI); % 
+            INI = boxplotYEAR(STATION,INI); % 
         catch
             fprintf(' --> EXCEPTION: boxplot failed for station %s', char(M));
             msgException = getReport(INI,'extended','hyperlinks','on');
         end
     end
 end
+fprintf('\n');
 
 end
 

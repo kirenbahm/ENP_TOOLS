@@ -94,7 +94,7 @@ for i = m %
     maxrTS(i) = SORT_TS(1);
 end
 
-if ~exist('F') 
+if ~exist('F'); 
     return
 end
 

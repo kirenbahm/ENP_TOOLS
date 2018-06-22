@@ -48,5 +48,6 @@ if INI.LATEX_REPORT_BY_AREA
 else
     generate_latex_files(MAP_STATION_ORDER,INI.MAP_STATION_STAT,INI);
 end
+fprintf('\n');
 
 end

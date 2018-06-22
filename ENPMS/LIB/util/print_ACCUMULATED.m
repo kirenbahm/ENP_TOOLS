@@ -5,6 +5,7 @@ function [ output_args ] = print_ACCUMULATED(INI,P)
 % P.NAME - station, 
 % P.ACCUMULATED computed values, 
 
+% file where this information is saved
 FN = [INI.ANALYSIS_DIR_TAG '/DS_ACCUMULATED.txt'];
 FID = fopen(FN,'w');
 

@@ -1,4 +1,4 @@
-function [output_args] = print_input(LMS,FILES,fidTEX)
+function [output_args] = print_inputV0(LMS,FILES,fidTEX)
 
 LATEX_FILES = FILES.LATEX_MAIN;
 %%%LATEX_FILES = FILES.LATEX_FILES;

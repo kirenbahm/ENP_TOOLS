@@ -1,4 +1,4 @@
-function [S] = InputDFS2v2(infile)
+function [S] = InputDFS2(infile)
 
 %{
 Open and read info from a DFS2 file

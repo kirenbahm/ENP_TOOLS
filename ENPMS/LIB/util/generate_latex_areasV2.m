@@ -1,4 +1,4 @@
-function [output_arg] = generate_latex_areasV1(AREA,LIST_STATIONS,MAP_STATION_STAT,FPE,FTS,FFF, SIM,F)
+function [output_arg] = generate_latex_areasV2(AREA,LIST_STATIONS,MAP_STATION_STAT,FPE,FTS,FFF, SIM,F)
 
 FTS_TXT = [FTS '.txt'];
 FTS_TEX = [FTS '.tex'];

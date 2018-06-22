@@ -1,4 +1,4 @@
-function [DRED] = get_ave_HR_NONEQDIST(date_v,x)
+function [DRED] = reduce_NONEQDIST(date_v,x)
 %get_ave_discharges() Computes yearly and monthly averages and totals 
 %   Takes arguments: date_v - DATE vector, x - DATA vector
 %   Returns a DS structure with wighted averages and cumlatives YY,MM,DD,HH

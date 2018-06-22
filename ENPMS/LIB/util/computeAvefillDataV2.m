@@ -1,4 +1,4 @@
-function [ValVect] = computeAvefillDataV1(TS, TSS, ValVect)
+function [ValVect] = computeAvefillDataV2(TS, TSS, ValVect)
 %{
     Compute daily averages for the timeseries data
     Excludes NaN

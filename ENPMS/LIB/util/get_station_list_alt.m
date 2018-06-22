@@ -1,4 +1,4 @@
-function X = get_station_alt(infile)
+function X = get_station_list_alt(infile)
 %this reads the selected_station_list text file
 
 % if (~exist('infile','var')),infile = 'selected_station_listV1.txt'; end

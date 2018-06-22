@@ -1,4 +1,4 @@
-function [output_args] = print_figureV0(FIGURE_FILE)
+function [output_args] = print_figureV1(FIGURE_FILE)
 
 % NumTicks = 14; 
 % L = get(gca,'XLim'); 

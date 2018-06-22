@@ -1,4 +1,4 @@
-function [STATION] = get_station_stat(STATION)
+function [STATION] = get_station_cumulative(STATION)
 
 %{
 FUNCTION DESCRIPTION:

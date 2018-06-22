@@ -1,4 +1,4 @@
-function [ output_args ] = print_M_AVE(MAP_ALL_DATA,INI,STATIONS_LIST)
+function [ output_args ] = print_Y_AVE(MAP_ALL_DATA,INI,STATIONS_LIST)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 

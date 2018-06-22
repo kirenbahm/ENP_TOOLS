@@ -1,4 +1,4 @@
-function saveSeepageValuesXL(RUNS,ARRAY_XL,FILE_XL,DESC,H)
+function waterBalanceXL(RUNS,ARRAY_XL,FILE_XL,DESC,H)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 

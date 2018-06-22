@@ -1,4 +1,4 @@
-function [TS] = ReadTextmakeDFS0(TS)
+function [TS] = ReadTextmakeDFS1(TS)
 
 %{
 Read text file with format date value

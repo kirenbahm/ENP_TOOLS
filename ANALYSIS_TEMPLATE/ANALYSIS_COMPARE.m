@@ -1,4 +1,4 @@
-function  main
+function  ANALYSIS_COMPARE
 %---------------------------------------------
 %%% DO NOT MODIFY (begin)
 tic; % initialize time counter to clock script begin to end

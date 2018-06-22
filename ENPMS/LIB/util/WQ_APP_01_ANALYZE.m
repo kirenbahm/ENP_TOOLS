@@ -1,4 +1,4 @@
-function  [INI] =  APP_OBS_TP_DATA_READ_XLS()
+function  [INI] =  WQ_APP_01_ANALYZE()
 % do not modify;
 [INI.ROOT,NAME,EXT] = fileparts(pwd()); % path string of ROOT Directory/
 INI.ROOT = [INI.ROOT '/'];

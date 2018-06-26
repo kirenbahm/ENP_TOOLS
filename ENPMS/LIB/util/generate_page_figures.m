@@ -105,31 +105,3 @@ end
 fprintf(fidTEX,'%s\n\n','\clearpage');
 
 end
-
-function head_figure(fidTEX,RFIGURE,rfig)
-ROW1 =['\begin{figure} \begin{center}'];
-fprintf(fidTEX,'%s\n',ROW1);
-
-% provide a bookmark
-ROW9=['\currentpdfbookmark{' char(RFIGURE) '}{' char(rfig) 'name}'];
-fprintf(fidTEX,'%s\n',ROW9);
-end
-
-function tail_figure(fidTEX,RFIGURE,RLABEL,FIGURE)
-
-% add caption
-% ROW5 =[' \caption[Station ' char(RFIGURE) ']{Station: ' char(RFIGURE)];
-ROW5 =[' \caption[ ' char(RFIGURE) ']{' char(RFIGURE) '}'];
-fprintf(fidTEX,'%s\n',ROW5);
-
-ROW6 =['\label{fig:' char(FIGURE) 'all}'];
-fprintf(fidTEX,'%s\n',ROW6);
-
-ROW7 =[' \end{center}'];
-ROW8 =[' \end{figure}'];
-fprintf(fidTEX,'%s\n',ROW7);
-fprintf(fidTEX,'%s\n\n',ROW8);
-
-fprintf(fidTEX,'%s\n','\clearpage');
-
-end

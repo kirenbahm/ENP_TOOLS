@@ -1,0 +1,18 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+# *.m text
+# *.tex text
+
+# Declare files that will always have CRLF or LF line endings on checkout.
+# *.xyz text eol=crlf
+# *.zyx text eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+# *.png binary
+# *.jpg binary
+# could add MIKE files: dfs0 dfs2 xns11
+# could add GIS files: shp shx sbx sbn dbf
+

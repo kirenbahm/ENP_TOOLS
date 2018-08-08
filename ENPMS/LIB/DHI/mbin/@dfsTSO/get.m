@@ -167,7 +167,7 @@ else
       end
     case 'enddate'
       if (dm.TSO.Time.IsCalendar)
-        val = datetime(end);
+        val = datetime(end,:);
       else
         val = datetime(end);
       end

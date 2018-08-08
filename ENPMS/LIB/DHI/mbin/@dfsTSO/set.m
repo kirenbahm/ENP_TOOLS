@@ -195,18 +195,28 @@ for ip = 1:length(props)
       %dm.TSO.Time.TimeStep.Second      = floor(val(6));
       %dm.TSO.Time.TimeStep.Millisecond = floor((val(6)-floor(val(6)))*1000);
 
-		  if (strcmp('second',dm.TSO.Time.EumUnitDescription))
-		    dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6);
-		  elseif (strcmp('minute',dm.TSO.Time.EumUnitDescription))
-		    dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6)/60;
-		  elseif (strcmp('hour',dm.TSO.Time.EumUnitDescription))
-		    dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6)/3600;
-		  elseif (strcmp('day',dm.TSO.Time.EumUnitDescription))
-		    dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6)/(24*3600);
-		  else
+      % The Second property is a ushort, max value of 32767, hence it will
+      % not handle second values above that. Using Value property instead
+      % It is a common use just to set seconds, and nothing else, i.e.
+      % to get a timestep of one day, use [0,0,0,0,0,86400].
+      % Large value (above 32767) is only supported for seconds
+      
+      % Set second and millisecond to zero, to remove existing values
+      dm.TSO.Time.TimeStep.Second      = 0;
+      dm.TSO.Time.TimeStep.Millisecond = 0;
+      % Add seconds to Value instead
+      if (strcmp('second',dm.TSO.Time.EumUnitDescription))
+        dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6);
+      elseif (strcmp('minute',dm.TSO.Time.EumUnitDescription))
+        dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6)/60;
+      elseif (strcmp('hour',dm.TSO.Time.EumUnitDescription))
+        dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6)/3600;
+      elseif (strcmp('day',dm.TSO.Time.EumUnitDescription))
+        dm.TSO.Time.TimeStep.Value = dm.TSO.Time.TimeStep.Value + val(6)/(24*3600);
+      else % Unknown time unit, use the Seconds property anyway
         dm.TSO.Time.TimeStep.Second      = floor(val(6));
         dm.TSO.Time.TimeStep.Millisecond = floor((val(6)-floor(val(6)))*1000);
-		  end
+      end
 
 
     % File properties

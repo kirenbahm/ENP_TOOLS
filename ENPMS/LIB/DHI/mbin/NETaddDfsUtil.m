@@ -47,6 +47,8 @@ if (isempty(DfsUtilAss))
     dfsAssVer = dfsAss.AssemblyHandle.GetName().Version.Major;
     
     switch dfsAssVer
+        case 16 % Release 2017
+            DfsUtilAss = NETaddAssembly('MatlabDfsUtil.2017.dll');
         case 15 % Release 2016
             DfsUtilAss = NETaddAssembly('MatlabDfsUtil.2016.dll');
         case 14 % Release 2014

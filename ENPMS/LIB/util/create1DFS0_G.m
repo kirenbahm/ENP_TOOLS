@@ -25,21 +25,18 @@ builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin('UTM-17',12,
 builder.SetTemporalAxis(factory.CreateTemporalNonEqCalendarAxis...
    (eumUnit.eumUsec,System.DateTime(T(1),T(2),T(3),T(4),T(5),T(6))));
 
-% Add an Item
+% Add an item1.Set data to DFS0 file based on selected Datatype 'DT'
 item1 = builder.CreateDynamicItemBuilder();
 if strcmpi(DT,'Discharge')
-    item1.Set(DT, DHI.Generic.MikeZero.eumQuantity...
+    item1.Set(DT{1}, DHI.Generic.MikeZero.eumQuantity...
         (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDT);
 elseif strcmpi(DT,'Water Level')
-    item1.Set(DT, DHI.Generic.MikeZero.eumQuantity...
+    item1.Set(DT{1}, DHI.Generic.MikeZero.eumQuantity...
         (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDT);
 end
-% item1 = builder.CreateDynamicItemBuilder();
-% item1.Set('Undefined unit undefined', DHI.Generic.MikeZero.eumQuantity...
-%    (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDT);
-% (eumItem.eumItemUndefined,eumUnit.eumUnitUndefined));
-% (eumItem.eumIUndefined,eumUnit.eumUUndefined));
-% (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDT);
+
+%
+
 item1.SetValueType(DataValueType.Instantaneous);
 item1.SetAxis(factory.CreateAxisEqD0());
 builder.AddDynamicItem(item1.GetDynamicItemInfo());

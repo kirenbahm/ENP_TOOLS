@@ -31,7 +31,7 @@ for K = KEYS
     
     V = STATION.DINTERP;
     TTS3 = timeseries(V,T);
-    TTS.name = char(K);
+%    TTS.name = char(K);
     TTS3.TimeInfo.Format = 'mmm-yyyy';
     plot(TTS3,'Linestyle', '-', 'Color', 'k', 'Marker','none');
     

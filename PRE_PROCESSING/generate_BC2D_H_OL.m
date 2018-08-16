@@ -106,10 +106,10 @@ FNDB = strcat('STATION_DATA','.MATLAB');
 INI.MAP_STATIONS = containers.Map();
 
 BC2D_read_shape(INI);
-SWITCH = 'OL';
+SWITCH = 'OL';                  % This 'SWITCH' is used to identify the time increment used on the imported DFS0 files either SZ (daily) or OL (hourly)
 
 if SAVE_IN_MATLAB    
-    INI = BC2D_read_dfs0_H(INI,SWITCH);
+    INI = BC2D_import_dfs0(INI,SWITCH);
     % save data in strucures to load
     M = INI.MAP_H_DATA;
     save(char(INI.OL_H_MATLAB),'M','-v7.3');

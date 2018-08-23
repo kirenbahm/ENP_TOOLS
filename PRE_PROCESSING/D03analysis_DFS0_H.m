@@ -1,4 +1,4 @@
-function analysis_DFS0_H_()
+function D03analysis_DFS0_H()
 % Script reads dfs0 files and provides analysis and figures along with CDF
 % PE, monthly and annual summaries
 
@@ -8,33 +8,36 @@ function analysis_DFS0_H_()
 % "LISTING" variables. If there is an error verify pwd(*), addpath(*), and 
 % "DIR =" lines are complete and with accurate syntax.
 
+% -------------------------------------------------------------------------
 % path string of ROOT Directory
+% -------------------------------------------------------------------------
 [INI.ROOT,MAIN,~] = fileparts(pwd());
-INI.ROOT = strrep(INI.ROOT,'\','/');
 INI.ROOT = [INI.ROOT MAIN '/'];
 
-% path(s) to all input ('_input') and output ('FLOW', 'STAGE') file directories
+% -------------------------------------------------------------------------
+% path(s) to PARENT directory ('DATA_ENP') and all input ('_input') and output ('FLOW', 'STAGE', 'BC2D') file directories
+% -------------------------------------------------------------------------
 INI.DATA_ENP_DIR = [INI.ROOT 'DATA_ENP/'];
+    % Input directories:
+INI.input = [INI.DATA_ENP_DIR '_input/'];
+    % DFS0 file creation from DFE input file directories
 INI.STATION_DIR = [INI.DATA_ENP_DIR 'D00_STATIONS/'];
 INI.FLOW_DIR = [INI.DATA_ENP_DIR 'D01_FLOW/'];
 INI.STAGE_DIR = [INI.DATA_ENP_DIR 'D02_STAGE/'];
-INI.input = [INI.DATA_ENP_DIR '_input/'];
+    % BC2D generation directories:
+INI.BC2D_DIR = [INI.DATA_ENP_DIR 'G01_BC2D/'];
 
-%---------------------------------------------------------------------
-% 1. SETUP Location of ENPMS Scripts
-%---------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = 'G:\GIT\ENP_TOOLS\ENPMS\';
+% -------------------------------------------------------------------------
+% SETUP Location of ENPMS Scripts and Initialize
+% -------------------------------------------------------------------------
+INI.MATLAB_SCRIPTS = '.\ENPMS\';
 %INI.MATLAB_SCRIPTS = [INI.ROOT 'ENP_TOOLS\ENPMS\'];
-% Initialize path of ENPMS Scripts 
+
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
 catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
-
-% location of common scripts, functions, and miscellaneous tools
-%addpath(genpath([INI.ROOT 'ENPMS/']));
-%addpath(genpath([INI.DATA_ENP_DIR '_utilities/']));                        % add location of common/shared function utilities
 
 INI.DELETE_EXISTING_DFS0 = 1;
 

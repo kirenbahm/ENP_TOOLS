@@ -22,14 +22,14 @@ for i = 1:n
       
       DFS0.NAME = NAME;
       
-      DFS0 = DFS0_cumulative_flow(DFS0);                    % UNCLEAR why this function is here as it is named for 'flow'. Need clarification on naming and purpose. Possibly reassign later.
-      
+%      DFS0 = DFS0_cumulative_flow(DFS0);  % Function call is commented out for all 'water level' data sets.
+
       % generate Timeseries
       plot_fig_TS_1(DFS0,INI);
       
       % generate Cumulative
-      plot_fig_CUMULATIVE_1(DFS0,INI);
-      
+%      plot_fig_CUMULATIVE_1(DFS0,INI);  % Function call is commented out for all 'water level' data sets.
+
       % generate CDF
 %      plot_fig_CDF_1(DFS0,INI)
 %       This is

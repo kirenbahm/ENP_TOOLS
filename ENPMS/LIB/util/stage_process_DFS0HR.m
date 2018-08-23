@@ -38,14 +38,14 @@ for i = 1:n
       DFS0 = DFS0_assign_DTYPE_UNIT(DFS0,NAME);
       DFS0.NAME = NAME;
       
-      DFS0 = DFS0_cumulative_flow(DFS0);                            % UNCLEAR on usage of cumulative flow here... Need to address purpose of this function call.
+%      DFS0 = DFS0_cumulative_flow(DFS0);  % Function call is commented out for all 'water level' data sets.
+
       INI.DIR_DFS0_FILES = strrep(INI.DIR_DFS0_FILES,'DFS0','DFS0HR');
       % generate Timeseries
       plot_fig_TS_1(DFS0,INI);
       
       % generate Cumulative
-      plot_fig_CUMULATIVE_1(DFS0,INI);
-% Previously commented out
+%      plot_fig_CUMULATIVE_1(DFS0,INI);  % Function call is commented out for all 'water level' data sets.
 
       % generate CDF
 %      plot_fig_CDF_1(DFS0,INI)

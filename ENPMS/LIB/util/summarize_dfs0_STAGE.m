@@ -9,7 +9,7 @@ function MAP_STATIONS = summarize_dfs0_STAGE(INI,MAP_STATIONS)
 % Input File(s):       DFS0 files within the DATA_ENP/STAGE/DFS0/ directory
 %
 % Output Container(s): MAP_STATIONS (w/ STATIONS, MAP_STATIONS_DATA) 
-% Return Function(s):  D01_convert_STATION_DATA.m
+% Return Function(s):  D00_dfe_STATION_DATA.m
 % -------------------------------------------------------------------------
 DIR = [INI.STAGE_DIR 'DFS0/'];
 FILES = [DIR '*.dfs0'];                                 % variable with the file description ( .dfs0 extension )and location ( DFS0 directory )
@@ -25,12 +25,9 @@ for i = 1:n
    N_OBS = 0;
    try
       DFS0 = read_file_DFS0(FILE_NAME);
-      %TYPE = DFS0.TYPE;
       N_OBS = length(DFS0.V);
       STATION = MAP_STATIONS(char(STATION_NAME));
-      X = MAP_STATIONS(char(STATION_NAME)).X;
-      Y = MAP_STATIONS(char(STATION_NAME)).Y;
-      fprintf('... reading %d/%d: %s: %s: with N: %d: Records: %f : %f \n', i, n, char(STATION_NAME), char(TYPE),N_OBS, X, Y);
+      fprintf('... reading %d/%d: StationID: %s Datatype: %s with %d records.\n', i, n, char(STATION_NAME), char(TYPE), N_OBS);              % Prints to the screen a "working" message notifying user: reading 'iteration #' of 'total iterations' for 'station' : 'data type' with value '0' at 'Lat', 'Long'
       STATION.MAP_STATIONS_DATA(char(TYPE)) = N_OBS;
       MAP_STATIONS(char(STATION_NAME)) = STATION;
    catch

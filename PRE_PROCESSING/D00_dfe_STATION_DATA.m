@@ -1,4 +1,4 @@
-function D00_convert_STATION_DATA()
+function D00_dfe_STATION_DATA()
 % This script creates a container (MAP_STATIONS) with the structure 
 % (STATIONS); takes the station name (NAME), longitude (X), latitude (Y) 
 % from the input file (station_data_from_dataforever.txt), and an 
@@ -64,14 +64,24 @@ FNDB = strcat('STATION_DATA','.MATLAB');
 
 if SAVE_IN_MATLAB
    MAP_STATIONS = containers.Map();
-   fileID = fopen([INI.input 'station_data_from_dataforever.txt']);
-   ST = textscan(fileID,'%s %s %s %s %s %f32 %f32 %s %f32 %f32 %s %s %d8 %f32 %s','Delimiter','^','EmptyValue',NaN);
+   fileID = fopen([INI.input 'dfe_station_locations.csv']);
+   formatString = '%s %s %f %f %f %f %*[^\n]';
+   ST = textscan(fileID,formatString,'HeaderLines',1,'Delimiter',',','EmptyValue',NaN);
+   NStation = length(ST{1});
    fclose(fileID);
-   for i = 1:length(ST{1})
+   for i = 1:NStation
       N = ST{1};
-      X = ST{6};
-      Y = ST{7};
+      lat = ST{3};
+      long = ST{4};
+      utm_input = [lat, long];
+%      Added coding for elevation and elevation conversion (if available) 
+%      to the structure.
+%      elev = ST{5};
+%      elev_conv = ST{6};
+      [X, Y] = ll2utm(utm_input);       % ll2utm() is a function located in ENPMS that converts lat/long data to utm.
       STATION(i).NAME = N(i);
+      STATION(i).LAT = lat(i);
+      STATION(i).LONG = long(i);
       STATION(i).X = X(i);
       STATION(i).Y = Y(i);
       MAP_STATIONS_DATA = containers.Map();

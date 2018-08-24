@@ -21,9 +21,9 @@ function MAP_STATIONS = update_ALL_STATIONS(INI,MAP_STATIONS)
 % -------------------------------------------------------------------------
 
 DIR = [INI.input 'GIS/'];                      % sets GIS directory to the DIR variable. Verify the directory location if this causes an error. Completed directory location.
-SHP = [DIR 'ALL_STATIONS.shp'];                             % File name of all station GIS info as SHP variable
+SHP = [DIR 'DFE_STATION_SUMMARY.shp'];                             % File name of all station GIS info as SHP variable
 
-[S] = shaperead(char(SHP));                                 % char() converts data in SHP variable to character strings. shaperead() is in the Mapping Toolbox, reads in the attribute table {FID, Shape, Station, Type, N, X, Y, X_UTM, Y_UTM, M01, M02, M03, M04, M05, M06} as the matrix [S] 
+[S] = shaperead(char(SHP));                                 % char() converts data in SHP variable to character strings. shaperead() is in the Mapping Toolbox, reads in the attribute table {FID, Shape, Station, Type, N, LAT, LONG, X_UTM, Y_UTM, M01, M02, M03, M04, M05, M06} as the matrix [S] 
 n = length(S);                                              % returns the length of the largest array dimension for matrix [S]
 
 for i = 1:n
@@ -34,7 +34,11 @@ for i = 1:n
       M = STATION.MAP_STATIONS_DATA;                        % M = values from the MAP_STATION_DATA container for a specific station, from 'NAME' STATION struct
       K = M.keys;                                           % Loads the datatype container 'keys' for the selected station
       if isempty(M.keys)
-         fprintf('... setting %s records to zero, no matching DFS0 with DFE datatypes: \n', char(NAME), strtrim(char(NAME)));
+         fprintf('... setting %s records to zero, no matching DFS0 with DFE Station ID: %s \n', char(NAME), strtrim(char(NAME)));
+         S(i).LAT = STATION.LAT;                        % Updates location information from DFE data file
+         S(i).LONG = STATION.LONG;
+         S(i).X_UTM = STATION.X;
+         S(i).Y_UTM = STATION.Y;
          S(i).n_H = 0;                                      % Sets the initial value for n_H to '0'
          S(i).n_HW = 0;                                     % Sets the initial value for n_HW to '0'
          S(i).n_TW = 0;                                     % Sets the initial value for n_TW to '0'
@@ -43,33 +47,39 @@ for i = 1:n
          continue
       else
          for k = K
-             fprintf('... setting record for %s, station -%s matched with -%s: \n', strtrim(char(NAME)), char(NAME), strtrim(char(NAME)));
              nn = M(char(k));
+             S(i).LAT = STATION.LAT;                        % Updates location information from DFE data file
+             S(i).LONG = STATION.LONG;
+             S(i).X_UTM = STATION.X;
+             S(i).Y_UTM = STATION.Y;
              S(i).n_H = 0;                                  % Sets the initial value for n_H to '0'
              S(i).n_HW = 0;                                 % Sets the initial value for n_HW to '0'
              S(i).n_TW = 0;                                 % Sets the initial value for n_TW to '0'
              S(i).n_PSU = 0;                                % Sets the initial value for n_PSU to '0'
              S(i).n_Q = 0;                                  % Sets the initial value for n_Q to '0'
              
-             if strcmp(k,'stage')                           % if the selected datatype 'key' from the M.keys array = the statement datatype ('stage' here) it populates the field with the number of observations value calculated from the DFS0 file
+             if strcmpi(k,'stage')                           % if the selected datatype 'key' from the M.keys array = the statement datatype ('stage' here) it populates the field with the number of observations value calculated from the DFS0 file
                  S(i).n_H = nn;
-             end
-             if strcmp(k,'head_water')                      % see note on line: 54
+                 fprintf('... Station match: %s, setting "%s" record quantity. \n', strtrim(char(NAME)), char(k));
+             elseif strcmpi(k,'head_water')                      % see note on line: 54
                  S(i).n_HW = nn;
-             end
-             if strcmp(k,'tail_water')                      % see note on line: 54
+                 fprintf('... Station match: %s, setting "%s" record quantity. \n', strtrim(char(NAME)), char(k));
+             elseif strcmpi(k,'tail_water')                      % see note on line: 54
                  S(i).n_TW = nn;
-             end
-             if strcmp(k,'salinity')                        % see note on line: 54
+                 fprintf('... Station match: %s, setting "%s" record quantity. \n', strtrim(char(NAME)), char(k));
+             elseif strcmpi(k,'salinity')                        % see note on line: 54
                  S(i).n_PSU = nn;
-             end
-             if strcmp(k,'Discharge')                       % see note on line: 54
+                 fprintf('... Station match: %s, setting "%s" record quantity. \n', strtrim(char(NAME)), char(k));
+             elseif strcmpi(k,'discharge')||strcmpi(k,'flow')    % see note on line: 54
                  S(i).n_Q = nn;
+                 fprintf('... Station match: %s, setting "%s" record quantity. \n', strtrim(char(NAME)), char(k));
+             else
+                 fprintf('... NO "%s" datatype match for Station ID: %s: \n', char(k), char(NAME));
              end
          end
       end
    catch
-      fprintf('... not found records in station_list.txt %s: \n', char(NAME));
+      fprintf('... NO DFS0 match with dfe_station_locations.csv Station ID: %s: \n', char(NAME));
    end
    
 end

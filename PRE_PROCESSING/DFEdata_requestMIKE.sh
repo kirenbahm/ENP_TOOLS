@@ -6,8 +6,8 @@
 
 # The following script runs a data request to DFE for MIKE.she and MATLAB processing as part of the COP model.
 # The script uses lists of STATION and DATATYPE from the '_input' directory, requests data from DFE via
-# data_request.sh, and outputs *.dat files to tehir respective subdirectories "Flow", "Stage", and any
-# additioanl as necessary.
+# data_request.sh, and outputs *.dat files to their respective subdirectories "Flow", "Stage", and any
+# additional as necessary.
 
 # Designed and curated by Kiren Bahm and any changes to this script or the input stations or datatypes requested
 # should be directed toward her.
@@ -24,10 +24,10 @@ start=$1
 end=$2
 time=$3
 
-# Set storage location for reqursted data directories
+# Set output and input storage locations for requested data directories
 
-baseDir=/opt/physical/adam/MIKE_MATLAB/DATA_ENP
-subDir=_input
+inputDir=_input
+outputDir=/opt/physical/adam/MIKE_MATLAB/DATA_ENP
 
 # For loop of requested DataTypes. More can be added as necessary but user must ensure and storage directories,
 # station list with datatypes files exist and any additions are subsequently added to the 'for' loop and 'if'
@@ -36,8 +36,22 @@ subDir=_input
 for dataType in Flow Stage ; do
 	if [[ "$dataType" == Flow ]]
 		then
-		data_request.sh $baseDir/$subDir/stationFlow.lst $start $end $time average $subDir/$dataType validation_level
+		data_requestMIKE.sh $outputDir/$inputDir/stationFlow.lst $start $end $time average $inputDir/$dataType validation_level
 	else
-		data_request.sh $baseDir/$subDir/stationStage.lst $start $end $time average $subDir/$dataType validation_level
+		data_requestMIKE.sh $outputDir/$inputDir/stationStage.lst $start $end $time average $inputDir/$dataType validation_level
 	fi
 done
+
+# For loop of requested DataTypes. More can be added as necessary but user must ensure and storage directories,
+# station list with datatypes files exist and any additions are subsequently added to the 'for' loop and 'if'
+# statements as necessary. This collects the base aggregate_level for the data requested (i.e. no averaging 
+# operations are requested of nor performed by DFE).
+
+#for dataType in Flow Stage ; do
+#	if [[ "$dataType" == Flow ]]
+#		then
+#		data_requestMIKE.sh $outputDir/$inputDir/stationFlow.lst $start $end aggregate_level average $inputDir/$dataType validation_level
+#	else
+#		data_requestMIKE.sh $outputDir/$inputDir/stationStage.lst $start $end aggregate_level average $inputDir/$dataType validation_level
+#	fi
+#done

@@ -1,29 +1,37 @@
 function D04_generate_BC2D_H_OL()
 
 % -------------------------------------------------------------------------
-% path string of ROOT Directory
+% path string of ROOT Directory = DRIVE:/GIT/ENP_TOOLS MAIN Directory = PRE_PROCESSING
 % -------------------------------------------------------------------------
-[INI.ROOT,MAIN,~] = fileparts(pwd());
-INI.ROOT = [INI.ROOT MAIN '/'];
+[ROOT,MAIN,~] = fileparts(pwd());
+TEMP = strsplit(ROOT,'\');
+
+INI.ROOT = [TEMP{1} '/' TEMP{2} '/'];
 
 % -------------------------------------------------------------------------
-% path(s) to PARENT directory ('DATA_ENP') and all input ('_input') and output ('FLOW', 'STAGE', 'BC2D') file directories
+% Add path(s) to ENP_TOOLS and all other 1st level sub-directories
 % -------------------------------------------------------------------------
-INI.DATA_ENP_DIR = [INI.ROOT 'DATA_ENP/'];
+INI.TOOLS_DIR = [INI.ROOT TEMP{3} '/'];
+INI.SAMPLE_INPUT_DIR = [INI.ROOT 'ENP_TOOLS_Sample_Input/'];
+
+clear TEMP ROOT MAIN
+% -------------------------------------------------------------------------
+% Add sub--directory path(s) for ENP_TOOLS directory
+% -------------------------------------------------------------------------
+INI.PRE_PROCESSING_DIR = [INI.TOOLS_DIR MAIN '/'];
     % Input directories:
-INI.input = [INI.DATA_ENP_DIR '_input/'];
+INI.input = [INI.PRE_PROCESSING_DIR '_input/'];
     % DFS0 file creation from DFE input file directories
-INI.STATION_DIR = [INI.DATA_ENP_DIR 'D00_STATIONS/'];
-INI.FLOW_DIR = [INI.DATA_ENP_DIR 'D01_FLOW/'];
-INI.STAGE_DIR = [INI.DATA_ENP_DIR 'D02_STAGE/'];
+INI.STATION_DIR = [INI.PRE_PROCESSING_DIR 'D00_STATIONS/'];
+INI.FLOW_DIR = [INI.PRE_PROCESSING_DIR 'D01_FLOW/'];
+INI.STAGE_DIR = [INI.PRE_PROCESSING_DIR 'D02_STAGE/'];
     % BC2D generation directories:
-INI.BC2D_DIR = [INI.DATA_ENP_DIR 'G01_BC2D/'];
+INI.BC2D_DIR = [INI.PRE_PROCESSING_DIR 'G01_BC2D/'];
 
 % -------------------------------------------------------------------------
 % SETUP Location of ENPMS Scripts and Initialize
 % -------------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = '.\ENPMS\';
-%INI.MATLAB_SCRIPTS = [INI.ROOT 'ENP_TOOLS\ENPMS\'];
+INI.MATLAB_SCRIPTS = '../ENPMS/';
 
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
@@ -31,10 +39,13 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+% Save in MATLAB format? (0 = FALSE, 1 = TRUE)
+SAVE_IN_MATLAB = 1;                                 % to save the H data and the ALL_STATIONS data
+
+% Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
 INI.DELETE_EXISTING_DFS0 = 1;
 
 INI.CREATE_FIGURES = 1;
-SAVE_IN_MATLAB = 1; % to save the H data and the ALL_STATIONS data
 
 % This function requires a directory where dfs0 are stored and a list of
 % coordinates which will be used to generate the groundwater map. In
@@ -106,7 +117,12 @@ if SAVE_IN_MATLAB
     INI = BC2D_import_dfs0(INI,SWITCH);
     % save data in strucures to load
     M = INI.MAP_H_DATA;
-    save(char(INI.OL_H_MATLAB),'M','-v7.3');
+    if exist(INI.BC2D_DIR, 'dir')
+        save(char(INI.OL_H_MATLAB),'M','-v7.3');
+    else
+        mkdir(INI.BC2D_DIR)
+        save(char(INI.OL_H_MATLAB),'M','-v7.3');
+    end
     M = INI.MAP_STATIONS;
     save(char(INI.OL_H_STATIONS_MATLAB),'M','-v7.3');
     

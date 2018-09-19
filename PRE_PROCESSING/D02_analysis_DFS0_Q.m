@@ -4,29 +4,37 @@ function D02_analysis_DFS0_Q()
 % this is to save matlab database files which can be extremely slow
 
 % -------------------------------------------------------------------------
-% path string of ROOT Directory
+% path string of ROOT Directory = DRIVE:/GIT/ENP_TOOLS MAIN Directory = PRE_PROCESSING
 % -------------------------------------------------------------------------
-[INI.ROOT,MAIN,~] = fileparts(pwd());
-INI.ROOT = [INI.ROOT MAIN '/'];
+[ROOT,MAIN,~] = fileparts(pwd());
+TEMP = strsplit(ROOT,'\');
+
+INI.ROOT = [TEMP{1} '/' TEMP{2} '/'];
 
 % -------------------------------------------------------------------------
-% path(s) to PARENT directory ('DATA_ENP') and all input ('_input') and output ('FLOW', 'STAGE', 'BC2D') file directories
+% Add path(s) to ENP_TOOLS and all other 1st level sub-directories
 % -------------------------------------------------------------------------
-INI.DATA_ENP_DIR = [INI.ROOT 'DATA_ENP/'];
+INI.TOOLS_DIR = [INI.ROOT TEMP{3} '/'];
+INI.SAMPLE_INPUT_DIR = [INI.ROOT 'ENP_TOOLS_Sample_Input/'];
+
+clear TEMP ROOT MAIN
+% -------------------------------------------------------------------------
+% Add sub--directory path(s) for ENP_TOOLS directory
+% -------------------------------------------------------------------------
+INI.PRE_PROCESSING_DIR = [INI.TOOLS_DIR MAIN '/'];
     % Input directories:
-INI.input = [INI.DATA_ENP_DIR '_input/'];
+INI.input = [INI.PRE_PROCESSING_DIR '_input/'];
     % DFS0 file creation from DFE input file directories
-INI.STATION_DIR = [INI.DATA_ENP_DIR 'D00_STATIONS/'];
-INI.FLOW_DIR = [INI.DATA_ENP_DIR 'D01_FLOW/'];
-INI.STAGE_DIR = [INI.DATA_ENP_DIR 'D02_STAGE/'];
+INI.STATION_DIR = [INI.PRE_PROCESSING_DIR 'D00_STATIONS/'];
+INI.FLOW_DIR = [INI.PRE_PROCESSING_DIR 'D01_FLOW/'];
+INI.STAGE_DIR = [INI.PRE_PROCESSING_DIR 'D02_STAGE/'];
     % BC2D generation directories:
-INI.BC2D_DIR = [INI.DATA_ENP_DIR 'G01_BC2D/'];
+INI.BC2D_DIR = [INI.PRE_PROCESSING_DIR 'G01_BC2D/'];
 
 % -------------------------------------------------------------------------
 % SETUP Location of ENPMS Scripts and Initialize
 % -------------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = '.\ENPMS\';
-%INI.MATLAB_SCRIPTS = [INI.ROOT 'ENP_TOOLS\ENPMS\'];
+INI.MATLAB_SCRIPTS = '../ENPMS/';
 
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
@@ -34,6 +42,7 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+% Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
 INI.DELETE_EXISTING_DFS0 = 1;
 
 % directory with *.DFS0 files:

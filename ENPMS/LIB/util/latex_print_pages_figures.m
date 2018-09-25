@@ -7,7 +7,7 @@ ROW113 = [']'];
 if NoFIG == 2                                                               %% if statement to adjust the spacing between windows on 
     ROW114 = ['{\includegraphics[width=0.75\textwidth]{'];                 %% a single page of either 2x2 or 2x3 plots
 elseif NoFIG == 3
-    ROW114 = ['{\includegraphics[width=0.65\textwidth]{'];
+    ROW114 = ['{\includegraphics[width=0.5\textwidth]{'];
 else
     fprint('Error, NoFIG value must equal 2 or 3.')
     return

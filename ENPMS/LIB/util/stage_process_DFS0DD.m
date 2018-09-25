@@ -1,16 +1,17 @@
-function stage_process_DFS0DD(INI,LISTING)
-% The INI input changes during teh course of this script. In order to
-% ensure coninuity the original INI is preserved here.
-original_INI = INI;
-FIG_DIR = INI.DIR_DFS0_FILES
+function stage_process_DFS0DD(INI)
+
+FILE_FILTER = '*.dfs0'; % list only files with extension .dfs0
+STAGE_DFS0_FILES = [INI.DIR_STAGE_DFS0 FILE_FILTER];
+LISTING  = dir(char(STAGE_DFS0_FILES));
+FIG_DIR = INI.DIR_STAGE_PNGSDD;
 
 n = length(LISTING);
 for i = 1:n
    try
       s = LISTING(i);
       NAME = s.name;
-      FILE_NAME = [INI.DIR_DFS0_FILES NAME];
-      fprintf('... reading: %d/%d: %s \n', i, n, char(FILE_NAME));
+   FILE_NAME = [INI.DIR_STAGE_DFS0 NAME];
+   fprintf('  Processing: %d/%d: %s \n', i, n, char(NAME));
       
       % read database file
       DFS0 = read_file_DFS0(FILE_NAME);
@@ -26,7 +27,7 @@ for i = 1:n
       
       % create a daily file dfs0 file.
       [~,B,~] = fileparts(char(FILE_NAME));
-      FILE_NAME = [INI.STAGE_DIR,'DFS0DD/',B,'.dfs0'];
+   FILE_NAME = [INI.DIR_STAGE_DFS0DD,B,'.dfs0'];      % set this dir path for DFS0DD *.dfso file destination
       DFS0.STATION = B;
       % save the file in a new directory
       create_DFS0_GENERIC_DD_H(INI,DFS0,FILE_NAME);
@@ -39,7 +40,7 @@ for i = 1:n
       
 %      DFS0 = DFS0_cumulative_flow(DFS0);  % Function call is commented out for all 'water level' data sets.
 
-      INI.DIR_DFS0_FILES = strrep(INI.DIR_DFS0_FILES,'DFS0','DFS0DD');
+   %INI.DIR_DFS0_FILES = strrep(INI.DIR_DFS0_FILES,'DFS0','DFS0DD');
       % generate Timeseries
       plot_fig_TS_1(DFS0,FIG_DIR);
       
@@ -62,7 +63,29 @@ for i = 1:n
       fprintf('... exception (B) in: %d/%d: %s \n', i, n, char(FILE_NAME));
       fclose('all');
    end
-   INI = original_INI;
+   
 end
+% Process the DFS0 and *.png files for inclusion on PDFs.
+format compact
+DIRPNG = INI.DIR_STAGE_PNGSDD;
+PNGFILES = [DIRPNG '*.png'];
+VECPNG = ls(PNGFILES);                                      % list all files in DIRPNG with extension *.png
+[num_pngs,~] = size(VECPNG);
+noFIG = 3;                                                  % Set the number of image rows per latex page. Value can either be 2 or 3.
+FID = fopen(INI.STAGEDD_LATEX_FILENAME,'w');
+latex_print_begin(FID,INI.STAGEDD_LATEX_HEADER);
+for i = 1:num_pngs
+   m = mod(i,2);                                       % This variable has no usage within this or any other function/script. Consider revising, removing this variable completely.
+   n = mod(i,3);
+   %    if m == 0; noFIG = 3; else; noFIG = 2; end  % This is not the correct
+   %    way to determine NoFIG. Need to deteremine a better method else just
+   %    default to a 2 column 3 row image layout
+   if mod(i,6) == 1; latex_begin_new_page(FID); end                        % If this is the first image to be processed, begin the latex page design.
+   [~,NAME,EXT] = fileparts(VECPNG(i,:));
+   latex_print_pages_figures(m,n,FID,INI.STAGEDD_LATEX_RELATIVE_PNG_PATH,NAME,strtrim(EXT),noFIG);
+   if ~mod(i,6) || i == length(VECPNG), latex_end_page(FID); end           % If the page has 6 total figures, or i is the last image in the list, end the latex page.
+end
+latex_print_end(FID)
+fclose(FID);
 fclose('all');
 end

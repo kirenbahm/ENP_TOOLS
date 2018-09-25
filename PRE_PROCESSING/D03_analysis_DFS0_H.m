@@ -1,45 +1,60 @@
-function D03analysis_DFS0_H()
+function D03_analysis_DFS0_H()
 % Script reads dfs0 files and provides analysis and figures along with CDF
 % PE, monthly and annual summaries
 
-% It is critical that you ensure the pwd (path to working directory) is set
-% properly (i.e. 'drive:\MIKE_MATLAB'). This can be verified by setting a 
-% breakpoint at line: 64 and checking the value of "INI.CURRENT_PATH", and 
-% "LISTING" variables. If there is an error verify pwd(*), addpath(*), and 
-% "DIR =" lines are complete and with accurate syntax.
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% BEGIN USER INPUT
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
 
-% -------------------------------------------------------------------------
-% path string of ROOT Directory = DRIVE:/GIT/ENP_TOOLS MAIN Directory = PRE_PROCESSING
-% -------------------------------------------------------------------------
-[ROOT,MAIN,~] = fileparts(pwd());
-TEMP = strsplit(ROOT,'\');
+% Location of dfs0 STAGE files 
+INI.DIR_FILES           = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D02_STAGE/';
 
-INI.ROOT = [TEMP{1} '/' TEMP{2} '/'];
+INI.DIR_STAGE_DFS0       = [INI.DIR_FILES 'DFS0/'];
+INI.DIR_STAGE_PNGS       = [INI.DIR_FILES 'DFS0_pngs/'];
+INI.STAGE_LATEX_FILENAME = [INI.DIR_FILES 'STAGE.tex'];
+INI.STAGE_LATEX_HEADER   = 'Water Level Statistics';    % header printed in LaTeX document
+INI.STAGE_LATEX_RELATIVE_PNG_PATH = './DFS0_pngs/'; % RELATIVE path from location of .tex file to location of .png files
 
-% -------------------------------------------------------------------------
-% Add path(s) to ENP_TOOLS and all other 1st level sub-directories
-% -------------------------------------------------------------------------
-INI.TOOLS_DIR = [INI.ROOT TEMP{3} '/'];
-INI.SAMPLE_INPUT_DIR = [INI.ROOT 'ENP_TOOLS_Sample_Input/'];
+INI.DIR_STAGE_DFS0DD       = [INI.DIR_FILES 'DFS0DD/'];
+INI.DIR_STAGE_PNGSDD       = [INI.DIR_FILES 'DFS0DD_pngs/'];
+INI.STAGEDD_LATEX_FILENAME = [INI.DIR_FILES 'STAGE_DD.tex'];
+INI.STAGEDD_LATEX_HEADER   = 'Daily Water Level Statistics';
+INI.STAGEDD_LATEX_RELATIVE_PNG_PATH = './DFS0DD_pngs/';
 
-clear TEMP ROOT MAIN
-% -------------------------------------------------------------------------
-% Add sub--directory path(s) for ENP_TOOLS directory
-% -------------------------------------------------------------------------
-INI.PRE_PROCESSING_DIR = [INI.TOOLS_DIR MAIN '/'];
-    % Input directories:
-INI.input = [INI.PRE_PROCESSING_DIR '_input/'];
-    % DFS0 file creation from DFE input file directories
-INI.STATION_DIR = [INI.PRE_PROCESSING_DIR 'D00_STATIONS/'];
-INI.FLOW_DIR = [INI.PRE_PROCESSING_DIR 'D01_FLOW/'];
-INI.STAGE_DIR = [INI.PRE_PROCESSING_DIR 'D02_STAGE/'];
-    % BC2D generation directories:
-INI.BC2D_DIR = [INI.PRE_PROCESSING_DIR 'G01_BC2D/'];
+INI.DIR_STAGE_DFS0HR       = [INI.DIR_FILES 'DFS0HR/'];
+INI.DIR_STAGE_PNGSHR       = [INI.DIR_FILES 'DFS0HR_pngs/'];
+INI.STAGEHR_LATEX_FILENAME = [INI.DIR_FILES 'STAGE_HR.tex'];
+INI.STAGEHR_LATEX_HEADER   = 'Hourly Water Level Statistics';
+INI.STAGEHR_LATEX_RELATIVE_PNG_PATH = './DFS0HR_pngs/';
 
-% -------------------------------------------------------------------------
-% SETUP Location of ENPMS Scripts and Initialize
-% -------------------------------------------------------------------------
+
+% Location of ENPMS library
 INI.MATLAB_SCRIPTS = '../ENPMS/';
+
+% Other options (0 = NO, 1 = YES)
+INI.DELETE_EXISTING_DFS0 = 1;  % Delete existing DFS0 files? 
+
+% Location of blank figure
+INI.BLANK_PNG = '../../ENP_TOOLS_Sample_Input/Data_Common/blank.png';
+
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% END USER INPUT
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+
+
+% this should get deleted when automatic directory creation is added
+      mkdir(char(INI.DIR_STAGE_PNGS));
+      mkdir(char(INI.DIR_STAGE_DFS0DD));
+      mkdir(char(INI.DIR_STAGE_PNGSDD));
+      mkdir(char(INI.DIR_STAGE_DFS0HR));
+      mkdir(char(INI.DIR_STAGE_PNGSHR));
+% this should get deleted when automatic directory creation is added
+
+
 
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
@@ -47,71 +62,18 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
-% Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
-INI.DELETE_EXISTING_DFS0 = 1;
-
-% directory with station_data.txt file:
-
-% directory with *.out files:
-INI.DIR_DFS0_FILES = [INI.STAGE_DIR 'DFS0/'];
-FILE_FILTER = '*.dfs0'; % list only files with extension .out
-STAGE_DFS0_FILES = [INI.DIR_DFS0_FILES FILE_FILTER];
-LISTING  = dir(char(STAGE_DFS0_FILES));
 
 % iterate over all files
-stage_process_DFS0(INI,LISTING);
+stage_process_DFS0(INI);
 
-stage_process_DFS0DD(INI,LISTING);
+stage_process_DFS0DD(INI);
 
-stage_process_DFS0HR(INI,LISTING);
+stage_process_DFS0HR(INI);
 
 %save('DATA_Q.MATLAB','S','mapSTATIONS','-v7.3');
 % add the last station after the entire file is eol
 
-% Process the DFS0 and *.png files for inclusion on PDFs. User can set
-% which *.png series to process: full, DD, or HR. Process only one at a
-% time currently.
-
-format compact
-DPATH = INI.STAGE_DIR;                                          % set DPATH to directory location with necessary *.dfs0 and *.png files
-% Set *.dfs0 DIRECTORY for the user defined pdf creation.
-DIRPNG = [DPATH 'DFS0/'];                                       % location of DFS0 *.png files
-%DIRPNG = [DPATH 'DFS0DD/'];                                    % location of DFS0DD *.png files
-%DIRPNG = [DPATH 'DFS0HR/'];                                    % location of DFS0HR *.png files
-PNGFILES = [DIRPNG '*.png'];
-VECPNG = ls(PNGFILES);                                          % list all files in DIRPNG with extension *.png
-% Set output FILENAME for the user defined pdf creation.
-FILENAME = [DPATH 'STAGE.tex'];                                 % Destination STAGE LaTex file ( *.tex )
-%FILENAME = [DPATH 'STAGE_DD.tex'];                             % Destination STAGE_DD LaTex file ( *.tex )
-%FILENAME = [DPATH 'STAGE_HR.tex'];                             % Destination STAGE_HR LaTex file ( *.tex )
-HEADER = 'Water Level Statistics';
-noFIG = 3;                                                      % Set the number of image rows per latex page. Value can either be 2 or 3.
-
-FID = fopen(FILENAME,'w');
-
-latex_print_begin(FID,HEADER);
-
-
-for i = 1:length(VECPNG)
-    m = mod(i,3);                                       % This variable has no usage within this or any other function/script. Consider revising, removing this variable completely.
-    n = mod(i,2);
-    
-%    if m == 0; noFIG = 3; else; noFIG = 2; end  % This is not the correct
-%    way to determine NoFIG. Need to deteremine a better method else just
-%    default to a 2 column 3 row image layout
-    
-    if mod(i,6) == 1; latex_begin_new_page(FID); end                        % If this is the first image to be processed, begin the latex page design.
-    
-    [~,NAME,EXT] = fileparts(VECPNG(i,:));
-    latex_print_pages_figures(m,n,FID,DIRPNG,NAME,strtrim(EXT),noFIG);
-    
-    if ~mod(i,6) || i == length(VECPNG), latex_end_page(FID); end           % If the page has 6 total figures, or i is the last image in the list, end the latex page.
+fprintf('\n DONE \n\n');
 
 end
-
-latex_print_end(FID)
-
-fclose(FID);
-
-end
-%--------------------------------------------------------------------------
+% -------------------------------------------------------------------------

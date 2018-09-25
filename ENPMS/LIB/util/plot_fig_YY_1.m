@@ -1,4 +1,4 @@
-function plot_fig_YY_1(DFS0,INI)
+function plot_fig_YY_1(DFS0,FIG_DIR)
 
 clf;                                          % Clears curent figure and deletes all children of the current figure
 
@@ -53,11 +53,11 @@ TITLE=char(strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT
 title(TITLE);
 %xlabel('Month');
 ylabel(L);
-legend(N);
-legend boxoff;
+%legend(N);
+%legend boxoff;
 
 [~,NA,~] = fileparts(DFS0.NAME);
 NA = strrep(NA,'.','_');
-F = strcat(INI.DIR_DFS0_FILES,NA,'-YY','.png');
+F = strcat(FIG_DIR,NA,'-YY','.png');
 fig_plot_save(F);
 end

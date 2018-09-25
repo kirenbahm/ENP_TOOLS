@@ -1,4 +1,4 @@
-function plot_fig_CUMULATIVE_1(DFS0,INI)
+function plot_fig_CUMULATIVE_1(DFS0,FIG_DIR)
 
 clf;                                          % Clears curent figure and deletes all children of the current figure
 
@@ -57,7 +57,7 @@ legend boxoff;
 
 [~,NA,~] = fileparts(DFS0.NAME);
 NA = strrep(NA,'.','_');
-F = strcat(INI.DIR_DFS0_FILES,NA,'-CU','.png');
+F = strcat(FIG_DIR,NA,'-CU','.png');
 fig_plot_save(F);
 
 end

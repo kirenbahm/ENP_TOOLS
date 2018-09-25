@@ -1,4 +1,4 @@
-function plot_fig_PE_1(DFS0,INI)
+function plot_fig_PE_1(DFS0,FIG_DIR)
 
 clf;                                          % Clears curent figure and deletes all children of the current figure
 
@@ -53,7 +53,7 @@ legend boxoff;
 % Save plot as *.png
 [~,NA,~] = fileparts(DFS0.NAME);
 NA = strrep(NA,'.','_');
-F = strcat(INI.DIR_DFS0_FILES,NA,'-CPE','.png');
+F = strcat(FIG_DIR,NA,'-CPE','.png');
 fig_plot_save(F);
 
 

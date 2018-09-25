@@ -1,4 +1,4 @@
-function [H,P] = plot_fig_CDF_1(DFS0,INI)
+function [H,P] = plot_fig_CDF_1(DFS0,FIG_DIR)
 
 clf;                                          % Clears curent figure and deletes all children of the current figure
 
@@ -38,7 +38,7 @@ legend boxoff;
 
 [~,NA,~] = fileparts(DFS0.NAME);
 NA = strrep(NA,'.','_');
-F = strcat(INI.DIR_DFS0_FILES,NA,'-CDF','.png');
+F = strcat(FIG_DIR,NA,'-CDF','.png');
 fig_plot_save(F);
 
 end

@@ -1,4 +1,4 @@
-function plot_fig_TS_1(DFS0,INI)
+function plot_fig_TS_1(DFS0,FIG_DIR)
 
 C = strsplit(DFS0.NAME,'.');
 NAME = [C{1} ' ' C{2}];
@@ -55,7 +55,7 @@ legend boxoff;
 %Save plot as *.png
 [~,NA,~] = fileparts(DFS0.NAME);
 NA = strrep(NA,'.','_');
-F = strcat(INI.DIR_DFS0_FILES,NA,'-TS','.png');
+F = strcat(FIG_DIR,NA,'-TS','.png');
 fig_plot_save(F);
 
 end

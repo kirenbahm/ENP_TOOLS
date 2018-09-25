@@ -7,7 +7,7 @@ eval('import DHI.Generic.MikeZero.DFS.*');
 eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
 eval('import DHI.Generic.MikeZero.*');
 %
-fprintf('\n       Creating file: ''%s''\n',F);
+%fprintf('\n       Creating file: ''%s''\n',F);
 %dfs0 = dfsTSO(char(F),1);                                                   
 % Create an empty dfs1 file object
 factory = DfsFactory();
@@ -44,7 +44,7 @@ tic
 % Write to file using the MatlabDfsUtil
 MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((TS-TS(1))*86400), ...
     NET.convertArray(D, 'System.Double', size(D,1), size(D,2)))
-toc
+%toc
 
 dfs.Close();
 

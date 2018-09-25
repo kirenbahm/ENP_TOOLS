@@ -1,4 +1,4 @@
-function [DATA, STATION, TYPE] = D03_read_DFE_file(fileID)
+function [DATA, STATION, TYPE] = D03_read_DFE_file(INI, fileID)
 
 formatString = '%s %s %s %s %*[^\n]';
 
@@ -20,7 +20,7 @@ FIELD_DTYPE = [];
 FIELD_TIME = [];
 FIELD_V = [];
 
-tic;
+%tic;
 while ~feof(fileID)
 
     D = textscan(fileID,formatString,'HeaderLines',9,'Delimiter','|','EmptyValue',NaN);
@@ -66,16 +66,18 @@ while ~feof(fileID)
         FIELD_V = [FIELD_V; V];
 
    catch
+      if INI.DEBUG
         fprintf('EXCEPTION: %d::%s::%s::%s::D0 = %s\n', i, char(STATION(1)), ...
             char(DTYPE(1)),char(TSTR(1)),char(D0(1)));
         fprintf('EXCEPTION::CONTINUING::\n');
         %        error(errorStruct);
+      end
         continue
     end
-    if mod(i,n)==0 || ~feof(fileID)
+    if INI.DEBUG && (mod(i,n)==0 || ~feof(fileID))
         toc;
-        fprintf('... %d\t:%s:: %s: %s=%f :: %s\n', length(FIELD_V), ...
-            char(STATION(1)), DATESTR(1), char(DTYPE(1)), V(1));
+           fprintf('... %d\t:%s:: %s: %s=%f :: %s\n', length(FIELD_V), ...
+               char(STATION(1)), DATESTR(1), char(DTYPE(1)), V(1));
         tic;
     end    
 end

@@ -13,7 +13,7 @@ eval('import DHI.Generic.MikeZero.DFS.*');
 eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
 eval('import DHI.Generic.MikeZero.*');
 %
-fprintf('\n       Creating file: ''%s''\n',F);
+%fprintf('\n       Creating file: ''%s''\n',F);
 dfs0 = dfsTSO(char(F),1);
 % Create an empty dfs1 file object
 factory = DfsFactory();

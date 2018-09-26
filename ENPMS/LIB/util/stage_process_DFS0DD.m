@@ -154,7 +154,7 @@ for i = 1:num_pngs
    [~,NAME,EXT] = fileparts(VECPNG(i,:));
    latex_print_pages_figures(m,n,FID,INI.STAGEDD_LATEX_RELATIVE_PNG_PATH,NAME,strtrim(EXT),noFIG);
    
-   if ~mod(i,6) || i == length(VECPNG), latex_end_page(FID); end           % If the page has 6 total figures, or i is the last image in the list, end the latex page.
+   if ~mod(i,6) || i == num_pngs, latex_end_page(FID); end           % If the page has 6 total figures, or i is the last image in the list, end the latex page.
 end
 
 latex_print_end(FID)

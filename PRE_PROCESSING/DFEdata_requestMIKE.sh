@@ -13,21 +13,20 @@
 # should be directed toward her.
 
 if [[ $# -ne 3 ]] ; then
-	print "\n\tUsage: $0 start_date end_date aggregate_level"
-	print "\t ex: $0 2010-01-01 2017-12-31 hourly"
+	print "\n\tUsage: $0 start_date end_date"
+	print "\t ex: $0 2010-01-01 2017-12-31"
 	print "\t *** Date format must be YYYY-mm-dd ***"
-	print "\t *** Aggregate Level = real time, hourly, daily, and etc... ***" 
 	exit 0
 fi
 
 start=$1
 end=$2
-time=$3
 
 # Set output and input storage locations for requested data directories
 
 inputDir=_input
 outputDir=/opt/physical/adam/MIKE_MATLAB/DATA_ENP
+bin_dir=/opt/physical/util
 
 # For loop of requested DataTypes. More can be added as necessary but user must ensure and storage directories,
 # station list with datatypes files exist and any additions are subsequently added to the 'for' loop and 'if'
@@ -36,9 +35,9 @@ outputDir=/opt/physical/adam/MIKE_MATLAB/DATA_ENP
 for dataType in Flow Stage ; do
 	if [[ "$dataType" == Flow ]]
 		then
-		data_requestMIKE.sh $outputDir/$inputDir/stationFlow.lst $start $end $time average $inputDir/$dataType validation_level
+		$bin_dir/data_requestMIKE.sh $outputDir/$inputDir/stationFlow.lst $start $end aggregate_level aggregate_statistic $inputDir/$dataType validation_level
 	else
-		data_requestMIKE.sh $outputDir/$inputDir/stationStage.lst $start $end $time average $inputDir/$dataType validation_level
+		$bin_dir/data_requestMIKE.sh $outputDir/$inputDir/stationStage.lst $start $end aggregate_level aggregate_statistic $inputDir/$dataType validation_level
 	fi
 done
 

@@ -1,5 +1,5 @@
 function D06_generateObservedMatlab()
-%generate_oberved_matlab() This function creates MATLAB data file with
+% This function creates MATLAB data file with
 %observed data
 %   This function reads sheet OBSERVED_DATA_MODEL/ALL_STATION_DATA and the
 %   corresponding dfs0 files in 3 folders H_M11HR, H_MSHEHR and Q_M11HR
@@ -11,542 +11,96 @@ function D06_generateObservedMatlab()
 %
 % (formerly named A00_generateObservedMatlab_07212018.m)
 
-INI.SAVE_IN_MATLAB = 0; 
-INI.SAVE_IN_MATLAB = 1; 
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% BEGIN USER INPUT
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
 
-% -------------------------------------------------------------------------
-% path string of ROOT Directory = DRIVE:/GIT/ENP_TOOLS MAIN Directory = PRE_PROCESSING
-% -------------------------------------------------------------------------
-[ROOT,MAIN,~] = fileparts(pwd());
-TEMP = strsplit(ROOT,'\');
+% Input directory and names of subdirectories containing dfs0 files
+INI.INPUT_DIR = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/generateObserved_input/';
+Q_M11HR_DIR  = 'Q_M11HR';   % (do not put '/' in this name)
+H_M11HR_DIR  = 'H_M11HR';   % (do not put '/' in this name)
+H_MSHEHR_DIR = 'H_MSHEHR';  % (do not put '/' in this name)
+FILE_FILTER = '*.dfs0';   % File extension filter for input files
 
-INI.ROOT = [TEMP{1} '/' TEMP{2} '/'];
+% Model number (don't change this - currently only M06 has been tested)
+INI.MODEL = 'M06';  % options: 'M01' or 'M06'
 
-% -------------------------------------------------------------------------
-% Add path(s) to ENP_TOOLS and all other 1st level sub-directories
-% -------------------------------------------------------------------------
-INI.TOOLS_DIR = [INI.ROOT TEMP{3} '/'];
-INI.SAMPLE_INPUT_DIR = [INI.ROOT 'ENP_TOOLS_Sample_Input/'];
+% Excel file with station data, and sheets to be used for input & output
+INI.XLSX_STATIONS = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/generateObserved_input/OBSERVED_DATA_MODEL_testPreproc.xlsx';
+INI.SHEET_ALL = 'SHP_ALL_STATIONS';           % station data is READ from this sheet
+INI.SHEET_OBS = [INI.MODEL '_' 'MODEL_OBS'];  % station data is WRITTEN to this sheet
 
-clear TEMP ROOT MAIN
-% -------------------------------------------------------------------------
-% Add sub--directory path(s) for ENP_TOOLS directory
-% -------------------------------------------------------------------------
-INI.PRE_PROCESSING_DIR = [INI.TOOLS_DIR MAIN '/'];
-    % Input directories:
-INI.input = [INI.PRE_PROCESSING_DIR '_input/'];
-    % DFS0 file creation from DFE input file directories
-INI.STATION_DIR = [INI.PRE_PROCESSING_DIR 'D00_STATIONS/'];
-INI.FLOW_DIR = [INI.PRE_PROCESSING_DIR 'D01_FLOW/'];
-INI.STAGE_DIR = [INI.PRE_PROCESSING_DIR 'D02_STAGE/'];
-    % BC2D generation directories:
-INI.BC2D_DIR = [INI.PRE_PROCESSING_DIR 'G01_BC2D/'];
+% Name of database file to be created
+DATABASE_OBS = ['../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/generateObserved_output/M06_OBSERVED_DATA_testPreproc.MATLAB'];
 
-% -------------------------------------------------------------------------
-% SETUP Location of ENPMS Scripts and Initialize
-% -------------------------------------------------------------------------
+% Location to save dfs0 output files
+INI.OUTPUT_DFS0_DIR = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/generateObserved_output/DFS0/';
+
+% Location of ENPMS Scripts and Initialize
 INI.MATLAB_SCRIPTS = '../ENPMS/';
 
+% not sure if this is used anywhere:
+INI.SAVE_IN_MATLAB = 1; 
+
+
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% END USER INPUT
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+
+% add tools to path
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
 catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
-% -------------------------------------------------------------------------
-% File (extension) filter for listing needed files ( i.e. *.dfs0 files )
-% -------------------------------------------------------------------------
-FILE_FILTER = '*.dfs0'; % list only files with extension .out
-
-% -------------------------------------------------------------------------
-% Set all UNIQUE directory, file, and variabler needs for THIS script.
-% -------------------------------------------------------------------------
-%INI.MODEL = 'M01';
-INI.MODEL = 'M06';
-
-%name of excel file to be used
-INI.XLSX_STATIONS = [INI.SAMPLE_INPUT_DIR 'Data_Common/OBSERVED_DATA_MODEL_test.xlsx'];
-INI.SHEET_ALL = 'SHP_ALL_STATIONS';
-INI.SHEET_OBS = [INI.MODEL '_' 'MODEL_OBS'];
-INI.SHEET_COMP = [INI.MODEL '_' 'MODEL_COMP'];
-
-%name of database to be created
-DATABASE_OBS = [INI.SAMPLE_INPUT_DIR 'Data_Common/' INI.MODEL '_OBSERVED_DATA_07212018.MATLAB'];
-%%%%%%%%%%% end initialize names%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% if exist(fullfile(DATABASE_OBS), 'file')
-%     load(char(DATABASE_OBS),'-mat');
-%     % overwrites the existing dfs0 files in the directory ./OBSERVED:w
-%     MAP_OBS = saveDataDFS0(MAP_OBS,INI);
-% end
-
-% list all hourly files Q_M11HR
-DIR = 'Q_M11HR/';
-INI.DIR_DFS0_FILES = [INI.SAMPLE_INPUT_DIR 'Data_Common/OBSERVED_DATA/' DIR];
-LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
-LISTING_Q_M11  = dir(char(LIST_DFS0_F));
-
-% list all hourly files in H_M11HR
-DIR = 'H_M11HR/';
-INI.DIR_DFS0_FILES = [INI.SAMPLE_INPUT_DIR 'Data_Common/OBSERVED_DATA/' DIR];
-LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
-LISTING_H_M11  = dir(char(LIST_DFS0_F));
-
-% list all hourly files in H_MSHEHR
-DIR = 'H_MSHEHR/';
-INI.DIR_DFS0_FILES = [INI.SAMPLE_INPUT_DIR 'Data_Common/OBSERVED_DATA/' DIR];
-LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
-LISTING_H_MSHE  = dir(char(LIST_DFS0_F));
-
 % read all stations from the excel file, stations are within M3ENP_SF
 mapAllStations = OM00_read_xlsx_all_stations(INI);
 
-% read all dfs0 files in 'Q_M11HR/';
-DIR = 'Q_M11HR';
-DATA_Q_M11HR = OM01_read_dfs0_files(INI,DIR,mapAllStations,LISTING_Q_M11);
+% list and read all hourly files Q_M11HR
+INI.DIR_DFS0_FILES = [INI.INPUT_DIR Q_M11HR_DIR '/'];
+LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
+LISTING_Q_M11  = dir(char(LIST_DFS0_F));
+DATA_Q_M11HR = OM01_read_dfs0_files(INI,Q_M11HR_DIR,mapAllStations,LISTING_Q_M11);
 
-% read all dfs0 files in 'H_M11HR/';
-DIR = 'H_M11HR';
-DATA_H_M11HR = OM01_read_dfs0_files(INI,DIR,mapAllStations,LISTING_H_M11);
+% list and read all hourly files in H_M11HR
+INI.DIR_DFS0_FILES = [INI.INPUT_DIR H_M11HR_DIR '/'];
+LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
+LISTING_H_M11  = dir(char(LIST_DFS0_F));
+DATA_H_M11HR = OM01_read_dfs0_files(INI,H_M11HR_DIR,mapAllStations,LISTING_H_M11);
 
-% read all dfs0 files in 'H_MSHEHR/';
-DIR = 'H_MSHEHR';
-DATA_H_MSHEHR = OM01_read_dfs0_files(INI,DIR,mapAllStations,LISTING_H_MSHE);
+% list and read all hourly files in H_MSHEHR
+INI.DIR_DFS0_FILES = [INI.INPUT_DIR H_MSHEHR_DIR '/'];
+LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
+LISTING_H_MSHE  = dir(char(LIST_DFS0_F));
+DATA_H_MSHEHR = OM01_read_dfs0_files(INI,H_MSHEHR_DIR,mapAllStations,LISTING_H_MSHE);
 
-% concatenate all structures and save
+% concatenate all structures and save into DATA variable
 DATA = [DATA_Q_M11HR DATA_H_M11HR DATA_H_MSHEHR];
 
-% Create a Map of Observed; MAP_OBS
-MAP_OBS = OM03_createMapObs(DATA);
+% Save DATA into the MAP_OBS map container
+MAP_OBS = containers.Map;
+for i = 1:length(DATA)
+    STATION_NAME = DATA(i).STATION_NAME;
+    MAP_OBS(char(STATION_NAME)) = DATA(i);    
+end
 
-% Save observed DATA for use in scripting usig MATLAB format
+% Save MAP_OBS variable into a .MATLAB file
 save(char(DATABASE_OBS),'MAP_OBS','-v7.3');
-% load(char(DATABASE_OBS),'-mat');
 
-% Save in excel all data in MODEL_OBS_DATA
+
+% Save station metadata for stations in MAP_OBS into an Excel sheet
 OM04_save_obs_station_xlsx(MAP_OBS,INI);
-%writetable(struct2table(DATA),'test.xlsx');
 
-OM05_saveDataDFS0(MAP_OBS,INI);
+% Save data from MAP_OBS as individual dfs0 files.
+%   note - it might be better to just copy the dfs0 files that were read at
+%   the beginning of this script, instead of reading them and rewriting
+%   them. should look into this further at some point.
+OM05_saveDataDFS0(MAP_OBS,INI.OUTPUT_DFS0_DIR);
 
 end
 
-% function MAP_OBS = saveDataDFS0(MAP_OBS,INI)
-% NET.addAssembly('DHI.Generic.MikeZero.EUM');
-% NET.addAssembly('DHI.Generic.MikeZero.DFS');
-% HNET = NETaddDfsUtil();
-% eval('import DHI.Generic.MikeZero.DFS.*');
-% eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
-% eval('import DHI.Generic.MikeZero.*');
-% eval('import DHI.Generic.MikeZero.DFS.dfs0.*')
-% useDouble = false;
-% 
-% DIR_OBSERVED = './OBSERVED/';
-% 
-% % Flag specifying wether to use the MatlabDfsUtil for writing, or whehter
-% % to use the raw DFS API routines. The latter is VERY slow, but required in
-% % case the MatlabDfsUtil.XXXX.dll is not available.
-% useUtil = ~isempty(HNET);
-% 
-% if (useDouble)
-%     dfsDT = DfsSimpleType.Double;
-% else
-%     dfsDT = DfsSimpleType.Float;
-% end
-% 
-% for K  = MAP_OBS.keys
-% 
-%     FILE_SAVE = strcat(DIR_OBSERVED, K, '.dfs0');
-%     % This erases if there is existing dfs0 file in ./OBSERVED
-%     if exist(char(FILE_SAVE), 'file')==2
-%         delete(char(FILE_SAVE));
-%     end
-%     
-%     DATA = MAP_OBS(char(K));
-%     S = DATA.STATION_NAME;
-%     TS = DATA.TIMEVECTOR;
-%     D = DATA.DOBSERVED;
-%     F = char(FILE_SAVE);
-%     
-%     X = DATA.X_UTM;
-%     Y = DATA.Y_UTM;
-%     Z = DATA.Z;
-%     
-%     if isnan(X), X=0;,end
-%     if isnan(Y), Y=0;,end
-%     if isnan(Z), Z=0;,end
-%     
-%     if strcmp(DATA.DFSTYPE,'Water Level')
-%         create1DFS0_H(INI,S, TS, D, F, dfsDT, X, Y, Z);
-%     end
-%     
-%     if strcmp(DATA.DFSTYPE, 'Discharge')
-%         create1DFS0_G_Q(INI,S, TS, D, F, dfsDT, X, Y, Z);
-%     end
-%     
-% end
-% 
-% end
-
-% function create1DFS0_G_Q(INI,S, TS, D, F, dfsDT, X, Y, Z)
-% % S - Station
-% % TS - Timeseries vector
-% % D - Data vector
-% % F - File name
-% % dfsDT
-% NET.addAssembly('DHI.Generic.MikeZero.EUM');
-% NET.addAssembly('DHI.Generic.MikeZero.DFS');
-% HNET = NETaddDfsUtil();
-% eval('import DHI.Generic.MikeZero.DFS.*');
-% eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
-% eval('import DHI.Generic.MikeZero.*');
-% %
-% fprintf('\n       Creating file: ''%s''\n',F);
-% dfs0 = dfsTSO(char(F),1);
-% % Create an empty dfs1 file object
-% factory = DfsFactory();
-% builder = DfsBuilder.Create(char(S),'Matlab DFS',0);
-% 
-% T = datevec(TS(1));
-% builder.SetDataType(0);
-% builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin('UTM-17',12,54,2.6));
-% builder.SetTemporalAxis(factory.CreateTemporalNonEqCalendarAxis...
-%     (eumUnit.eumUsec,System.DateTime(T(1),T(2),T(3),T(4),T(5),T(6))));
-% 
-% % Add an Item
-% item1 = builder.CreateDynamicItemBuilder();
-% % item1.Set(char(S), DHI.Generic.MikeZero.eumQuantity...
-% %     (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDT);
-% item1.Set(char(S), DHI.Generic.MikeZero.eumQuantity...
-%     (eumItem.eumIDischarge, eumUnit.eumUft3PerSec), dfsDT);
-% % % (eumItem.eumIUndefined,eumUnit.eumUUndefined));
-% % (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDT);
-% item1.SetValueType(DataValueType.Instantaneous);
-% item1.SetAxis(factory.CreateAxisEqD0());
-% builder.AddDynamicItem(item1.GetDynamicItemInfo());
-% 
-% builder.CreateFile(F);
-% 
-% dfs = builder.GetFile();
-% % Add  data in the file
-% 
-% % Write to file using the MatlabDfsUtil
-% MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((TS-TS(1))*86400), ...
-%     NET.convertArray(D, 'System.Double', size(D,1), size(D,2)))
-% % toc
-% 
-% dfs.Close();
-% 
-% end
-
-% function create1DFS0_H(INI,S, TS, D, F, dfsDT, X, Y, Z)
-% % S - Station
-% % TS - Timeseries vector
-% % D - Data vector
-% % F - File name
-% % dfsDT
-% 
-% 
-% NET.addAssembly('DHI.Generic.MikeZero.EUM');
-% NET.addAssembly('DHI.Generic.MikeZero.DFS');
-% H = NETaddDfsUtil();
-% eval('import DHI.Generic.MikeZero.DFS.*');
-% eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
-% eval('import DHI.Generic.MikeZero.*');
-% %
-% fprintf('\n       Creating file: ''%s''\n',F);
-% dfs0 = dfsTSO(char(F),1);
-% % Create an empty dfs1 file object
-% factory = DfsFactory();
-% builder = DfsBuilder.Create(char(S),'Matlab DFS',0);
-% 
-% T = datevec(TS(1));
-% builder.SetDataType(0);
-% builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin('UTM-17',12,54,2.6));
-% builder.SetTemporalAxis(factory.CreateTemporalNonEqCalendarAxis...
-%     (eumUnit.eumUsec,System.DateTime(T(1),T(2),T(3),T(4),T(5),T(6))));
-% 
-% % Add an Item
-% item1 = builder.CreateDynamicItemBuilder();
-% item1.Set(char(S), DHI.Generic.MikeZero.eumQuantity...
-%     (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDT);
-% item1.SetValueType(DataValueType.Instantaneous);
-% item1.SetAxis(factory.CreateAxisEqD0());
-% item1.SetReferenceCoordinates(X,Y,Z);
-% builder.AddDynamicItem(item1.GetDynamicItemInfo());
-% 
-% builder.CreateFile(F);
-% 
-% dfs = builder.GetFile();
-% % Add  data in the file
-% % tic;
-% % Write to file using the MatlabDfsUtil
-% MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((TS-TS(1))*86400), ...
-%     NET.convertArray(D, 'System.Double', size(D,1), size(D,2)))
-% % toc;
-% 
-% dfs.Close();
-% 
-% end
-
-
-% function MAP_OBS = createMapObs(DATA)
-% % This function takes all structures and creates a map of observed data by
-% % station name, which is used as the key for data acess
-% MAP_OBS = containers.Map;
-% 
-% for i = 1:length(DATA)
-%     STATION_NAME = DATA(i).STATION_NAME;
-%     MAP_OBS(char(STATION_NAME)) = DATA(i);    
-% end
-% 
-% end
-
-
-% function save_obs_station_xlsx(MAP_OBS,INI)
-% 
-% T = {'Station', 'nTime', 'nData', 'Type', 'Unit','X_UTM', 'Y_UTM', 'Z',...
-%     'Z_GRID', 'Z_SURF', 'Z_SURVEY', 'T_START', 'T_END','MODEL', ...
-%     'I', 'J', 'M11_CHAIN','N_AREA','I_AREA','SZLAYER','OLLAYER','MODEL_DOM'};
-% 
-% KEYS = MAP_OBS.keys;
-% i = 0;
-% for K = KEYS
-%     i = i + 1;
-%     STATION = MAP_OBS(char(K));
-%     S{i} = STATION.STATION_NAME;    
-%     nt(i) = length(STATION.TIMEVECTOR);
-%     nv(i) = length(STATION.DOBSERVED);
-%     t{i} = STATION.DFSTYPE;
-%     u{i} = STATION.UNIT;
-%     x(i) = STATION.X_UTM;    
-%     y(i) = STATION.Y_UTM;    
-%     z(i) = STATION.Z;
-%     zg(i) = STATION.Z_GRID;
-%     zs(i) = STATION.Z_SURF;
-%     zsv(i) = STATION.Z_SURVEY;
-%     ts{i} = datestr(STATION.STARTDATE);
-%     te{i} = datestr(STATION.ENDDATE);
-%     tm{i} = STATION.DATATYPE;
-%     na{i} = STATION.N_AREA{:};
-%     ia(i) = STATION.I_AREA;
-%     szl(i) = STATION.SZLAYER;
-%     oll(i) = STATION.OLLAYER;
-%     mm{i} = INI.MODEL;
-%     m11{i} = '';
-%     ic(i) = 0;
-%     jc(i) = 0;   
-% end
-% 
-% TABLE_H = [T];
-% TABLE_D = [S', num2cell(nt'), num2cell(nv'), t', u', num2cell(x'),...
-%     num2cell(y'), num2cell(z'), num2cell(zg'), num2cell(zs'),...
-%     num2cell(zsv'), ts', te', tm', num2cell(ic'), num2cell(jc'), m11',...
-%     na',num2cell(ia'),num2cell(szl'),num2cell(oll'),mm'];
-% xlRange = 'A1';
-% xlswrite(char(INI.XLSX_STATIONS),TABLE_H,char(INI.SHEET_OBS),xlRange);
-% xlRange = 'A2';
-% xlswrite(char(INI.XLSX_STATIONS),TABLE_D,char(INI.SHEET_OBS),xlRange);
-% 
-% end
-
-% function DFS0 = read_file_DFS0(FILE_NAME)
-% NET.addAssembly('DHI.Generic.MikeZero.DFS');
-% import DHI.Generic.MikeZero.DFS.*;
-% import DHI.Generic.MikeZero.DFS.dfs0.*;
-% dfs0File  = DfsFileFactory.DfsGenericOpen(FILE_NAME);
-% dd = double(Dfs0Util.ReadDfs0DataDouble(dfs0File));
-% 
-% yy = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Year);
-% mo = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Month);
-% da = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Day);
-% hh = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Hour);
-% mi = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Minute);
-% se = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Second);
-% 
-% START_TIME = datenum(yy,mo,da,hh,mi,se);
-% 
-% DFS0.T = datenum(dd(:,1))/86400 + START_TIME;
-% %DFS0.TSTR = datestr(DFS0.T); not needed, slow
-% DFS0.V = dd(:,2:end);
-% DFS0.TYPE = char(dfs0File.ItemInfo.Item(0).Quantity.ItemDescription);
-% DFS0.UNIT = char(dfs0File.ItemInfo.Item(0).Quantity.UnitAbbreviation);
-% 
-% % plot(DFS0.T,DFS0.V)
-% % A = datestr(DFS0.T);
-% % plot(A,DFS0.V);
-% 
-% dfs0File.Close();
-% 
-% end
-
-
-
-% function [STATION] = read_dfs0_files(INI,DIR,mapAllStations,LISTING)
-% n = length(LISTING);
-% 
-% if strcmp(DIR,'Q_M11HR')
-%     DATATYPE = 'M11';
-%     DELIM = '_Q';
-% elseif strcmp(DIR,'H_M11HR')
-%     DATATYPE = 'M11';
-%     DELIM = '.';
-% elseif strcmp(DIR,'H_MSHEHR')
-%     DATATYPE = 'MSHE';
-%     DELIM = '.';    
-% end
-% 
-% ii = 0;
-% for i = 1:n
-%     try
-%         s = LISTING(i);
-%         FILENAME = s.name;
-%         FILEPATH = [INI.DIR_DFS0_FILES FILENAME];
-%         
-%         % get the name of the file without _Q, .stage .tailwater .headwater
-%         STR_TEMP = strsplit(FILENAME,DELIM);
-%         STATION_NAME = STR_TEMP{1};
-%         try
-%             TMP_STATION = mapAllStations(char(STATION_NAME));
-%         catch
-%             fprintf('... %s not in domain: %d/%d\n', char(STATION_NAME), i, n);
-%             continue
-%         end
-%         % increment only if data within the domain
-%         M1 = INI.MODEL;
-%         M2 = TMP_STATION.MODEL;
-%         if ~any(strcmp(M2,M1))
-%             fprintf('... %s not in %s domain %d/%d\n', char(STATION_NAME), char(INI.MODEL), i, n);
-%             continue
-%         end
-%         ii = ii + 1;
-%         STATION(ii) = TMP_STATION;
-%         if strcmp(STR_TEMP{2},'head_water')
-%             STATION_NAME = [STATION_NAME '_HW'];
-%         end
-%         if strcmp(STR_TEMP{2},'tail_water')
-%             STATION_NAME = [STATION_NAME '_TW'];
-%         end
-%         if strcmp(DELIM,'_Q')
-%             STATION_NAME = [STATION_NAME '_Q'];
-%         end        
-%         STATION(ii).STATION_NAME = STATION_NAME;
-%         
-%         %FILE_ID = fopen(char(FILE_NAME));
-%         fprintf('... reading: %d/%d: %s \n', i, n, char(FILEPATH));
-%         
-%         % read database file
-%         DFS0 = read_file_DFS0(FILEPATH);
-%         if strcmp(DFS0.UNIT,'ft')
-%             if isfield(TMP_STATION,'DATUM')
-%                 if strcmp(TMP_STATION.DATUM,'NAVD88')
-%                     if isnumeric(TMP_STATION.NAVD_CONV)
-%                         DFS0.V = DFS0.V - TMP_STATION.NAVD_CONV;
-%                     else
-%                         fprintf('... WARNING: NO CONVERSION to NAVD88 %d/%d: %s \n', i, n, char(NAME));
-%                     end
-%                 end
-%             end
-%         end
-%         STATION(ii).TIMEVECTOR = DFS0.T;
-%         STATION(ii).DOBSERVED = DFS0.V;
-%         STATION(ii).DFSTYPE = DFS0.TYPE;
-%         STATION(ii).UNIT = DFS0.UNIT;
-%         STATION(ii).STARTDATE = DFS0.T(1);
-%         STATION(ii).ENDDATE = DFS0.T(end);
-%         STATION(ii).DATATYPE = DATATYPE;        
-%         
-% %         DFS0 = assign_TYPE_UNIT(DFS0,NAME);
-% %         DFS0.NAME = NAME;
-% %         
-% %         fprintf('... reducing: %d/%d: %s \n', i, n, char(FILE_NAME))       
-% %         DFS0 = data_reduce_HR(DFS0);
-% %         
-% % % create a hourly file dfs0 file.   
-% %         [A, B, C] = fileparts(char(FILE_NAME));
-% %         FILE_NAME = [INI.CURRENT_PATH,'DFS0HR/',B,'.dfs0']; 
-% %         DFS0.STATION = B;
-% %         % save the file in a new directory
-% %         create_DFS0_GENERIC_Q(INI,DFS0,FILE_NAME);
-% % 
-% %         % read the new hourly file
-% %         fprintf('... reading: %d/%d: %s \n', i, n, char(FILE_NAME));
-% %         DFS0 = read_file_DFS0(FILE_NAME);
-% %         DFS0 = assign_TYPE_UNIT(DFS0,NAME);
-% %         DFS0.NAME = NAME;
-% %         
-% %         DFS0 = data_compute(DFS0);
-% %         INI.DIR_DFS0_FILES = strrep(INI.DIR_DFS0_FILES,'DFS0','DFS0HR');
-% %         % generate Timeseries
-% %         plot_fig_TS_1(DFS0,INI);
-% %         
-% %         % generate Cumulative
-% %         %plot_fig_CUMULATIVE_1(DFS0,INI);
-% % 
-% %         % generate CDF
-% %         plot_fig_CDF_1(DFS0,INI)
-% %         
-% %         % generate PE
-% %         plot_fig_PE_1(DFS0,INI)
-% %         
-% %         % plot Monthly
-% %        % plot_fig_MM_1(DFS0,INI)
-% %         
-% %         % plot Annual       
-% %         plot_fig_YY_1(DFS0,INI)
-% %  
-%     catch
-%         fprintf('... exception in: %d/%d: %s \n', i, n, char(FILEPATH));
-%     end
-% end
-% 
-% end
-
-% function [ mapAllStations ] = read_xlsx_all_stations( INI)
-% 
-% %READ_XLSX_ALL_STATION() This function reads ALL_STATION_DATA Sheet
-% %   The function reads ALL_STATION_DATA sheet and creates a map, it also
-% %   reads the subdirectories with hourly data and compares if the dfs0
-% %   files are within the domain and ignores if not, it also erases stations
-% %   without data
-% 
-% mapAllStations = containers.Map;
-% 
-% [status,sheets,xlFormat] = xlsfinfo(INI.XLSX_STATIONS);
-% [NUM,TXT,RAW] = xlsread(INI.XLSX_STATIONS,INI.SHEET_ALL);
-% 
-% % find columns with 'MODEL_*;
-% index_MODEL = ~cellfun(@isempty,strfind(RAW(1,:),'MODEL_'));
-% 
-% for i = 2:length(RAW)
-%     STATION.STATION_NAME = RAW(i,3);    
-%     STATION.TIMEVECTOR = [];
-%     STATION.DOBSERVED = [];
-%     STATION.DFSTYPE = '';
-%     STATION.UNIT = '';
-%     STATION.DATUM = RAW(i,10);
-%     STATION.X_UTM = cell2mat(RAW(i,11));    
-%     STATION.Y_UTM = cell2mat(RAW(i,12));   
-%     STATION.NOTE = RAW(i,14);
-%     STATION.NAVD_CONV = cell2mat(RAW(i,15));
-%     if strcmp(RAW(i,7),' ')
-%         STATION.Z = NaN;
-%     else
-%         STATION.Z = cell2mat(RAW(i,7));
-%     end
-%     STATION.Z_GRID = NaN;
-%     STATION.Z_SURF = NaN;
-%     STATION.Z_SURVEY = NaN;
-%     STATION.STARTDATE = [];
-%     STATION.ENDDATE = [];
-%     STATION.DATATYPE = '';
-%     STATION.N_AREA = RAW(i,17); 
-%     STATION.I_AREA = cell2mat(RAW(i,18));  
-%     STATION.SZLAYER = cell2mat(RAW(i,19));   
-%     STATION.OLLAYER = cell2mat(RAW(i,20)); 
-%     STATION.MODEL = (RAW(i,index_MODEL));   % assign models which use this
-%     mapAllStations(char(RAW(i,3))) = STATION;
-% end
-% 
-% 
-% end

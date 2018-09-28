@@ -36,7 +36,9 @@ for i = 1:n
             continue
         end
         ii = ii + 1;
+        
         STATION(ii) = TMP_STATION;
+       
         if strcmp(STR_TEMP{2},'head_water')
             STATION_NAME = [STATION_NAME '_HW'];
         end
@@ -52,7 +54,9 @@ for i = 1:n
         fprintf('... reading: %d/%d: %s \n', i, n, char(FILEPATH));
         
         % read database file
-        DFS0 = OM02_read_file_DFS0(FILEPATH);
+        DFS0 = read_file_DFS0(FILEPATH);
+        
+        % convert NAVD88 to NGVD29
         if strcmp(DFS0.UNIT,'ft')
             if isfield(TMP_STATION,'DATUM')
                 if strcmp(TMP_STATION.DATUM,'NAVD88')
@@ -64,6 +68,8 @@ for i = 1:n
                 end
             end
         end
+        
+        % copy values to STATION
         STATION(ii).TIMEVECTOR = DFS0.T;
         STATION(ii).DOBSERVED = DFS0.V;
         STATION(ii).DFSTYPE = DFS0.TYPE;
@@ -72,47 +78,8 @@ for i = 1:n
         STATION(ii).ENDDATE = DFS0.T(end);
         STATION(ii).DATATYPE = DATATYPE;        
         
-%         DFS0 = assign_TYPE_UNIT(DFS0,NAME);
-%         DFS0.NAME = NAME;
-%         
-%         fprintf('... reducing: %d/%d: %s \n', i, n, char(FILE_NAME))       
-%         DFS0 = data_reduce_HR(DFS0);
-%         
-% % create a hourly file dfs0 file.   
-%         [A, B, C] = fileparts(char(FILE_NAME));
-%         FILE_NAME = [INI.CURRENT_PATH,'DFS0HR/',B,'.dfs0']; 
-%         DFS0.STATION = B;
-%         % save the file in a new directory
-%         create_DFS0_GENERIC_Q(INI,DFS0,FILE_NAME);
-% 
-%         % read the new hourly file
-%         fprintf('... reading: %d/%d: %s \n', i, n, char(FILE_NAME));
-%         DFS0 = read_file_DFS0(FILE_NAME);
-%         DFS0 = assign_TYPE_UNIT(DFS0,NAME);
-%         DFS0.NAME = NAME;
-%         
-%         DFS0 = data_compute(DFS0);
-%         INI.DIR_DFS0_FILES = strrep(INI.DIR_DFS0_FILES,'DFS0','DFS0HR');
-%         % generate Timeseries
-%         plot_fig_TS_1(DFS0,INI);
-%         
-%         % generate Cumulative
-%         %plot_fig_CUMULATIVE_1(DFS0,INI);
-% 
-%         % generate CDF
-%         plot_fig_CDF_1(DFS0,INI)
-%         
-%         % generate PE
-%         plot_fig_PE_1(DFS0,INI)
-%         
-%         % plot Monthly
-%        % plot_fig_MM_1(DFS0,INI)
-%         
-%         % plot Annual       
-%         plot_fig_YY_1(DFS0,INI)
-%  
     catch
-        fprintf('... exception in: %d/%d: %s \n', i, n, char(FILEPATH));
+        fprintf('... exception in 0M01_read_dfs0_files.m: %d/%d: %s \n', i, n, char(FILEPATH));
     end
 end
 

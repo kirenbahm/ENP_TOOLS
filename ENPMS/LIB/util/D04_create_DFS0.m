@@ -1,4 +1,4 @@
-function D04_create_DFS0(INI,DATA,DFS0N,DType_Flag)
+function D04_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag)
 
 S = DATA.STATION(1);
 
@@ -30,9 +30,18 @@ if ~isempty(DATA.V)
     if (exist(F,'file') && INI.DELETE_EXISTING_DFS0)
         delete(F)
     end
+    
+    X = MAP_STATIONS(S{1}).X;
+    Y = MAP_STATIONS(S{1}).Y;
+    Z = MAP_STATIONS(S{1}).ELEVATION;
+    
+%     if isnan(X), X=0;end
+%     if isnan(Y), Y=0;end
+%     if isnan(Z), Z=0;end
+    
     TS = DATA.TIME;
     D = DATA.V;
-    D05_publish_DFS0(INI,S,TS,D,F,dfsDT,DType_Flag);
+    D05_publish_DFS0(INI,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag);
 end
 
 end

@@ -18,6 +18,7 @@ INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
 % Suffix of raw DFE data files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';
 
+
 % Location of dfs0 output files (each datatype needs a separate folder)
 INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D01_FLOW/DFS0/';
 INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D02_STAGE/DFS0/';
@@ -39,12 +40,13 @@ INI.DELETE_EXISTING_DFS0 = 1;  % Delete existing DFS0 files? Has this option bee
 % currently inactive options (not tested):
 %INI.SAVE_IN_MATLAB = 1;  % Save in MATLAB format? 
 
-
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
 catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
+
+MAP_STATIONS = S00_load_DFE_STNLOC();
 
 % iterate over input file datatype directories with DFE *.dat files:
 for DType_Flag = {'Water Level','Discharge'}
@@ -64,7 +66,7 @@ for DType_Flag = {'Water Level','Discharge'}
         fprintf('Input files being read from: %s\n', INI.OBS_STAGE_DFE_DIR);
         fprintf('Output files written to: %s\n',     INI.DIR_DFS0_FILES);
     end
-    D02_process_file_list(INI,LISTING,DType_Flag);                   % submit output DFS0 directory, input file list, and data type flag for processing
+    D02_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag);                   % submit output DFS0 directory, input file list, and data type flag for processing
 end
 
 fclose('all');

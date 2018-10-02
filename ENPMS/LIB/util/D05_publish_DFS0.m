@@ -1,4 +1,4 @@
-function D05_publish_DFS0(~,S,TS,D,F,dfsDT,DType_Flag)
+function D05_publish_DFS0(~,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag)
 
 NET.addAssembly('DHI.Generic.MikeZero.EUM');
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
@@ -34,6 +34,7 @@ elseif strcmpi(DType_Flag,'Water Level')
 end
 item1.SetValueType(DataValueType.Instantaneous);
 item1.SetAxis(factory.CreateAxisEqD0());
+item1.SetReferenceCoordinates(X,Y,Z);
 builder.AddDynamicItem(item1.GetDynamicItemInfo());
 
 builder.CreateFile(F);

@@ -57,7 +57,7 @@ ylabel(L);
 %legend boxoff;
 
 [~,NA,~] = fileparts(DFS0.NAME);
-NA = strrep(NA,'.','_');
+% NA = strrep(NA,'.','_');
 F = strcat(FIG_DIR,NA,'-YY','.png');
 fig_plot_save(F);
 end

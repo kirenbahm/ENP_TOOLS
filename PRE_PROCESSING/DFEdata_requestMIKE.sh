@@ -12,10 +12,11 @@
 # Designed and curated by Kiren Bahm and any changes to this script or the input stations or datatypes requested
 # should be directed toward her.
 
-if [[ $# -ne 3 ]] ; then
-	print "\n\tUsage: $0 start_date end_date"
-	print "\t ex: $0 2010-01-01 2017-12-31"
-	print "\t *** Date format must be YYYY-mm-dd ***"
+if [[ $# -ne 2 ]] ; then
+	echo "Usage: $0 start_date end_date"
+	echo "ex: $0 2010-01-01 2017-12-31 or"
+	echo "'begin_date' 'end_date' for fulle record"
+	echo "*** Date format must be YYYY-mm-dd ***"
 	exit 0
 fi
 
@@ -36,21 +37,10 @@ for dataType in Flow Stage ; do
 	if [[ "$dataType" == Flow ]]
 		then
 		$bin_dir/data_requestMIKE.sh $outputDir/$inputDir/stationFlow.lst $start $end aggregate_level aggregate_statistic $inputDir/$dataType validation_level
-	else
+	elif [[ "$dataType" == Stage ]]
+		then
 		$bin_dir/data_requestMIKE.sh $outputDir/$inputDir/stationStage.lst $start $end aggregate_level aggregate_statistic $inputDir/$dataType validation_level
+	else
+		echo "Station-Datatype pair is not found"
 	fi
 done
-
-# For loop of requested DataTypes. More can be added as necessary but user must ensure and storage directories,
-# station list with datatypes files exist and any additions are subsequently added to the 'for' loop and 'if'
-# statements as necessary. This collects the base aggregate_level for the data requested (i.e. no averaging 
-# operations are requested of nor performed by DFE).
-
-#for dataType in Flow Stage ; do
-#	if [[ "$dataType" == Flow ]]
-#		then
-#		data_requestMIKE.sh $outputDir/$inputDir/stationFlow.lst $start $end aggregate_level average $inputDir/$dataType validation_level
-#	else
-#		data_requestMIKE.sh $outputDir/$inputDir/stationStage.lst $start $end aggregate_level average $inputDir/$dataType validation_level
-#	fi
-#done

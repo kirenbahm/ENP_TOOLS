@@ -40,7 +40,10 @@ for i = 1:n
     % weighted average
     if isempty(DT)
         DRED.YY_WAVE(i) = X;
-        DRED.YY_WSUM(i) = yeardays(yy)*86400*X;
+        days = calc_DaysInYear(yy);
+        DRED.YY_WSUM(i) = days*86400*X;
+        clear days
+%        DRED.YY_WSUM(i) = yeardays(yy)*86400*X;
     else
         DRED.YY_WAVE(i) = dot(X(1:end-1),DT)/sum(DT); % weighted average
         DRED.YY_WSUM(i) = sum(times(X(1:end-1),DT)); %X*DT sumation for Flow

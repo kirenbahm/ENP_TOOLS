@@ -33,7 +33,7 @@ INI.FLOWHR_LATEX_RELATIVE_PNG_PATH = './DFS0HR_pngs/';
 INI.MATLAB_SCRIPTS = '../ENPMS/';
 
 % Other options (0 = NO, 1 = YES)
-INI.DELETE_EXISTING_DFS0 = 1;  % Delete existing DFS0 files? 
+INI.DELETE_EXISTING_DFS0 = 1; 
 
 % Location of blank figure
 INI.BLANK_PNG = '../../ENP_TOOLS_Sample_Input/Data_Common/blank.png';
@@ -53,8 +53,6 @@ INI.BLANK_PNG = '../../ENP_TOOLS_Sample_Input/Data_Common/blank.png';
       mkdir(char(INI.DIR_FLOW_PNGSHR));
 % this should get deleted when automatic directory creation is added
 
-
-
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
 catch
@@ -63,7 +61,7 @@ end
 
 % iterate over all DFS0 files
 DFS0_process_file_list(INI);
- 
+
 DFS0_process_file_list_DD(INI);
  
 DFS0_process_file_list_HR(INI);

@@ -52,7 +52,7 @@ legend boxoff;
 
 % Save plot as *.png
 [~,NA,~] = fileparts(DFS0.NAME);
-NA = strrep(NA,'.','_');
+% NA = strrep(NA,'.','_');
 F = strcat(FIG_DIR,NA,'-CPE','.png');
 fig_plot_save(F);
 

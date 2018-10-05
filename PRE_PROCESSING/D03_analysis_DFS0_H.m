@@ -34,7 +34,7 @@ INI.STAGEHR_LATEX_RELATIVE_PNG_PATH = './DFS0HR_pngs/';
 INI.MATLAB_SCRIPTS = '../ENPMS/';
 
 % Other options (0 = NO, 1 = YES)
-INI.DELETE_EXISTING_DFS0 = 1;  % Delete existing DFS0 files? 
+INI.DELETE_EXISTING_DFS0 = 1;
 
 % Location of blank figure
 INI.BLANK_PNG = '../../ENP_TOOLS_Sample_Input/Data_Common/blank.png';
@@ -54,14 +54,11 @@ INI.BLANK_PNG = '../../ENP_TOOLS_Sample_Input/Data_Common/blank.png';
       mkdir(char(INI.DIR_STAGE_PNGSHR));
 % this should get deleted when automatic directory creation is added
 
-
-
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
 catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
-
 
 % iterate over all files
 stage_process_DFS0(INI);
@@ -69,9 +66,6 @@ stage_process_DFS0(INI);
 stage_process_DFS0DD(INI);
 
 stage_process_DFS0HR(INI);
-
-%save('DATA_Q.MATLAB','S','mapSTATIONS','-v7.3');
-% add the last station after the entire file is eol
 
 fprintf('\n DONE \n\n');
 

@@ -53,7 +53,6 @@ for i = 1:n
    catch
       fprintf('  *** FAILED ***\n');
       [~,NA,~] = fileparts(DFS0.NAME);
-      NA = strrep(NA,'.','_');
       F = strcat(FIG_DIR,NA,'-TS','.png');
       copyfile(INI.BLANK_PNG,F)
    end
@@ -63,14 +62,12 @@ for i = 1:n
       fprintf('     creating CUM plot...');
       %plot_fig_CUMULATIVE_1(DFS0,FIG_DIR);
       [~,NA,~] = fileparts(DFS0.NAME);
-      NA = strrep(NA,'.','_');
       F = strcat(FIG_DIR,NA,'-CUM','.png');
       copyfile(INI.BLANK_PNG,F)
       fprintf('  (skipped)\n');
    catch
       fprintf('  *** FAILED ***\n');
       [~,NA,~] = fileparts(DFS0.NAME);
-      NA = strrep(NA,'.','_');
       F = strcat(FIG_DIR,NA,'-CUM','.png');
       copyfile(INI.BLANK_PNG,F)
    end
@@ -83,7 +80,6 @@ for i = 1:n
    catch
       fprintf('  *** FAILED ***\n');
       [~,NA,~] = fileparts(DFS0.NAME);
-      NA = strrep(NA,'.','_');
       F = strcat(FIG_DIR,NA,'-CDF','.png');
       copyfile(INI.BLANK_PNG,F)
    end
@@ -96,7 +92,6 @@ for i = 1:n
    catch
       fprintf('  *** FAILED ***\n');
       [~,NA,~] = fileparts(DFS0.NAME);
-      NA = strrep(NA,'.','_');
       F = strcat(FIG_DIR,NA,'-PE','.png');
       copyfile(INI.BLANK_PNG,F)
    end
@@ -109,7 +104,6 @@ for i = 1:n
    catch
       fprintf('  *** FAILED ***\n');
       [~,NA,~] = fileparts(DFS0.NAME);
-      NA = strrep(NA,'.','_');
       F = strcat(FIG_DIR,NA,'-MM','.png');
       copyfile(INI.BLANK_PNG,F)
    end
@@ -122,7 +116,6 @@ for i = 1:n
    catch
       fprintf('  *** FAILED ***\n');
       [~,NA,~] = fileparts(DFS0.NAME);
-      NA = strrep(NA,'.','_');
       F = strcat(FIG_DIR,NA,'-YY','.png');
       copyfile(INI.BLANK_PNG,F)
    end

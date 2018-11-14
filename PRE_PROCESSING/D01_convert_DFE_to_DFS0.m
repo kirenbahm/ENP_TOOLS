@@ -12,8 +12,8 @@ function D01_convert_DFE_to_DFS0()
 % -------------------------------------------------------------------------
 
 % Location of raw DFE data files (each datatype needs to be in a separate folder)
-INI.OBS_FLOW_DFE_DIR  = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow_test/';
-INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage_test/';
+INI.OBS_FLOW_DFE_DIR  = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow/';
+INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
 
 
 % Suffix of raw DFE data files (used to generate a list of files to process)

@@ -5,6 +5,7 @@ function boxplots_N(DATA,LABELS,SIM,C,ALPHA,COLORS_V)
 % Size of M - simulations and L - years or months
 M=size(DATA,2);
 L=size(DATA,1);
+%COLORS_V = circshift(COLORS_V,1,2);
 
 % Calculate the positions of the boxes
 POS=1:0.25:M*L*0.25+1+0.25*L;
@@ -36,7 +37,7 @@ for ii=1:L % years or months
     end
 end
 POSMOD = POS(KEEP_POS);
-UL = unique(UL);
+UL = [SIM ' '];
 UC = unique(UC);
 
 % PLOT
@@ -51,19 +52,42 @@ set(gca,'xticklabel',LABELS);
 
 % Apply colors
 h = findobj(gca,'Tag','Box');
+ALPHA = 1;
 for jj=1:length(h)
    p(jj) = patch(get(h(jj),'XData'),get(h(jj),'YData'),C(1:3,jj)','FaceAlpha',ALPHA);
 end
 
-[~,h_legend] = legend(UL);
+[~,h_legend] = legend(UL,'Color',[0.9 0.9 0.9]);
 PatchInLegend = findobj(h_legend, 'type', 'patch');
 
+y1 = ylim;
+yd = y1(2)-y1(1);
+yt = get(gca,'ytick');
+yh = 0.01*yd;
+ypos = y1(2)-yd*0.05;
+
+x1=xlim;
+xd = x1(2)-x1(1);
+xt = get(gca,'xtick');
+xh = xd*0.05;
+xpos = xt(end) - xd*0.3;
+
 ii = 0;
+
 for i = UC
-    ii = ii + 1;
+    ii = i;
     set(PatchInLegend(ii), 'FaceColor', COLORS_V(:,i)); 
+    %r=rectangle('Position',[xpos ypos xh yh],'FaceColor',COLORS_V(:,ii),'EdgeColor',COLORS_V(:,ii));
+    r=rectangle('Position',[xpos ypos xh yh],'FaceColor',COLORS_V(:,ii));
+    t=text(xpos + 1.15*xh, ypos +0.5*yh,UL(ii));
+    T = get(t);
+    t.Margin = 0.01;
+    t.Color = COLORS_V(:,ii);
+    %t.BackgroundColor = [0.9 0.9 0.9];
+    ypos =  ypos - 1.2*T.Extent(4);
+    %rectangle('Position',T.Extent,'FaceColor','r')
 end 
+legend('off');
 
 %legend boxoff; uncomment if leged should ot have a box
-
 end

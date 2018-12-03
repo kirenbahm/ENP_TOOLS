@@ -58,20 +58,21 @@ for i = Z
     YR = unique(y);
 
     kk = 0;
-    for k = min(YR):max(YR) % group data according to months or years
+    for k = min(YYYY):max(YYYY) % group data according to months or years
         kk = kk + 1;
         ind = find(y==k);
         DATA{ii,kk} = V(ind);
     end
 end
+%DATA = fliplr(DATA);
 
 C = []; % colors
 COLORS_V = cell2mat(INI.GRAPHICS_CO(Z)')';
 
 nsim = size(DATA);
 
-for ii = 1:nsim(2)
-    for i = 1:nsim(1)
+for ii = 1:nsim(2)%:-1:1 %:nsim(2)
+    for i = 1:nsim(1)%:-1:1
         if ~isempty(cell2mat(DATA(i,ii)))
             C = [C COLORS_V(:,i)];
         end
@@ -88,17 +89,6 @@ XLABEL = num2str(YYYY);
 ALPHA = INI.COLORS_ALPHA;
 DATA = DATA';
 
-boxplots_N(DATA,XLABEL,SIM, C, ALPHA,COLORS_V);
-
-FS = INI.GRAPHICS_FS;
-FN = INI.GRAPHICS_FN;
-set(gca,'FontSize',FS,'FontName',FN);
-
-set(gcf, 'PaperUnits', 'inches');
-set(gcf, 'PaperPosition', [0,0,8,3]);
-set(gcf, 'Renderer', 'OpenGL');
-set(gcf, 'Color', 'w');
-
 % set limits of y axes
 max_p = ceil(max(max(STATION.TIMESERIES)));
 min_p = floor(min(min(STATION.TIMESERIES)));
@@ -110,7 +100,20 @@ end
 xLim = get(gca,'XLim');
 yLim = get(gca,'YLim');
 
-set(gca,'YLim', [min_p max_p]);
+%set(gca,'YLim', [min_p max_p]);
+
+boxplots_N(DATA,XLABEL,SIM, C, ALPHA,COLORS_V);
+
+FS = INI.GRAPHICS_FS;
+FN = INI.GRAPHICS_FN;
+set(gca,'FontSize',FS,'FontName',FN);
+
+set(gcf, 'PaperUnits', 'inches');
+set(gcf, 'PaperPosition', [0,0,8,3]);
+set(gcf, 'Renderer', 'OpenGL');
+set(gcf, 'Color', 'w');
+
+
 
 if strcmp(DFS0.UNIT,'ft') 
     LL = strcat(DFS0.TYPE,',', {' '}, DFS0.UNIT, {' '}, 'NGVD29');
@@ -132,7 +135,7 @@ if strcmp(STATION.DATATYPE,'Elevation')
 end
 
 F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.fig');
-savefig(char(F));
+%savefig(char(F));
 F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.png');
 print('-dpng',char(F),'-r300');
 

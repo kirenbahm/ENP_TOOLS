@@ -63,7 +63,7 @@ PatchInLegend = findobj(h_legend, 'type', 'patch');
 y1 = ylim;
 yd = y1(2)-y1(1);
 yt = get(gca,'ytick');
-yh = 0.01*yd;
+yh = 0.025*yd;
 ypos = y1(2)-yd*0.05;
 
 x1=xlim;
@@ -79,7 +79,7 @@ for i = UC
     set(PatchInLegend(ii), 'FaceColor', COLORS_V(:,i)); 
     %r=rectangle('Position',[xpos ypos xh yh],'FaceColor',COLORS_V(:,ii),'EdgeColor',COLORS_V(:,ii));
     r=rectangle('Position',[xpos ypos xh yh],'FaceColor',COLORS_V(:,ii));
-    t=text(xpos + 1.15*xh, ypos +0.5*yh,UL(ii));
+    t=text(xpos + 1.15*xh, ypos + 0.6*yh,UL(ii));
     T = get(t);
     t.Margin = 0.01;
     t.Color = COLORS_V(:,ii);

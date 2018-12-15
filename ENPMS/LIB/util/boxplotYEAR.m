@@ -122,6 +122,7 @@ else
 end
 
 TITLE=strcat(STATION.STATION_NAME,{' '}, LL);
+TITLE = strrep(TITLE,'_','\_');
 title(TITLE);
 ylabel(LL);
 
@@ -134,7 +135,9 @@ if strcmp(STATION.DATATYPE,'Elevation')
     end
 end
 
-F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.fig');
+if INI.SAVEFIGS
+    F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.fig');
+end
 %savefig(char(F));
 F = strcat(INI.FIGURES_DIR_BP,'/',STATION.STATION_NAME,'-YR','.png');
 print('-dpng',char(F),'-r300');

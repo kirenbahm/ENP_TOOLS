@@ -9,7 +9,7 @@ MAPS_ALL = containers.Map();
 for D = INI.MODEL_ALL_RUNS
     i = i + 1; % Increment model run counter
     MFILE = [INI.DATA_COMPUTED 'COMPUTED_' char(D) '.MATLAB'];
-    fprintf('... Loading computed data from file:\n\t %s\n', char(MFILE));
+    fprintf('\n... Loading computed data from file:\n\t %s\n', char(MFILE));
 %     if exist(MFILE,'file') == 2;
     load(char(MFILE), '-mat','mapCompSelected');
     MAPS_ALL(char(D)) = mapCompSelected;

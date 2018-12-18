@@ -80,6 +80,14 @@ SELECTED = cellfun(@(x) cell2mat(x),SELECTED,'un',0);
 SELECTED = sort(SELECTED);
 
 XLSH = [INI.LOG_XLSX_SH '_M11_SH'];
+
+if length(XLSH)> 30
+   fprintf('--- WARNING length of sheet name  %s is greater than 30 char, shortening to %s \n',char(XLSH),char(XLSH(1:30)));
+   XLSH = XLSH(1:30);
+end
+
+[STATIONS_NOT_FOUND] = findM11NotFound(NAME_FOUND,SELECTED,mapM11chain);
+
 %print selected
 xlswrite(char(INI.LOG_XLSX),{'SELECTED'},char(XLSH),'B1');
 xlswrite(char(INI.LOG_XLSX),SELECTED,char(XLSH),'B2');
@@ -96,7 +104,10 @@ xlswrite(char(INI.LOG_XLSX),NAME_FOUND',char(XLSH),'E2');
 %print not found
 XNFOUND = sort(XNFOUND');
 xlswrite(char(INI.LOG_XLSX),{'NOTFOUND'},char(XLSH),'G1');
-xlswrite(char(INI.LOG_XLSX),XNFOUND,char(XLSH),'G2');
+xlswrite(char(INI.LOG_XLSX),STATIONS_NOT_FOUND,char(XLSH),'G2');
+
+xlswrite(char(INI.LOG_XLSX),{'ALL CHAINAGES'},char(XLSH),'I1');
+xlswrite(char(INI.LOG_XLSX),XNFOUND,char(XLSH),'I2');
 
 fprintf('--- Summary of M11 results from file %s \n',char(INI.fileM11WM));
 fprintf('    - %d Requested M11 stations\n', length(mapM11chain));

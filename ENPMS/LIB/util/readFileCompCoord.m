@@ -7,7 +7,9 @@ INI.mapCompSelected = containers.Map;
 [NUM,TXT,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
 fprintf('--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
 
-for i = 2:length(RAW)
+[numStations,trash] = size(RAW);
+
+for i = 2:numStations
     try
         STATION_NAME = char(RAW(i,1));
         %fprintf('--- reading line %d::%s\n', i, char(STATION_NAME))

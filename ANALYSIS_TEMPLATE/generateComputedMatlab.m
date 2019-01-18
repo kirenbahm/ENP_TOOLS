@@ -76,7 +76,7 @@ i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\
 %---------------------------------------------------------------------
 % 6. Process transects
 %---------------------------------------------------------------------
-INI.READ_TRANSECTS_MLAB = 0;
+INI.READ_TRANSECTS_MLAB = 1;
 INI.LOAD_TRANSECTS_MLAB = 0;
 INI.LOAD_OL = 0; % Load the OL MATLAB file as a preference if available
 INI.LOAD_3DSZQ = 0; % Load the SZ MATLAB file as a preference if available

@@ -36,6 +36,8 @@ for D = INI.MODEL_SIMULATION_SET
     FILE_OL  = [P1 '_overland.dfs2'];
     FILE_3DSZ = [P1 '_3DSZ.dfs3'];
     FILE_3DSZQ = [P1 '_3DSZflow.dfs3'];
+    % Suggested changes: Assertians and file patsh should be moved to the
+    % very begining of the code along with the other assertions
     assert(exist(FILE_OL,'file') == 2, 'File not found.' );
     assert(exist(FILE_3DSZQ,'file') == 2, 'File not found.' );
 

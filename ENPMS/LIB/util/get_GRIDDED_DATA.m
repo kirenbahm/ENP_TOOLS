@@ -186,24 +186,39 @@ if DFS3
     % read current timestep for each item in file into array (Fx1, Fx2, Fx3)
     % Then pick out item/cell values you need and save to fk array.
     % Assumes 3d array.
-    for tstep=0:NumDfsSteps-1
-        ds = datestr(DfsTimeVector(tstep+1,:));
-        if mod(tstep-1,10) == 0
-            fprintf('.');
+    try
+        for tstep=0:NumDfsSteps-1
+            ds = datestr(DfsTimeVector(tstep+1,:));
+            if mod(tstep-1,10) == 0
+                fprintf('.');
+            end
+            if mod(tstep-1,366) == 0
+                fprintf('\n... now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
+            end
+            %fprintf('... Step %i%s%i:: %s :: reading: %s%s\n',...
+            %     tstep+1, '/', NumDfsSteps-1, ds, char(FNAME), char(MyFileExtension))
+            try
+                for i = 1:NumItemsInFile
+                    Fx{i} = double(TS.S.myDfs.ReadItemTimeStep(i,tstep).To3DArray());
+                end
+            catch
+                fprintf('\nException: number of requested items greater than available in dfs3 :  %i%s%i \n', i, ' out of ', NumItemsInFile);
+            end
+            for k=1:length(MyRequestedStnNames) % iterate through lines in Excel file
+                % the XL sheet requires 6 data items in the .dfs3 file,
+                % otherwise code breaks. This requires specific set up in
+                % the MIKE grid series output file:
+                % groundwater flow in x-direction
+                % groundwater flow in y-direction
+                % groundwater flux in z-direction for MIKE 2019: the other flux items i.e. x and y directions should be unchecked
+                % groundwater flow in z-direction for MIKE 2016 and 2017
+                itemRequested = itms1{k};
+                fk = Fx{itemRequested};
+                TS.ValueMatrix(tstep+1,k) = fk(cols0{k}+1,rows0{k}+1,lyrs1{k}) * multip{k};
+            end
         end
-        if mod(tstep-1,366) == 0
-            fprintf('\n... now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
-        end
-        %fprintf('... Step %i%s%i:: %s :: reading: %s%s\n',...
-        %     tstep+1, '/', NumDfsSteps-1, ds, char(FNAME), char(MyFileExtension))
-        for i = 1:NumItemsInFile
-            Fx{i} = double(TS.S.myDfs.ReadItemTimeStep(i,tstep).To3DArray());
-        end
-        for k=1:length(MyRequestedStnNames) % iterate through lines in Excel file
-            itemRequested = itms1{k};
-            fk = Fx{itemRequested};
-            TS.ValueMatrix(tstep+1,k) = fk(cols0{k}+1,rows0{k}+1,lyrs1{k}) * multip{k};
-        end
+    catch
+        fprintf('\nException in reading dfs3, step %i, item %i\n',tstep, k);
     end
 end
 

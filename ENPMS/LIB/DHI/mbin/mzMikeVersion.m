@@ -29,6 +29,8 @@ if (isempty(mzVer))
     dfsAssVer = dfsAss.AssemblyHandle.GetName().Version.Major;
     
     switch dfsAssVer
+        case 17 % Release 2019
+            mzVer = 2019;
         case 16 % Release 2017
             mzVer = 2017;
         case 15 % Release 2016

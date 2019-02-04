@@ -70,7 +70,7 @@ INI.CONVERT_M11CHAINAGES = 0.3048; %INI.CONVERT_M11CHAINAGES = 1; (valid for ft 
 % Once data are extracted, simulation files may be deleted
 
 i = 0;
-%i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test'];
 
 %---------------------------------------------------------------------

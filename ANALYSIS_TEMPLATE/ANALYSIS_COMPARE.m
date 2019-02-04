@@ -80,7 +80,7 @@ i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'}
 % 6. Select time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC
 %---------------------------------------------------------------------
 
-INI.ANALYZE_DATE_I = [2000 1 1 0 0 0];  % begining of analysis period
+INI.ANALYZE_DATE_I = [1999 1 1 0 0 0];  % begining of analysis period
 INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 
 %---------------------------------------------------------------------

@@ -2,22 +2,22 @@ function boxplots_N(DATA,LABELS,SIM,C,ALPHA,COLORS_V)
 % Fnction plotting n time series per month or year
 % requires data to be formatted in specific way
 
-% Size of M - simulations and L - years or months
+% Size of M is number of simulations. L is number of years or months
 M=size(DATA,2);
 L=size(DATA,1);
 %COLORS_V = circshift(COLORS_V,1,2);
 
-% Calculate the positions of the boxes
+% Calculate the positions along the x axis to place the boxes evenly
 POS=1:0.25:M*L*0.25+1+0.25*L;
 POS(1:M+1:end)=[];
 
-% DATA AND GROUP 
-X=[];
-GROUP=[];
-KEEP_POS = [];
-IND_DEL = [];
-UL = [];
-UC = [];
+% DATA AND GROUP
+X=[]; % initialize array of results values
+GROUP=[]; % array of number of years or months times number of simulations
+KEEP_POS = []; 
+IND_DEL = []; % index_delete
+UL = []; % 
+UC = []; % colors
 kk = 0; % adjust positions
 for ii=1:L % years or months
     for jj=1:M % number of simulations
@@ -41,7 +41,7 @@ UL = [SIM ' '];
 UC = unique(UC);
 
 % PLOT
-hh = boxplot(X,GROUP, 'positions', POSMOD,'Notch','on','Whisker',2);
+hh = boxplot(X,GROUP, 'positions', POSMOD,'Notch','on','Whisker',2); % hh is handle for figure
 
 % SET X Labels
 TMP=reshape(POS,M,[]);
@@ -52,7 +52,7 @@ set(gca,'xticklabel',LABELS);
 
 % Apply colors
 h = findobj(gca,'Tag','Box');
-ALPHA = 1;
+ALPHA = 1; % alpha can fade colors
 for jj=1:length(h)
    p(jj) = patch(get(h(jj),'XData'),get(h(jj),'YData'),C(1:3,jj)','FaceAlpha',ALPHA);
 end

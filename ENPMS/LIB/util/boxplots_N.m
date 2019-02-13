@@ -57,26 +57,26 @@ for jj=1:length(h)
    p(jj) = patch(get(h(jj),'XData'),get(h(jj),'YData'),C(1:3,jj)','FaceAlpha',ALPHA);
 end
 
-[~,h_legend] = legend(UL,'Color',[0.9 0.9 0.9]);
-PatchInLegend = findobj(h_legend, 'type', 'patch');
+% [~,h_legend] = legend(UL,'Color',[0.9 0.9 0.9]);
+% PatchInLegend = findobj(h_legend, 'type', 'patch');
 
-y1 = ylim;
-yd = y1(2)-y1(1);
-yt = get(gca,'ytick');
-yh = 0.025*yd;
-ypos = y1(2)-yd*0.05;
+y1 = ylim; % this is the upper and lower limits of the timeseries
+yd = y1(2)-y1(1); % this is the difference between upper and lower limits of timeseries
+yt = get(gca,'ytick'); % this gets the label notation for vertical axis
+yh = 0.025*yd; % this the spacing between legend entries
+ypos = y1(2)-yd*0.05; % the initial position is at the top is at location ypos
 
-x1=xlim;
-xd = x1(2)-x1(1);
-xt = get(gca,'xtick');
-xh = xd*0.05;
-xpos = xt(end) - xd*0.3;
+x1=xlim; % this is the upper and lower limits of the timeseries
+xd = x1(2)-x1(1);% this is the difference between upper and lower limits of timeseries
+xt = get(gca,'xtick'); % this gets the label notation for vertical axis
+xh = xd*0.05; % this the spacing between legend entries
+xpos = x1(1) % the initial position is at the left hand side of the figure
 
 ii = 0;
 
 for i = UC
     ii = i;
-    set(PatchInLegend(ii), 'FaceColor', COLORS_V(:,i)); 
+    %set(PatchInLegend(ii), 'FaceColor', COLORS_V(:,i)); 
     %r=rectangle('Position',[xpos ypos xh yh],'FaceColor',COLORS_V(:,ii),'EdgeColor',COLORS_V(:,ii));
     r=rectangle('Position',[xpos ypos xh yh],'FaceColor',COLORS_V(:,ii));
     t=text(xpos + 1.15*xh, ypos + 0.6*yh,UL(ii));
@@ -87,7 +87,7 @@ for i = UC
     ypos =  ypos - 1.2*T.Extent(4);
     %rectangle('Position',T.Extent,'FaceColor','r')
 end 
-legend('off');
+% legend('off');
 
 %legend boxoff; uncomment if leged should ot have a box
 end

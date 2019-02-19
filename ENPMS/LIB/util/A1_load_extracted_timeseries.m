@@ -55,8 +55,15 @@ for K = KEYS % {'T19'} %'G211_Q', 'TR_Q', {'S194_Q'}  % {'BRC_Q'} %KEYS %
     STATION = initialize_STATION(K, KM);
     
     i = 0;
-    for M = KM
+    for M = INI.MODEL_ALL_RUNS
         mapS = MAPS(char(M));
+        i = i + 1;
+        STATION = setStationInfo(i, K, mapS, STATION);
+        STATION = setStationData(INI, i, K, mapS, STATION);
+    end 
+    
+    if INI.INCLUDE_OBSERVED
+        mapS = MAPS('Observed');
         i = i + 1;
         STATION = setStationInfo(i, K, mapS, STATION);
         STATION = setStationData(INI, i, K, mapS, STATION);

@@ -17,6 +17,7 @@ INI.LOG_XLSX = [INI.DATA_COMPUTED 'LOG.xlsx'];
 nn = length(INI.MODEL_SIMULATION_SET);
 
 for i = 1:nn
+    INI.ii = i;
     S = filesep; % file separator platform specific
     C = strsplit(INI.MODEL_SIMULATION_SET{i},S); % get path names
     INI.simMODEL =  char(C(end)); % use the last one for model name
@@ -60,6 +61,7 @@ for i = 1:nn
         if INI.READ_TRANSECTS_MLAB
             try
                 INI.MAPXLS = INI.TRANSECT;
+                % how to save
                 INI = extractTRANSECTS_MLAB(INI);
             catch INI
                 fprintf('\nException in extractTRANSECTS_MLAB(INI), i=%d\n', i);

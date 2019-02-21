@@ -22,15 +22,11 @@ INI.OVERWRITE_GRID_XL = 1; % this regenerates the gridded points from
 %                            monitoring points come from a matlab data file
 %                            the same as the excel file but ext .MATLAB
 
-i = 0;
-for D = INI.MODEL_SIMULATION_SET
+i = INI.ii;
+for D = INI.MODEL_SIMULATION_SET(i)
 
-    % how to save
-    TRANSECT_FILE = [INI.MODEL_SIMULATION_SET{1} '_TRANSECT.MATLAB'];
-    i = i + 1; % Increment model run counter
-
+    TRANSECT_FILE = [INI.MODEL_SIMULATION_SET{i} '_TRANSECT.MATLAB'];
     MODEL_RESULT_DIR = INI.MODEL_SIMULATION_SET{i};
-
     [D1 D2 D3] = fileparts(char(D));
     P1 = [char(D) '.she - Result Files/' char(D2)];
     FILE_OL  = [P1 '_overland.dfs2'];

@@ -16,8 +16,8 @@ INI.LOG_XLSX = [INI.DATA_COMPUTED 'LOG.xlsx'];
 
 nn = length(INI.MODEL_SIMULATION_SET);
 
-for i = 1:nn
-    INI.ii = i;
+for i = 1:nn % This loop iterates over each simulation to extract data 
+    INI.i_sim = i; % This is a counter which is used to specify the simulation from the list of simulations.     
     S = filesep; % file separator platform specific
     C = strsplit(INI.MODEL_SIMULATION_SET{i},S); % get path names
     INI.simMODEL =  char(C(end)); % use the last one for model name

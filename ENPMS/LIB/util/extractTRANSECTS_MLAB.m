@@ -22,7 +22,7 @@ INI.OVERWRITE_GRID_XL = 1; % this regenerates the gridded points from
 %                            monitoring points come from a matlab data file
 %                            the same as the excel file but ext .MATLAB
 
-i = INI.ii;
+i = INI.i_sim; % this counter is used to set up simulation variablles
 for D = INI.MODEL_SIMULATION_SET(i)
 
     TRANSECT_FILE = [INI.MODEL_SIMULATION_SET{i} '_TRANSECT.MATLAB'];

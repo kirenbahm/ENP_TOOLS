@@ -1,6 +1,8 @@
 function D04_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag)
 
-S = DATA.STATION(1);
+S = validatestring(char(DATA.STATION(1)),keys(MAP_STATIONS));  % validate DATA.STATION name with DFE stations within MAP_STATIONS container
+
+% S = DATA.STATION(1);
 
 NET.addAssembly('DHI.Generic.MikeZero.EUM');
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
@@ -31,9 +33,12 @@ if ~isempty(DATA.V)
         delete(F)
     end
     
-    X = MAP_STATIONS(S{1}).X;
-    Y = MAP_STATIONS(S{1}).Y;
-    Z = MAP_STATIONS(S{1}).ELEVATION;
+    X = MAP_STATIONS(S).X;
+    Y = MAP_STATIONS(S).Y;
+    Z = MAP_STATIONS(S).ELEVATION;
+%     X = MAP_STATIONS(S{1}).X;
+%     Y = MAP_STATIONS(S{1}).Y;
+%     Z = MAP_STATIONS(S{1}).ELEVATION;    
     
 %     if isnan(X), X=0;end
 %     if isnan(Y), Y=0;end
@@ -42,6 +47,7 @@ if ~isempty(DATA.V)
     TS = DATA.TIME;
     D = DATA.V;
     D05_publish_DFS0(INI,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag);
+    
 end
 
 end

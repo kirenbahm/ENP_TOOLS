@@ -1,4 +1,4 @@
-function [DATA, STATION, TYPE] = D03_read_DFE_file(INI, fileID)
+function [DATA, STATION, TYPE] = preproc_read_DFE_file(INI, fileID)
 
 formatString = '%s %s %s %s %*[^\n]';
 

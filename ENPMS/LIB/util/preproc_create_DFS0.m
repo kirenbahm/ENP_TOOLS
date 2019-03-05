@@ -1,4 +1,4 @@
-function D04_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag)
+function preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag)
 
 S = validatestring(char(DATA.STATION(1)),keys(MAP_STATIONS));  % validate DATA.STATION name with DFE stations within MAP_STATIONS container
 
@@ -46,7 +46,7 @@ if ~isempty(DATA.V)
     
     TS = DATA.TIME;
     D = DATA.V;
-    D05_publish_DFS0(INI,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag);
+    preproc_publish_DFS0(INI,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag);
     
 end
 

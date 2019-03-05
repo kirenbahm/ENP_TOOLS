@@ -69,7 +69,7 @@ for DType_Flag = {'Water Level','Discharge'}
         fprintf('Input files being read from: %s\n', INI.OBS_STAGE_DFE_DIR);
         fprintf('Output files written to: %s\n',     INI.DIR_DFS0_FILES);
     end
-    D02_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag);                   % submit output DFS0 directory, input file list, and data type flag for processing
+    preproc_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag);                   % submit output DFS0 directory, input file list, and data type flag for processing
 end
 
 fclose('all');

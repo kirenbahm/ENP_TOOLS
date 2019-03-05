@@ -1,4 +1,4 @@
-function D05_publish_DFS0(~,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag)
+function preproc_publish_DFS0(~,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag)
 
 NET.addAssembly('DHI.Generic.MikeZero.EUM');
 NET.addAssembly('DHI.Generic.MikeZero.DFS');

@@ -1,4 +1,4 @@
-function D02_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag)
+function preproc_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag)
 
 % DType_Flag is used to determine which DHI specific variables and settings
 % are to be used in the creation of the DFS0 files. If additional datatypes
@@ -17,13 +17,13 @@ for i = 1:n
         
         % read database file
         fprintf('reading %s... ', char(NAME));
-        [DATA,~,~] = D03_read_DFE_file(INI, FILE_ID);
+        [DATA,~,~] = preproc_read_DFE_file(INI, FILE_ID);
         
         %create dfs0 file
         [~,B,~] = fileparts(FILE_NAME);
         fprintf('writing %s.dfs0... ', char(B));
         DFS0N = [INI.DIR_DFS0_FILES B];        
-        D04_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag);
+        preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag);
         
         % save dataset in MATLAB format (if desired)
         %FNDB = strcat(DFS0N,'.MATLAB');

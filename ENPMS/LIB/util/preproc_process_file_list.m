@@ -8,14 +8,17 @@ function preproc_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag)
 n = length(LISTING);
 for i = 1:n
     try
+       % iterate through each item in LISTING struc array (created by 'dir' matlab function)
         s = LISTING(i);
-        NAME = s.name;
+        
+        % pull out path and filename
+        NAME = s.name; % get filename
         fprintf('... processing %d/%d: ', i, n);
-        FOLDER = s.folder;
+        FOLDER = s.folder; % get folder name
         FILE_NAME = [FOLDER '\' NAME];
         FILE_ID = fopen(char(FILE_NAME));
         
-        % read database file
+        % read DFE data file into DATA structure
         fprintf('reading %s... ', char(NAME));
         [DATA,~,~] = preproc_read_DFE_file(INI, FILE_ID);
         

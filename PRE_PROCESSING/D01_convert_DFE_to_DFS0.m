@@ -12,13 +12,15 @@ function D01_convert_DFE_to_DFS0()
 % -------------------------------------------------------------------------
 
 % Location of raw DFE data files (each datatype needs to be in a separate folder)
-INI.OBS_FLOW_DFE_DIR  = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow/';
-INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
+INI.OBS_FLOW_DFE_DIR  = '../../ENP_TOOLS_Sample_Input/Preproc/Raw_DFE_Data/Flow/';
+INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Preproc/Raw_DFE_Data/Stage/';
 
 
 % Suffix of raw DFE data files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';
 
+% Location of station metadata file
+DFE_STATION_DATA_FILE = '../../ENP_TOOLS_Sample_Input/Data_Common/dfe_station_locations.csv';
 
 % Location of dfs0 output files (each datatype needs a separate folder)
 INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D01_FLOW/DFS0/';
@@ -47,7 +49,7 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
-MAP_STATIONS = S00_load_DFE_STNLOC();
+MAP_STATIONS = S00_load_DFE_STNLOC(DFE_STATION_DATA_FILE);
 
 % iterate over input file datatype directories with DFE *.dat files:
 for DType_Flag = {'Water Level','Discharge'}

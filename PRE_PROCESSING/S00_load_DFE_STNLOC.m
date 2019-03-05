@@ -1,6 +1,5 @@
-function [MAP_STATIONS] = S00_load_DFE_STNLOC()
-INI.DFE_STATION_DATA = '../../ENP_TOOLS_Sample_Input/Raw_DFE_Data/';
-fileID = fopen([INI.DFE_STATION_DATA 'dfe_station_locations.csv']);
+function [MAP_STATIONS] = S00_load_DFE_STNLOC(DFE_STATION_DATA_FILE)
+fileID = fopen(DFE_STATION_DATA_FILE);
 
 % Column Headers: station, agency, station_type, vertical_datum, park,
 % lat_nad83, long_nad83, ground_surface_elevation_ft, basin,

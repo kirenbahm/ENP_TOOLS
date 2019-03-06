@@ -44,9 +44,7 @@ if ~isempty(DATA.MEASUREMENTS)
 %     if isnan(Y), Y=0;end
 %     if isnan(Z), Z=0;end
     
-    TS = DATA.TIME;
-    D = DATA.MEASUREMENTS;
-    preproc_publish_DFS0(INI,utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,TS,D,dfs0FileName,dfsDoubleOrFloat,DType_Flag);
+    preproc_publish_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,DATA.TIME,DATA.MEASUREMENTS,dfs0FileName,dfsDoubleOrFloat,DType_Flag);
     
 end
 

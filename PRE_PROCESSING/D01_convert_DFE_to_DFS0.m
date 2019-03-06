@@ -1,9 +1,14 @@
 function D01_convert_DFE_to_DFS0()
+%
 % This script converts ascii files from the measurements table in DataForEver
 % database (DFE format) output format to the DHI MIKE data format (DFS format)
+%
 % The script expects files to be timeseries data with only one
-% station-datatype pair in each file. The files are additionally sorted in
-% to unique directories based on datatype.
+% station-datatype pair in each file.
+%
+% The dfs0 datatype 'flow'  will be assigned to all files in the OBS_FLOW_DFE_DIR  directory.
+% The dfs0 datatype 'stage' will be assigned to all files in the OBS_STAGE_DFE_DIR directory.
+%
 % The script also expects an ascii file of station metadata from the DFE
 % stations table, and will add appropriate station metadata to each
 % timeseries file
@@ -22,15 +27,14 @@ function D01_convert_DFE_to_DFS0()
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 
-% Location of raw DFE data files (each datatype needs to be in a separate folder)
+% Location of raw DFE measurement files (flow and stage in separate folders, one station per file)
 INI.OBS_FLOW_DFE_DIR  = '../../ENP_TOOLS_Sample_Input/Preproc/Raw_DFE_Data/Flow/';
 INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Preproc/Raw_DFE_Data/Stage/';
-
 
 % Suffix of raw DFE data files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';
 
-% Location of station metadata file
+% Location of station metadata file (this is the DFE station table)
 DFE_STATION_DATA_FILE = '../../ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
 
 % Location of dfs0 output files (each datatype needs a separate folder)

@@ -20,7 +20,7 @@ for i = 1:n
         
         % read DFE data file into DATA structure
         fprintf('reading %s... ', char(NAME));
-        [DATA,~,~] = preproc_read_DFE_file(INI, FILE_ID);
+        [DATA] = preproc_read_DFE_file(INI, FILE_ID);
         
         %create dfs0 file
         [~,B,~] = fileparts(FILE_NAME);

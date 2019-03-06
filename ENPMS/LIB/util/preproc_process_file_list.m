@@ -25,8 +25,8 @@ for i = 1:n
         %create dfs0 file
         [~,B,~] = fileparts(FILE_NAME);
         fprintf('writing %s.dfs0... ', char(B));
-        DFS0N = [INI.DIR_DFS0_FILES B];        
-        preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag);
+        DFS0name = [INI.DIR_DFS0_FILES B];        
+        preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0name,DType_Flag);
         
         % save dataset in MATLAB format (if desired)
         %FNDB = strcat(DFS0N,'.MATLAB');

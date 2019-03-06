@@ -18,7 +18,7 @@ n_st = 1;
 FIELD_STATION = [];
 FIELD_DTYPE = [];
 FIELD_TIME = [];
-FIELD_V = [];
+FIELD_MEASUREMENTS = [];
 
 %tic;
 while ~feof(fileID)
@@ -49,21 +49,21 @@ while ~feof(fileID)
         TIME = datenum(TSTR,'yyyy-mm-ddHHMM');
         DATEVEC = datevec(TIME);
         DATESTR = datestr(DATEVEC,31);
-        V = D{5};
+        MEASUREMENTS = D{5};
 
         % find all NaNs in the data vector
-        IND =isnan(V);
+        IND =isnan(MEASUREMENTS);
         
         % Erase all  rows that have V=NaN's
         STATION(IND) = [];
         DTYPE(IND) = [];
         TIME(IND) = [];
-        V(IND) = [];
+        MEASUREMENTS(IND) = [];
         
         FIELD_STATION = [FIELD_STATION; STATION];
         FIELD_DTYPE = [FIELD_DTYPE; DTYPE];
         FIELD_TIME = [FIELD_TIME; TIME];
-        FIELD_V = [FIELD_V; V];
+        FIELD_MEASUREMENTS = [FIELD_MEASUREMENTS; MEASUREMENTS];
 
    catch
       if INI.DEBUG
@@ -76,8 +76,8 @@ while ~feof(fileID)
     end
     if INI.DEBUG && (mod(i,n)==0 || ~feof(fileID))
         toc;
-           fprintf('... %d\t:%s:: %s: %s=%f :: %s\n', length(FIELD_V), ...
-               char(STATION(1)), DATESTR(1), char(DTYPE(1)), V(1));
+           fprintf('... %d\t:%s:: %s: %s=%f :: %s\n', length(FIELD_MEASUREMENTS), ...
+               char(STATION(1)), DATESTR(1), char(DTYPE(1)), MEASUREMENTS(1));
         tic;
     end    
 end
@@ -89,13 +89,13 @@ IND = find(FIELD_TIME<715876);
 FIELD_STATION(IND) = [];
 FIELD_DTYPE(IND) = [];
 FIELD_TIME(IND) = [];
-FIELD_V(IND) = [];
+FIELD_MEASUREMENTS(IND) = [];
 
 % create a structure
 DATA.STATION = FIELD_STATION;
 DATA.DTYPE = upper(FIELD_DTYPE);
 DATA.TIME = FIELD_TIME;
-DATA.V = FIELD_V;
+DATA.MEASUREMENTS = FIELD_MEASUREMENTS;
 
 STATION = unique(DATA.STATION);
 TYPE = unique(DATA.DTYPE);

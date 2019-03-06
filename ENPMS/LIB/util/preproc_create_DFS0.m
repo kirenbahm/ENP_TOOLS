@@ -1,6 +1,6 @@
-function preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag)
+function preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0name,DType_Flag)
 
-S = validatestring(char(DATA.STATION(1)),keys(MAP_STATIONS));  % validate DATA.STATION name with DFE stations within MAP_STATIONS container
+station_name = validatestring(char(DATA.STATION(1)),keys(MAP_STATIONS));  % validate DATA.STATION name with DFE stations within MAP_STATIONS container
 
 % S = DATA.STATION(1);
 
@@ -21,21 +21,21 @@ useDouble = false;
 useUtil = ~isempty(HNET);
 
 if (useDouble)                                                             
-    dfsDT = DfsSimpleType.Double;
+    dfsDoubleOrFloat = DfsSimpleType.Double;
 else
-    dfsDT = DfsSimpleType.Float;
+    dfsDoubleOrFloat = DfsSimpleType.Float;
 end
 
 
-if ~isempty(DATA.V)
-    F = [char(DFS0N),'.dfs0'];
-    if (exist(F,'file') && INI.DELETE_EXISTING_DFS0)
-        delete(F)
+if ~isempty(DATA.MEASUREMENTS)
+    dfs0FileName = [char(DFS0name),'.dfs0'];
+    if (exist(dfs0FileName,'file') && INI.DELETE_EXISTING_DFS0)
+        delete(dfs0FileName)
     end
     
-    X = MAP_STATIONS(S).X;
-    Y = MAP_STATIONS(S).Y;
-    Z = MAP_STATIONS(S).ELEVATION;
+    utmXmeters = MAP_STATIONS(station_name).utmXmeters;
+    utmYmeters = MAP_STATIONS(station_name).utmYmeters;
+    elev_ngvd29_ft = MAP_STATIONS(station_name).ELEV_NGVD29_FT;
 %     X = MAP_STATIONS(S{1}).X;
 %     Y = MAP_STATIONS(S{1}).Y;
 %     Z = MAP_STATIONS(S{1}).ELEVATION;    
@@ -45,8 +45,8 @@ if ~isempty(DATA.V)
 %     if isnan(Z), Z=0;end
     
     TS = DATA.TIME;
-    D = DATA.V;
-    preproc_publish_DFS0(INI,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag);
+    D = DATA.MEASUREMENTS;
+    preproc_publish_DFS0(INI,utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,TS,D,dfs0FileName,dfsDoubleOrFloat,DType_Flag);
     
 end
 

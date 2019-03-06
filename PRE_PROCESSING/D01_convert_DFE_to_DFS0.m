@@ -31,7 +31,7 @@ INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Preproc/Raw_DFE_Data/Stage
 INI.OBS_DFE_FILETYPE = '*.dat';
 
 % Location of station metadata file
-DFE_STATION_DATA_FILE = '../../ENP_TOOLS_Sample_Input/Data_Common/dfe_station_locations.csv';
+DFE_STATION_DATA_FILE = '../../ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
 
 % Location of dfs0 output files (each datatype needs a separate folder)
 INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D01_FLOW/DFS0/';

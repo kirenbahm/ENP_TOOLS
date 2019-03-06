@@ -23,18 +23,19 @@ function [MAP_STATIONS] = S00_load_DFE_STNLOC(DFE_STATION_DATA_FILE)
 % Note that this file can (and should) be generated with the following command:
 %  echo "select * from station" | sql > myfile.txt
 
-formatString = '%s %s %s %s %f %f %f %f %f %f %s %s %s %f %*[^\n]';
+% field numbers  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15+
+formatString = '%s %s %s %s %f %f %f %s %f %f %s %s %s %f %*[^\n]';
 
 % This is the code for the old station data file format:
-%    % Column Headers: station, agency, station_type, vertical_datum, park,
-%    % lat_nad83, long_nad83, ground_surface_elevation_ft, basin,
-%    % NGVD29_NAVD88_conversion, comments
+%    % Column Headers: 1.station, 2.agency, 3.station_type, 4.vertical_datum, 5.park,
+%    % 6.lat_nad83, 7.long_nad83, 8.ground_surface_elevation_ft, 9.basin,
+%    % 10.NGVD29_NAVD88_conversion, 11.comments
 %    formatString = '%s %s %s %s %s %f %f %f %s %f %*[^\n]';
 
 
 % read text file containing station metadata into variable ST
 fileID = fopen(DFE_STATION_DATA_FILE);
-ST_file_data = textscan(fileID,formatString,'HeaderLines',1,'Delimiter',',','EmptyValue',NaN);
+ST_file_data = textscan(fileID,formatString,'HeaderLines',0,'Delimiter','^','EmptyValue',NaN);
 fclose(fileID);
 
 % get number of stations read
@@ -53,11 +54,11 @@ STATION = struct(...
 
 % save data into STATION structure
 stnName = ST_file_data{1};
+elev_ngvd29_ft = ST_file_data{5};
 lat = ST_file_data{6};
 long = ST_file_data{7};
-datum = ST_file_data{4};
-elev_ngvd29_ft = ST_file_data{8};
-NGVD_conversion = ST_file_data{10};
+datum = ST_file_data{8};
+NGVD_conversion = ST_file_data{14};
 
 % Empty cell check
 emptyCONV=arrayfun(@isnan,NGVD_conversion);

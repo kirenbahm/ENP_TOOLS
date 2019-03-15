@@ -26,7 +26,7 @@ while ~feof(fileID)
     D = textscan(fileID,formatString,'HeaderLines',9,'Delimiter','|','EmptyValue',NaN);
     i = i + n;
    try
-        STATION = D{1};
+        STATION = upper(D{1}); % convert station to upper case
         %DTYPE = D{2}; (unused)
         D{5}=str2double(strrep(D{4},'null',''));                                                                  % Create new cell array column of measurement values
         B=split(D{3},' '); E = cellstr(B(:,1)); F = cellstr(strrep(B(:,2),':','')); % Split the date-time cell column into separate cell columns

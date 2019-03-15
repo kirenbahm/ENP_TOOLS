@@ -34,6 +34,7 @@ formatString = '%s %s %s %s %f %f %f %s %f %f %s %s %s %f %*[^\n]';
 
 
 % read text file containing station metadata into variable ST
+assert(exist(DFE_STATION_DATA_FILE,'file') == 2, 'File not found: %s', DFE_STATION_DATA_FILE);
 fileID = fopen(DFE_STATION_DATA_FILE);
 ST_file_data = textscan(fileID,formatString,'HeaderLines',0,'Delimiter','^','EmptyValue',NaN);
 fclose(fileID);
@@ -53,7 +54,7 @@ STATION = struct(...
    'CONV',cell(1,numStations));
 
 % save data into STATION structure
-stnName = ST_file_data{1};
+stnName = upper(ST_file_data{1}); % convert all station names to UPPERCASE
 elev_ngvd29_ft = ST_file_data{5};
 lat = ST_file_data{6};
 long = ST_file_data{7};
@@ -92,7 +93,7 @@ for i = 1:numStations
    end
    
    % save data to STATION structure
-   STATION(i).NAME = stnName(i);
+   STATION(i).NAME = stnName(i); %(converted to upper case)
    STATION(i).LAT = lat(i);
    STATION(i).LONG = long(i);
    STATION(i).utmXmeters = utmXmeters(i);

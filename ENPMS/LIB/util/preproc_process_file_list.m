@@ -22,10 +22,15 @@ for i = 1:n
         fprintf('reading %s... ', char(NAME));
         [DATA] = preproc_read_DFE_file(INI, FILE_ID);
         
-        %create dfs0 file
+        % extract filename parts, convert station part of name to upper case
         [~,B,~] = fileparts(FILE_NAME);
-        fprintf('writing %s.dfs0... ', char(B));
-        DFS0name = [INI.DIR_DFS0_FILES B];        
+        splitFilename=split(B,'.');
+        %uppercaseName=upper(splitFilename(1));
+        uppercaseFileName=[upper(char(splitFilename(1))) '.' char(splitFilename(2))]; 
+
+        %create dfs0 file
+        fprintf('writing %s.dfs0... ', uppercaseFileName);
+        DFS0name = [INI.DIR_DFS0_FILES uppercaseFileName];        
         preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0name,DType_Flag);
         
         % save dataset in MATLAB format (if desired)

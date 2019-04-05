@@ -39,6 +39,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+%Initialize .NET libraries
+INI = initializeLIB(INI);
+
 %LIST all directories with *.PNG files
 DFS0_TYPE = {'DFS0','DFS0DD','DFS0HR'};
 CHART_TYPE = {'CDF', 'CPE', 'CU', 'MM', 'TS','YY'}; 

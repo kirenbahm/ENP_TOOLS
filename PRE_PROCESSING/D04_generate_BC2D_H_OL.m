@@ -39,6 +39,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+%Initialize .NET libraries
+INI = initializeLIB(INI);
+
 % Save in MATLAB format? (0 = FALSE, 1 = TRUE)
 SAVE_IN_MATLAB = 1;                                 % to save the H data and the ALL_STATIONS data
 

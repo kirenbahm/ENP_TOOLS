@@ -59,6 +59,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+%Initialize .NET libraries
+INI = initializeLIB(INI);
+
 % iterate over all DFS0 files
 DFS0_process_file_list(INI);
 

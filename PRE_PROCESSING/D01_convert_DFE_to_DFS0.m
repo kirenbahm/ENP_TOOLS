@@ -64,6 +64,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+%Initialize .NET libraries
+INI = initializeLIB(INI);
+
 MAP_STATIONS = S00_load_DFE_STNLOC(DFE_STATION_DATA_FILE);
 
 % iterate over input file datatype directories with DFE *.dat files:

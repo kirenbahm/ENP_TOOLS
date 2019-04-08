@@ -9,7 +9,7 @@ function D02_analysis_DFS0_Q()
 % -------------------------------------------------------------------------
 
 % Location of dfs0 FLOW files 
-INI.DIR_FILES           = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D01_FLOW/';
+INI.DIR_FILES           = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/';
 
 INI.DIR_FLOW_DFS0       = [INI.DIR_FILES 'DFS0/'];
 INI.DIR_FLOW_PNGS       = [INI.DIR_FILES 'DFS0_pngs/'];

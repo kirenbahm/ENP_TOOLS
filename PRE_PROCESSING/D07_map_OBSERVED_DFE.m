@@ -24,8 +24,8 @@ INI.MATLAB_SCRIPTS = '../ENPMS/';
 DFE_STATION_DATA_FILE = '../../ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
 
 %LOAD directory locations and list PNG directory options
-INI.DIR_FLOW_DFS0 = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D01_FLOW/';
-INI.DIR_STAGE_DFS0 = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D02_STAGE/';
+INI.DIR_FLOW_DFS0 = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/';
+INI.DIR_STAGE_DFS0 = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/STAGE/';
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------

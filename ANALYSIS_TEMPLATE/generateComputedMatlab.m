@@ -57,9 +57,10 @@ INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 % 4. Provide name of the Excel file with all stations (and data items):
 %---------------------------------------------------------------------
 INI.fileCompCoord = [INI.DATA_COMMON 'OBSERVED_DATA_MODEL_test.xlsx'];
-% Set conversion factor for chainages between M11 in feet and in m (check
-% the res11 file to determine if chainages are in feet
-INI.CONVERT_M11CHAINAGES = 0.3048; %INI.CONVERT_M11CHAINAGES = 1; (valid for ft input)
+% Set conversion factor for chainages between M11 in feet and in meters
+% (check the res11 file to determine if chainages are in feet)
+%INI.CONVERT_M11CHAINAGES = 0.3048;
+INI.CONVERT_M11CHAINAGES = 1;
 
 %---------------------------------------------------------------------
 % 5. CHOOSE SIMULATIONS TO BE ANALYZED
@@ -80,7 +81,7 @@ INI.READ_TRANSECTS_MLAB = 1;
 INI.LOAD_TRANSECTS_MLAB = 0;
 INI.LOAD_OL = 0; % Load the OL MATLAB file as a preference if available
 INI.LOAD_3DSZQ = 0; % Load the SZ MATLAB file as a preference if available
-INI.TRANSECT = [ INI.DATA_COMMON 'TRANSECTS_v16.xlsx'];
+INI.TRANSECT = [ INI.DATA_COMMON 'TRANSECTS_v17.xlsx'];
  
 %---------------------------------------------------------------------
 % 6. Process and seepage maps

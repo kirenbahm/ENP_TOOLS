@@ -22,7 +22,8 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     C = strsplit(INI.MODEL_SIMULATION_SET{i},S); % get path names
     INI.simMODEL =  char(C(end)); % use the last one for model name
     INI.MODEL = char(INI.simMODEL(1:3)); %( M01 M06 ) - this string should provide the model
-    INI.XLSCOMP = [INI.MODEL '_MODEL_COMP'];
+    %INI.XLSCOMP = [INI.MODEL '_MODEL_COMP'];
+    INI.XLSCOMP = ['M06_MODEL_COMP']; % M01_V10 uses the same grid as M06, so we hardcode all grids to M06 here
     INI.LOG_XLSX_SH = char(INI.simMODEL);
     INI.ALTERNATIVE = INI.simMODEL;
 

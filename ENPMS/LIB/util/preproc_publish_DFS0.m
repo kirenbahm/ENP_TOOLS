@@ -1,4 +1,4 @@
-function D05_publish_DFS0(~,X,Y,Z,S,TS,D,F,dfsDT,DType_Flag)
+function preproc_publish_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,time_vector,measurements,dfs0FileName,dfsDoubleOrFloat,DType_Flag)
 
 NET.addAssembly('DHI.Generic.MikeZero.EUM');
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
@@ -11,9 +11,9 @@ eval('import DHI.Generic.MikeZero.*');
 %dfs0 = dfsTSO(char(F),1);                                                   
 % Create an empty dfs1 file object
 factory = DfsFactory();
-builder = DfsBuilder.Create(char(S),'Matlab DFS',0);
+builder = DfsBuilder.Create(char(station_name),'Matlab DFS',0);
 
-T = datevec(TS(1));
+T = datevec(time_vector(1));
 builder.SetDataType(0);
 builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin('UTM-17',12,54,2.6));
 builder.SetTemporalAxis(factory.CreateTemporalNonEqCalendarAxis...
@@ -27,24 +27,24 @@ item1 = builder.CreateDynamicItemBuilder();
 % expanded upon as new datatypes and DType_Flags are added.
 if strcmpi(DType_Flag,'Discharge')
     item1.Set(DType_Flag{1}, DHI.Generic.MikeZero.eumQuantity...
-        (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDT);
+        (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDoubleOrFloat);
 elseif strcmpi(DType_Flag,'Water Level')
     item1.Set(DType_Flag{1}, DHI.Generic.MikeZero.eumQuantity...
-        (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDT);
+        (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDoubleOrFloat);
 end
 item1.SetValueType(DataValueType.Instantaneous);
 item1.SetAxis(factory.CreateAxisEqD0());
-item1.SetReferenceCoordinates(X,Y,Z);
+item1.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
 builder.AddDynamicItem(item1.GetDynamicItemInfo());
 
-builder.CreateFile(F);
+builder.CreateFile(dfs0FileName);
 
 dfs = builder.GetFile();
 % Add  data in the file
 tic
 % Write to file using the MatlabDfsUtil
-MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((TS-TS(1))*86400), ...
-    NET.convertArray(D, 'System.Double', size(D,1), size(D,2)))
+MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((time_vector-time_vector(1))*86400), ...
+    NET.convertArray(measurements, 'System.Double', size(measurements,1), size(measurements,2)))
 %toc
 
 dfs.Close();

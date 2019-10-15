@@ -9,7 +9,7 @@ function D03_analysis_DFS0_H()
 % -------------------------------------------------------------------------
 
 % Location of dfs0 STAGE files 
-INI.DIR_FILES           = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/D02_STAGE/';
+INI.DIR_FILES           = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/STAGE/';
 
 INI.DIR_STAGE_DFS0       = [INI.DIR_FILES 'DFS0/'];
 INI.DIR_STAGE_PNGS       = [INI.DIR_FILES 'DFS0_pngs/'];
@@ -59,6 +59,9 @@ try
 catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
+
+%Initialize .NET libraries
+INI = initializeLIB(INI);
 
 % iterate over all files
 stage_process_DFS0(INI);

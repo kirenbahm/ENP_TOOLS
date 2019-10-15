@@ -58,6 +58,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+%Initialize .NET libraries
+INI = initializeLIB(INI);
+
 % read all stations from the excel file, stations are within M3ENP_SF
 mapAllStations = OM00_read_xlsx_all_stations(INI);
 

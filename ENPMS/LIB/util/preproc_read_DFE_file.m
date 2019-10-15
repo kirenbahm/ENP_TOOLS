@@ -1,4 +1,4 @@
-function [DATA, STATION, TYPE] = D03_read_DFE_file(INI, fileID)
+function [DATA] = preproc_read_DFE_file(INI, fileID)
 
 formatString = '%s %s %s %s %*[^\n]';
 
@@ -6,19 +6,19 @@ n = 100000; % Read file in blocks in 10,000 lines,
 i = uint64(0); % counter
 
 % initialize maps and vectors
-mapDATA_Q = containers.Map();
-mapDATA_H = containers.Map();
-Q_TIME = [];
-Q_VALUE = [];
-H_TIME = [];
-H_VALUE = [];
-
-CURRENT_STATION = '';
-n_st = 1;
+% mapDATA_Q = containers.Map(); (unused)
+% mapDATA_H = containers.Map(); (unused)
+% Q_TIME = []; (unused)
+% Q_VALUE = []; (unused)
+% H_TIME = []; (unused)
+% H_VALUE = []; (unused)
+% 
+% CURRENT_STATION = ''; (unused)
+% n_st = 1; (unused)
 FIELD_STATION = [];
-FIELD_DTYPE = [];
+% FIELD_DTYPE = []; (unused)
 FIELD_TIME = [];
-FIELD_V = [];
+FIELD_MEASUREMENTS = [];
 
 %tic;
 while ~feof(fileID)
@@ -26,8 +26,8 @@ while ~feof(fileID)
     D = textscan(fileID,formatString,'HeaderLines',9,'Delimiter','|','EmptyValue',NaN);
     i = i + n;
    try
-        STATION = D{1};
-        DTYPE = D{2};
+        STATION = upper(D{1}); % convert station to upper case
+        %DTYPE = D{2}; (unused)
         D{5}=str2double(strrep(D{4},'null',''));                                                                  % Create new cell array column of measurement values
         B=split(D{3},' '); E = cellstr(B(:,1)); F = cellstr(strrep(B(:,2),':','')); % Split the date-time cell column into separate cell columns
         D{3} = E; D{4} = F; clear ('B','E','F')                                     % Rejoin cell columns to the cell array 'D' and clear excess variables
@@ -49,26 +49,26 @@ while ~feof(fileID)
         TIME = datenum(TSTR,'yyyy-mm-ddHHMM');
         DATEVEC = datevec(TIME);
         DATESTR = datestr(DATEVEC,31);
-        V = D{5};
+        MEASUREMENTS = D{5};
 
         % find all NaNs in the data vector
-        IND =isnan(V);
+        IND =isnan(MEASUREMENTS);
         
         % Erase all  rows that have V=NaN's
         STATION(IND) = [];
-        DTYPE(IND) = [];
+        %DTYPE(IND) = []; (unused)
         TIME(IND) = [];
-        V(IND) = [];
+        MEASUREMENTS(IND) = [];
         
         FIELD_STATION = [FIELD_STATION; STATION];
-        FIELD_DTYPE = [FIELD_DTYPE; DTYPE];
+        %FIELD_DTYPE = [FIELD_DTYPE; DTYPE]; (unused)
         FIELD_TIME = [FIELD_TIME; TIME];
-        FIELD_V = [FIELD_V; V];
+        FIELD_MEASUREMENTS = [FIELD_MEASUREMENTS; MEASUREMENTS];
 
    catch
       if INI.DEBUG
-        fprintf('EXCEPTION: %d::%s::%s::%s::D0 = %s\n', i, char(STATION(1)), ...
-            char(DTYPE(1)),char(TSTR(1)),char(D0(1)));
+        fprintf('EXCEPTION: %d::%s::%s::D0 = %s\n', i, char(STATION(1)), ...
+            char(TSTR(1)),char(D0(1)));
         fprintf('EXCEPTION::CONTINUING::\n');
         %        error(errorStruct);
       end
@@ -76,8 +76,8 @@ while ~feof(fileID)
     end
     if INI.DEBUG && (mod(i,n)==0 || ~feof(fileID))
         toc;
-           fprintf('... %d\t:%s:: %s: %s=%f :: %s\n', length(FIELD_V), ...
-               char(STATION(1)), DATESTR(1), char(DTYPE(1)), V(1));
+           fprintf('... %d\t:%s:: %s: %s :: %s\n', length(FIELD_MEASUREMENTS), ...
+               char(STATION(1)), DATESTR(1), MEASUREMENTS(1));
         tic;
     end    
 end
@@ -87,16 +87,16 @@ end
 
 IND = find(FIELD_TIME<715876); 
 FIELD_STATION(IND) = [];
-FIELD_DTYPE(IND) = [];
+% FIELD_DTYPE(IND) = []; (unused)
 FIELD_TIME(IND) = [];
-FIELD_V(IND) = [];
+FIELD_MEASUREMENTS(IND) = [];
 
 % create a structure
 DATA.STATION = FIELD_STATION;
-DATA.DTYPE = upper(FIELD_DTYPE);
+% DATA.DTYPE = upper(FIELD_DTYPE); (unused)
 DATA.TIME = FIELD_TIME;
-DATA.V = FIELD_V;
+DATA.MEASUREMENTS = FIELD_MEASUREMENTS;
 
-STATION = unique(DATA.STATION);
-TYPE = unique(DATA.DTYPE);
+%STATION = unique(DATA.STATION); (unused)
+%TYPE = unique(DATA.DTYPE); (unused)
 end

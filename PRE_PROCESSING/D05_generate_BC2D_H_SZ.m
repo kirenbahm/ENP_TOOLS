@@ -39,6 +39,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+%Initialize .NET libraries
+INI = initializeLIB(INI);
+
 % Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
 INI.DELETE_EXISTING_DFS0 = 1;
 

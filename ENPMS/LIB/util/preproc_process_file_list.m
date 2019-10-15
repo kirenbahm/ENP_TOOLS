@@ -1,4 +1,4 @@
-function D02_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag)
+function preproc_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag)
 
 % DType_Flag is used to determine which DHI specific variables and settings
 % are to be used in the creation of the DFS0 files. If additional datatypes
@@ -8,22 +8,30 @@ function D02_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag)
 n = length(LISTING);
 for i = 1:n
     try
+       % iterate through each item in LISTING struc array (created by 'dir' matlab function)
         s = LISTING(i);
-        NAME = s.name;
+        
+        % pull out path and filename
+        NAME = s.name; % get filename
         fprintf('... processing %d/%d: ', i, n);
-        FOLDER = s.folder;
+        FOLDER = s.folder; % get folder name
         FILE_NAME = [FOLDER '\' NAME];
         FILE_ID = fopen(char(FILE_NAME));
         
-        % read database file
+        % read DFE data file into DATA structure
         fprintf('reading %s... ', char(NAME));
-        [DATA,~,~] = D03_read_DFE_file(INI, FILE_ID);
+        [DATA] = preproc_read_DFE_file(INI, FILE_ID);
         
-        %create dfs0 file
+        % extract filename parts, convert station part of name to upper case
         [~,B,~] = fileparts(FILE_NAME);
-        fprintf('writing %s.dfs0... ', char(B));
-        DFS0N = [INI.DIR_DFS0_FILES B];        
-        D04_create_DFS0(INI,MAP_STATIONS,DATA,DFS0N,DType_Flag);
+        splitFilename=split(B,'.');
+        %uppercaseName=upper(splitFilename(1));
+        uppercaseFileName=[upper(char(splitFilename(1))) '.' char(splitFilename(2))]; 
+
+        %create dfs0 file
+        fprintf('writing %s.dfs0... ', uppercaseFileName);
+        DFS0name = [INI.DIR_DFS0_FILES uppercaseFileName];        
+        preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0name,DType_Flag);
         
         % save dataset in MATLAB format (if desired)
         %FNDB = strcat(DFS0N,'.MATLAB');

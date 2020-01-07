@@ -83,6 +83,17 @@ INI.LOAD_OL = 0; % Load the OL MATLAB file as a preference if available
 INI.LOAD_3DSZQ = 0; % Load the SZ MATLAB file as a preference if available
 INI.TRANSECT = [ INI.DATA_COMMON 'TRANSECTS_v17.xlsx'];
  
+% define Overland Flow transect sheetnames
+ii=1;
+INI.CELL_DEF_FILE_SHEETNAME_OL{ii} = 'OLQ'; ii=ii+1;
+INI.CELL_DEF_FILE_SHEETNAME_OL{ii} = 'OL2RIV'; ii=ii+1;
+
+% define 3D Saturated Zone Flow transect sheetnames
+ii=1;
+INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{ii} = 'SZQ'; ii=ii+1;
+INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{ii} = 'SZunderRIV'; ii=ii+1;
+INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{ii} = 'SZ2RIV'; ii=ii+1;
+
 %---------------------------------------------------------------------
 % 6. Process and seepage maps
 %---------------------------------------------------------------------

@@ -1,22 +1,5 @@
 function INI = extractTRANSECTS_MLAB(INI)
 
-[A B C] = fileparts(INI.TRANSECT);
-
-% Overland Flow File
-i=1;
-INI.CELL_DEF_FILE_DIR_OL   = INI.DATA_COMMON;
-INI.CELL_DEF_FILE_NAME_OL  = B;
-INI.CELL_DEF_FILE_SHEETNAME_OL{i} = 'OLQ'; i=i+1;
-INI.CELL_DEF_FILE_SHEETNAME_OL{i} = 'OL2RIV'; i=i+1;
-
-% 3D Saturated Zone Flow file
-i=1;
-INI.CELL_DEF_FILE_DIR_3DSZQ   = INI.DATA_COMMON;
-INI.CELL_DEF_FILE_NAME_3DSZQ  = B;
-INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{i} = 'SZQ'; i=i+1;
-INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{i} = 'SZunderRIV'; i=i+1;
-INI.CELL_DEF_FILE_SHEETNAME_3DSZQ{i} = 'SZ2RIV'; i=i+1;
-
 INI.OVERWRITE_GRID_XL = 1; % this regenerates the gridded points from
 %                             the corresponding EXCEL file. If this is 0
 %                            monitoring points come from a matlab data file

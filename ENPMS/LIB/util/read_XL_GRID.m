@@ -1,10 +1,10 @@
-function XLARRAY = read_XL_GRID(xlinfile,FILE_SHEETNAME)
+function XLARRAY = read_XL_GRID(TRANSECT_DEFS_FILE,FILE_SHEETNAMES)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Load group definition data from Excel file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fprintf('%s Reading file: %s\n',datestr(now), char(xlinfile));
+fprintf('%s Reading file: %s\n',datestr(now), char(TRANSECT_DEFS_FILE));
 
 % if ~exist(xlinfile,'file')
 %     fprintf('MISSING: %s, exiting...', xlinfile);
@@ -13,14 +13,14 @@ fprintf('%s Reading file: %s\n',datestr(now), char(xlinfile));
 
 % stn_counter_begin = 0;
 % stn_counter_end = 0;
-num_sheets = length(FILE_SHEETNAME);
+num_sheets = length(FILE_SHEETNAMES);
 
 XLARRAY=[];
 try
     for sheetnum = 1:num_sheets  % iterate through sheet names given in A0 setup script
-        xlsheet = FILE_SHEETNAME{sheetnum};
-        [~,~,xldata] = xlsread(xlinfile,xlsheet);
-        [numrows,trash] = size(xldata);
+        xlsheet = FILE_SHEETNAMES{sheetnum};
+        [~,~,xldata] = xlsread(TRANSECT_DEFS_FILE,xlsheet);
+        [numrows,~] = size(xldata);
         
         % append array of numrows and 11 columns
         XLARRAY = [XLARRAY;xldata(2:numrows,1:11)];
@@ -35,7 +35,7 @@ try
         %     itms1(stn_counter_begin:stn_counter_end) = xldata(2:numrows,6);
     end
 catch
-    fprintf('\n--- Exception in read_XL_GRIDDED(): %s\n', char(xlinfile))
+    fprintf('\n--- Exception in read_XL_GRIDDED(): %s\n', char(TRANSECT_DEFS_FILE))
     
 end
 end

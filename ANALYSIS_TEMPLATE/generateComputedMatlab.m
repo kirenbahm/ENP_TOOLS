@@ -144,7 +144,7 @@ assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
 
 assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
 
-assert(exist(INI.TRANSECT,'file') == 2, 'File not found.' );
+assert(exist(INI.TRANSECT_DEFS_FILE,'file') == 2, 'File not found.' );
 
 end
 

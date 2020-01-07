@@ -61,7 +61,7 @@ for i = 1:nn % This loop iterates over each simulation to extract data
         % TRANSECTS_MLAB
         if INI.READ_TRANSECTS_MLAB
             try
-                INI.MAPXLS = INI.TRANSECT;
+                INI.MAPXLS = INI.TRANSECT_DEFS_FILE;
                 % how to save
                 INI = extractTRANSECTS_MLAB(INI);
             catch INI

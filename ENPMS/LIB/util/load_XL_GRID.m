@@ -3,14 +3,14 @@ function XLARRAY = load_XL_GRID(FILE_DFS, INI)
 % determine whether to use dfs2 sheets or dfs3 sheets
 [~,~,FEXT] = fileparts(FILE_DFS);
 if strcmp(FEXT,'.dfs2')
-    FILE_SHEETNAMES = [INI.CELL_DEF_FILE_SHEETNAME_OL];
+    FILE_SHEETNAMES = [INI.TRANSECT_DEFS_SHEETNAMES_OL];
 end
 if strcmp(FEXT,'.dfs3')
-    FILE_SHEETNAMES = [INI.CELL_DEF_FILE_SHEETNAME_3DSZQ];
+    FILE_SHEETNAMES = [INI.TRANSECT_DEFS_SHEETNAMES_3DSZQ];
 end
 
 % Load group definition data from Excel file
-fprintf('%s Reading file: %s\n',datestr(now), char(INI.TRANSECT));
+fprintf('%s Reading file: %s\n',datestr(now), char(INI.TRANSECT_DEFS_FILE));
 
 % stn_counter_begin = 0;
 % stn_counter_end = 0;
@@ -20,7 +20,7 @@ XLARRAY=[];
 try
     for sheetnum = 1:num_sheets  % iterate through sheet names given in A0 setup script
         xlsheet = FILE_SHEETNAMES{sheetnum};
-        [~,~,xldata] = xlsread(INI.TRANSECT,xlsheet);
+        [~,~,xldata] = xlsread(INI.TRANSECT_DEFS_FILE,xlsheet);
         [numrows,~] = size(xldata);
         
         % append array of numrows and 11 columns

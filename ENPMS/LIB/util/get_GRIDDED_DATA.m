@@ -49,55 +49,6 @@ format compact
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
 
-FT2M = 0.3048;
-CFS2M3 = (0.3048^3);
-CellAreaFt = (400/FT2M)^2;
-
-FILE_DIR =  INI.CELL_DEF_FILE_DIR_3DSZQ;
-FILE_NAME_GROUP_DEFS = INI.CELL_DEF_FILE_NAME_3DSZQ;
-FILE_SHEETNAME = INI.CELL_DEF_FILE_SHEETNAME_3DSZQ;
-
-% for z-direction flow in mm/day, converted to cubic feet per second integrated over cell face:
-MMperDYToFT3perSperCell = (0.001/FT2M)*CellAreaFt/86400;
-
-numcols = 6; % number of columns in Excel file with data (columns 7+ are currently ignored)
-
-% Alldata is currently hardcoded below and dependent on numcols variable above
-% AllData data fields are:
-% 1: Station name (Ie transect or indicator region name)
-% 2: Row (Y) (base 1)
-% 3: Col (X) (base 1)
-% 4: Layer (3 is top, 1 is bottom)
-% 5: Multiplier (usually 1 or -1)
-% 6: Item number
-% 7: Direction (not used)
-% 8: Row (base 0, not used)
-% 9: Col (base 0, not used)
-% 10: Year
-% 11: Month
-% 12: Day
-% 13: Hour (usually 0)
-% 14: Minute (usually 0)
-% 15: Second (usually 0)
-% 16: Value
-
-myStation = 1;
-myYear = 7;
-myMonth = 8;
-myDay = 9;
-myData = 13;
-
-DFS2 = false;
-DFS3 = false;
-[DIR,FNAME,MyFileExtension] = fileparts(FILE_DFS);
-if strcmp(MyFileExtension,'.dfs2')
-    DFS2 = true;
-end
-if strcmp(MyFileExtension,'.dfs3')
-    DFS3 = true;
-end
-
-
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % Load group definition data from Excel or Matlab file
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,15 +64,12 @@ multip=XLARRAY(:,5);
 itms1=XLARRAY(:,6);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% step 1: get timeseries data
+% get timeseries data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [DIR,FNAME,MyFileExtension] = fileparts(FILE_DFS);
 
 TS.S = get_TS_GRID(FILE_DFS);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 % set up dates, times, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -155,7 +103,16 @@ TS = nummthyr(TS);
 % get number of items in file to read
 NumItemsInFile = TS.S.myDfs.ItemInfo.Count;
 
-[DIR,FNAME,MyFileExtension] = fileparts(FILE_DFS);
+% determine whether this is DFS2 or DFS3 file
+DFS2 = false;
+DFS3 = false;
+[~,FNAME,MyFileExtension] = fileparts(FILE_DFS);
+if strcmp(MyFileExtension,'.dfs2')
+    DFS2 = true;
+end
+if strcmp(MyFileExtension,'.dfs3')
+    DFS3 = true;
+end
 
 if DFS2
     % read current timestep for each item in file into array Fx

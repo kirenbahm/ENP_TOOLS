@@ -9,9 +9,34 @@ if strcmp(FEXT,'.dfs3')
     FILE_SHEETNAMES = [INI.CELL_DEF_FILE_SHEETNAME_3DSZQ];
 end
 
-% read monitoring points from excel file
+% Load group definition data from Excel file
+fprintf('%s Reading file: %s\n',datestr(now), char(INI.TRANSECT));
+
+% stn_counter_begin = 0;
+% stn_counter_end = 0;
+num_sheets = length(FILE_SHEETNAMES);
+
+XLARRAY=[];
 try
-    XLARRAY = read_XL_GRID(INI.TRANSECT,FILE_SHEETNAMES);
+    for sheetnum = 1:num_sheets  % iterate through sheet names given in A0 setup script
+        xlsheet = FILE_SHEETNAMES{sheetnum};
+        [~,~,xldata] = xlsread(INI.TRANSECT,xlsheet);
+        [numrows,~] = size(xldata);
+        
+        % append array of numrows and 11 columns
+        XLARRAY = [XLARRAY;xldata(2:numrows,1:11)];
+        
+        %     stn_counter_begin = stn_counter_end + 1;
+        %     stn_counter_end = stn_counter_end + (numrows - 1); % subtract 1 for header row
+        %     MyRequestedStnNames(stn_counter_begin:stn_counter_end) = xldata(2:numrows,1);
+        %     rows0(stn_counter_begin:stn_counter_end) = xldata(2:numrows,2);
+        %     cols0(stn_counter_begin:stn_counter_end) = xldata(2:numrows,3);
+        %     lyrs1(stn_counter_begin:stn_counter_end) = xldata(2:numrows,4);
+        %     multip(stn_counter_begin:stn_counter_end) = xldata(2:numrows,5);
+        %     itms1(stn_counter_begin:stn_counter_end) = xldata(2:numrows,6);
+    end
+
+
 catch
     fprintf('... Exception in load_XL_GRID\n');
 end

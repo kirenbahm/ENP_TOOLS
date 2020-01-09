@@ -7,7 +7,7 @@ function [ output_args ] = generateComputedMatlab( input_args )
 %---------------------------------------------------------------------
 %   This function reads computed data from a simulation (.dfs0 and .dfs2 filels) and generates a
 %   Matlab database of computed M11 and MSHE data. The file requires the
-%   folloing directories to be defined:
+%   following directories to be defined:
 
 % 1. Location of ENPMS scripts e.g. 'some path\ENP_TOOLS\ENPMS\'
 % 2. Location of common data (spreadsheet with chainages ij-coordinates for
@@ -22,11 +22,13 @@ function [ output_args ] = generateComputedMatlab( input_args )
 % 7. Set conversion factor for chainages between M11 in feet and in m (check
 % the res11 file to determine if chainages are in feet
 
-%The path to each simulation is provided in lines 54 and further
-% do not change here
+
+%%% DO NOT MODIFY (begin)
 [INI.ROOT,NAME,EXT] = fileparts(pwd()); % path string of ROOT Directory/
 INI.ROOT = [INI.ROOT '/'];
 INI.CURRENT_PATH =[char(pwd()) '/']; % path string of folder MAIN
+%%% DO NOT MODIFY (end)
+
 
 %---------------------------------------------------------------------
 % 1. SETUP Location of ENPMS Scripts
@@ -77,10 +79,10 @@ i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\
 %---------------------------------------------------------------------
 % 6. Process transects
 %---------------------------------------------------------------------
-INI.READ_TRANSECTS_MLAB = 1;
-INI.LOAD_TRANSECTS_MLAB = 0;
-INI.LOAD_OL = 0; % Load the OL MATLAB file as a preference if available
-INI.LOAD_3DSZQ = 0; % Load the SZ MATLAB file as a preference if available
+INI.READ_TRANSECTS_MLAB = 1; % set this switch to execute transects code
+INI.LOAD_TRANSECTS_MLAB = 0; % this does not seem to be used for anything?
+INI.LOAD_OL = 0;    % this variable also exists in setup_ini.m but is used in a different way % Load the OL MATLAB file as a preference if available
+INI.LOAD_3DSZQ = 0; % this variable also exists in setup_ini.m but is used in a different way % Load the SZ MATLAB file as a preference if available
 INI.TRANSECT_DEFS_FILE = [ INI.DATA_COMMON 'TRANSECTS_v17.xlsx'];
  
 % define Overland Flow transect sheetnames

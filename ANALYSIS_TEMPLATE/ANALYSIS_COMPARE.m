@@ -115,7 +115,7 @@ INI.SAVEFIGS              = 0; % save figures in MATLAB format?
 INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables.
 INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 
-INI.DEBUG                 = 1; % for debug mode
+INI.DEBUG                 = 1; % Set this to 1 to generate extra output for debugging
 
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------

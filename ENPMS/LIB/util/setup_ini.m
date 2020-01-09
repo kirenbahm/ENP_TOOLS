@@ -5,9 +5,7 @@ fprintf('\n--------------------');
 fprintf('\nBeginning setup_ini     (%s)',datestr(now));
 fprintf('\n--------------------');
 
-INI.DEBUG = 0;  % set this to 1 to generate extra output for debugging
-
-% setup_ini(INI) SETS UP additionall options which rarely change but if
+% setup_ini(INI) SETS UP additional options which rarely change but if
 % user decides to modify some of the options here, there sill be impact on
 % the analysis in subsequent files
 

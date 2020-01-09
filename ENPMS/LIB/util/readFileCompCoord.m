@@ -3,13 +3,16 @@ function INI = readFileCompCoord(INI)
 % read the excel file to determine the computed coordinates and save in
 % mapComputedDataCoord
 
+% Create empty container
 INI.mapCompSelected = containers.Map;
+
+% Read Excel spreadsheet into generic data arrays
 [NUM,TXT,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
 fprintf('--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
 
-[numStations,trash] = size(RAW);
-
-for i = 2:numStations
+% Iterate through data array rows and copy the station data into structures (skipping header row)
+[numRows,~]=size(RAW); 
+for i = 2:numRows % each row has data for a different station
     try
         STATION_NAME = char(RAW(i,1));
         %fprintf('--- reading line %d::%s\n', i, char(STATION_NAME))

@@ -32,10 +32,15 @@ for i=0:nsteps-1
     T = T + TS.S.TIMESTEPD;
     ds = datestr(T);
 
-    b = 10; % print only every 10 days
-    if ~mod(i,b)
-        fprintf('... Reading SZ Values: %s: %s %i %s %i\n', ds, ' Step: ', i, '/', TS.S.nsteps);
+    % print progress bar to screen for file reading
+    if ~mod(i+1,10) % print only every 10 days
+       fprintf('.');
+       %fprintf('... Reading SZ Values: %s: %s %i %s %i\n', ds, ' Step: ', i, '/', TS.S.nsteps);
     end
+    if ~mod(i,366)
+       fprintf('\n... Reading step %i%s%i:: %s ::and counting',i+1, '/', nsteps-1, ds);
+    end
+    
     SZ_ELEV = double(TS.S.DFS.ReadItemTimeStep(1,i).To3DArray());
 %     OL_DEPTH = double(TS.S.dfs2.ReadItemTimeStep(1,i).To2DArray());
     j = 0;

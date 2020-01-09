@@ -89,10 +89,11 @@ fclose('all');
 if INI.DEBUG
     %test code
     try
+        K = 'S175_Q';
         STATION = MAP_ALL_DATA (char(K));
-        K = 'S194_Q';
+        K = 'S177_HW';
         STATION = MAP_ALL_DATA (char(K));
-        K = 'A13';
+        K = 'S18C_Q';
         STATION = MAP_ALL_DATA (char(K));
     catch
     end

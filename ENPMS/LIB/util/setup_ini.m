@@ -43,6 +43,9 @@ INI.GRAPHICS_LW = [ 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3];
 INI.GRAPHICS_FS = 12;
 INI.GRAPHICS_FN = 'times';
 
+INI.GRAPHICS_FIGUREWIDTH = 8; %10
+INI.GRAPHICS_FIGUREHEIGHT = 3;
+
 %---------------------------------------------------------------------
 % CHOOSE MODEL OUTPUT FILES TO EXTRACT DATA FROM   1=yes, 0=no
 %---------------------------------------------------------------------

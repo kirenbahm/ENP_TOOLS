@@ -108,7 +108,7 @@ for i = m
 end
 
 set(gcf, 'PaperUnits', 'inches');
-set(gcf, 'PaperPosition', [0,0,8,3]);
+set(gcf, 'PaperPosition', [0,0,INI.GRAPHICS_FIGUREWIDTH,INI.GRAPHICS_FIGUREHEIGHT]);
 set(gcf, 'Renderer', 'OpenGL');
 set(gcf, 'Color', 'w');
 

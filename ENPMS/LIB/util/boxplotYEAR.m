@@ -109,7 +109,7 @@ FN = INI.GRAPHICS_FN;
 set(gca,'FontSize',FS,'FontName',FN);
 
 set(gcf, 'PaperUnits', 'inches');
-set(gcf, 'PaperPosition', [0,0,8,3]);
+set(gcf, 'PaperPosition', [0,0,INI.GRAPHICS_FIGUREWIDTH,INI.GRAPHICS_FIGUREHEIGHT]);
 set(gcf, 'Renderer', 'OpenGL');
 set(gcf, 'Color', 'w');
 

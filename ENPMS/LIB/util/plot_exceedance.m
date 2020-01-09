@@ -54,7 +54,7 @@ maxrTS(1:n) = 0;
 %figure settings;
 clf;
 set(gcf, 'PaperUnits', 'inches');
-set(gcf, 'PaperPosition', [0,0,8,3]);
+set(gcf, 'PaperPosition', [0,0,INI.GRAPHICS_FIGUREWIDTH,INI.GRAPHICS_FIGUREHEIGHT]);
 set(gcf, 'Renderer', 'OpenGL');
 set(gcf, 'Color', 'w');
 

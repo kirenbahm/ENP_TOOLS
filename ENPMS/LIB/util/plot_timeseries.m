@@ -103,14 +103,21 @@ grid on;
 s_title = char(STATION.NAME);
 title(s_title,'FontSize',10,'FontName','times','Interpreter','none');
 
-try
-    if (STATION.Z_GRID > -1.0e-035)
-        string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});
-        add_ground_level(0,0.9,STATION.Z_GRID,[188/256 143/256 143/256],2,'--',12,string_ground_level);
+if strcmp(STATION.DATATYPE,'Elevation')
+    if ~isnan(STATION.Z)
+        %string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});
+        string_ground_level = '';
+        add_ground_level(0,0.15,STATION.Z,[188/256 143/256 143/256],2,'--',12,string_ground_level);
     end
-catch
-    fprintf(' --> WARNING: Missing Z_GRID in station %s', char(STATION.NAME))
 end
+% try
+%     if (STATION.Z_GRID > -1.0e-035)
+%         string_ground_level = strcat({'GSE: grid = '}, char(sprintf('%.1f',STATION.Z_GRID)), {' ft'});
+%         add_ground_level(0,0.9,STATION.Z_GRID,[188/256 143/256 143/256],2,'--',12,string_ground_level);
+%     end
+% catch
+%     fprintf(' --> WARNING: Missing Z_GRID in station %s', char(STATION.NAME))
+% end
 
 plotfilename = strcat(INI.FIGURES_DIR_TS,'/',STATION.NAME);
 F=strcat(plotfilename,'.png'); % or use .png

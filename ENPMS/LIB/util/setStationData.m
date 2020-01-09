@@ -1,4 +1,4 @@
-function STATION = setStationData(INI, i, K, mapS, STATION)
+function STATION = setStationData(INI, i, MY_STN, MapOfOneAltData, STATION)
 
 % For a given station the functions iterates over vectors, merges vectors
 % of time and data
@@ -8,8 +8,8 @@ STATION.DATA(i).TIMESERIES = [];
 iniT = datenum(INI.ANALYZE_DATE_I);
 endT = datenum(INI.ANALYZE_DATE_F);
 
-if isKey(mapS,char(K))
-    S = mapS(char(K));
+if isKey(MapOfOneAltData,char(MY_STN))
+    S = MapOfOneAltData(char(MY_STN));
     
     if isfield(S,'DCOMPUTED')
         T = S.TIMEVECTOR;

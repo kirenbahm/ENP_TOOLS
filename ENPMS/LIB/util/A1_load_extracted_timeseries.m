@@ -29,13 +29,16 @@ fprintf('\nBeginning A1_load_extracted_timeseries    (%s)',datestr(now));
 fprintf('\n--------------------------------------');
 format compact
 
-[KEYS, MAPS] = loadCompData(INI);
-ind = ismember(INI.SELECTED_STATIONS,KEYS);
-INI.SELECTED_STATIONS = INI.SELECTED_STATIONS(ind); % remove non-existing
-ind = ismember(KEYS, INI.SELECTED_STATIONS);
-KEYS = KEYS(ind); % use only selected stations
+[StationsWithData, MapOfAllData] = loadCompData(INI);
 
-%load the file with observed data
+% Filter out stations that don't have data from our selected stations list?
+ind = ismember(INI.SELECTED_STATIONS,StationsWithData);
+INI.SELECTED_STATIONS = INI.SELECTED_STATIONS(ind); % remove non-existing
+
+% Filter out stations we don't want from our selected stations list?
+ind = ismember(StationsWithData, INI.SELECTED_STATIONS);
+STATION_NAMES = StationsWithData(ind); % use only selected stations
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Read all files as specified in MODEL_ALL_RUNS and make a structure
@@ -47,32 +50,35 @@ KEYS = KEYS(ind); % use only selected stations
 % Iterate over selected model runs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Create an empty map
 MAP_ALL_DATA = containers.Map();
 
-for K = KEYS % {'T19'} %'G211_Q', 'TR_Q', {'S194_Q'}  % {'BRC_Q'} %KEYS % 
-    fprintf('... processing computed:%s,\n', char(K));
-    KM = keys(MAPS);
-    STATION = initialize_STATION(K, KM);
+% Iterate over selected stations
+for MY_STN = STATION_NAMES % {'T19'} %'G211_Q', 'TR_Q', {'S194_Q'}  % {'BRC_Q'} %KEYS % 
+    fprintf('... processing computed:%s,\n', char(MY_STN));
+    AllAltsList = keys(MapOfAllData);
+    STATION = initialize_STATION(MY_STN, AllAltsList);
     
     i = 0;
-    for M = INI.MODEL_ALL_RUNS
-        mapS = MAPS(char(M));
+    % Iterate over alternatives, copy data for each
+    for MyAlt = INI.MODEL_ALL_RUNS
+        MapOfOneAltData = MapOfAllData(char(MyAlt));
         i = i + 1;
-        STATION = setStationInfo(i, K, mapS, STATION);
-        STATION = setStationData(INI, i, K, mapS, STATION);
+        STATION = setStationInfo(i, MY_STN, MapOfOneAltData, STATION);
+        STATION = setStationData(INI, i, MY_STN, MapOfOneAltData, STATION);
     end 
     
     if INI.INCLUDE_OBSERVED
-        mapS = MAPS('Observed');
+        MapOfObsData = MapOfAllData('Observed');
         i = i + 1;
-        STATION = setStationInfo(i, K, mapS, STATION);
-        STATION = setStationData(INI, i, K, mapS, STATION);
+        STATION = setStationInfo(i, MY_STN, MapOfObsData, STATION);
+        STATION = setStationData(INI, i, MY_STN, MapOfObsData, STATION);
     end 
     
     TV = STATION.DATA.TIMEVECTOR;
     if any(TV)
         % assign only if there is one non-zero timevector
-        MAP_ALL_DATA(char(K)) = STATION;
+        MAP_ALL_DATA(char(MY_STN)) = STATION;
     end
 end
 
@@ -89,12 +95,12 @@ fclose('all');
 if INI.DEBUG
     %test code
     try
-        K = 'S175_Q';
-        STATION = MAP_ALL_DATA (char(K));
-        K = 'S177_HW';
-        STATION = MAP_ALL_DATA (char(K));
-        K = 'S18C_Q';
-        STATION = MAP_ALL_DATA (char(K));
+        MY_STN = 'S175_Q';
+        STATION = MAP_ALL_DATA (char(MY_STN));
+        MY_STN = 'S177_HW';
+        STATION = MAP_ALL_DATA (char(MY_STN));
+        MY_STN = 'S18C_Q';
+        STATION = MAP_ALL_DATA (char(MY_STN));
     catch
     end
 end

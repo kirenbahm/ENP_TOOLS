@@ -1,7 +1,7 @@
-function STATION = initialize_STATION(K,KM)
+function STATION = initialize_STATION(MY_STN,AllAltsList)
  % this functon provides initialiazation of a station instance
  % it is a combination of MIKE SHE, MIKE 11 and Transect objects
-    STATION.STATION_NAME = char(K);
+    STATION.STATION_NAME = char(MY_STN);
     STATION.DATATYPE = '';
     STATION.UNIT = '';
     STATION.X_UTM = NaN;
@@ -14,16 +14,16 @@ function STATION = initialize_STATION(K,KM)
     STATION.N_AREA = '';
     STATION.I_AREA = NaN;
     
-    n = length(KM);
-    STATION.SZLAYER(1:n) = NaN;
-    STATION.OLLAYER(1:n) = NaN;
+    numAlts = length(AllAltsList);
+    STATION.SZLAYER(1:numAlts) = NaN;
+    STATION.OLLAYER(1:numAlts) = NaN;
     
-    STATION.MODEL = repmat({''},n,1);
-    STATION.NOTE = repmat({''},n,1);
-    STATION.ALTERNATIVE = repmat({''},n,1);
+    STATION.MODEL = repmat({''},numAlts,1);
+    STATION.NOTE = repmat({''},numAlts,1);
+    STATION.ALTERNATIVE = repmat({''},numAlts,1);
     
     STATION.TIMEVECTOR = [];
-    STATION.TIMESERIES = double.empty(n,0);
+    STATION.TIMESERIES = double.empty(numAlts,0);
     
 %     STATION.MSHEM11 = '';
 %     STATION.ALTERNATIVE = '';

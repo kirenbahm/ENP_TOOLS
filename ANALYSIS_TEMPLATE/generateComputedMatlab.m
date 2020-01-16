@@ -59,10 +59,10 @@ INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 % 4. Provide name of the Excel file with all stations (and data items):
 %---------------------------------------------------------------------
 INI.fileCompCoord = [INI.DATA_COMMON 'OBSERVED_DATA_MODEL_test.xlsx'];
-% Set conversion factor for chainages between M11 in feet and in meters
-% (check the res11 file to determine if chainages are in feet)
-%INI.CONVERT_M11CHAINAGES = 0.3048;
-INI.CONVERT_M11CHAINAGES = 1;
+
+% Conversion factor for chainage units between Excel file and MSHE_WM.dfs0 file
+%INI.CONVERT_M11CHAINAGES = 0.3048; % use 0.3048 if Excel file chainages in meters and MSHE_WM.dfs0 chainages in feet
+INI.CONVERT_M11CHAINAGES = 1.0;     % use 1.0 if Excel file chainages in feet and MSHE_WM.dfs0 chainages in feet
 
 %---------------------------------------------------------------------
 % 5. CHOOSE SIMULATIONS TO BE ANALYZED

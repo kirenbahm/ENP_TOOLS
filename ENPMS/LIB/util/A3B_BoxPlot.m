@@ -25,8 +25,8 @@ for M = STATIONS_LIST
         try
             STATION = MAP_ALL_DATA(char(M));  %get a tmp structure, modify values
             i = i + 1;
-            INI = boxplotMONTH(STATION,INI); % 
-            INI = boxplotYEAR(STATION,INI); % 
+            INI = boxplotYEAR(STATION,INI);
+            INI = boxplotMONTH(STATION,INI);
         catch
             fprintf(' --> EXCEPTION: boxplot failed for station %s', char(M));
             msgException = getReport(INI,'extended','hyperlinks','on');

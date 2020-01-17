@@ -3,6 +3,8 @@ function DFS0 = read_file_DFS0(FILE_NAME)
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
 import DHI.Generic.MikeZero.DFS.dfs0.*;
+import DHI.Generic.MikeZero.DFS.dfs123.*;
+
 dfs0File  = DfsFileFactory.DfsGenericOpen(FILE_NAME);
 dd = double(Dfs0Util.ReadDfs0DataDouble(dfs0File));
 
@@ -23,6 +25,9 @@ for i = 0:dfs0File.ItemInfo.Count - 1
     DFS0.TYPE(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.ItemDescription)};
     DFS0.UNIT(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.UnitAbbreviation)};
     DFS0.NAME(i+1) = {char(dfs0File.ItemInfo.Item(i).Name)};
+    DFS0.UNITDESCR (i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.UnitDescription)};
+    DFS0.X(i+1) = dfs0File.ItemInfo.Item(i).ReferenceCoordinateX;
+    DFS0.Y(i+1) = dfs0File.ItemInfo.Item(i).ReferenceCoordinateY;
 end
 % plot(DFS0.T,DFS0.V)
 % A = datestr(DFS0.T);

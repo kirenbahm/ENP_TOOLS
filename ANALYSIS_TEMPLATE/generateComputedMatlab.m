@@ -53,7 +53,7 @@ INI.DATA_COMMON = '..\..\ENP_TOOLS_Sample_Input\Data_Common/';
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
+INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Output\generateComputedMatlab_output/';
 
 %---------------------------------------------------------------------
 % 4. Provide name of the Excel file with all stations (and data items):
@@ -122,31 +122,17 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 %---------------------------------------------------------------------
 
 try
-    INI = fileAssertions(INI);
+    assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
+    assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
+    assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
+    assert(exist(INI.TRANSECT_DEFS_FILE,'file') == 2, 'File not found.' );
+
     INI = extractComputedData(INI);
 catch INI
     S = 'extractComputedData(INI)';
     fprintf('...exception in::%s\n',char(S));
     msgException = getReport(INI,'extended','hyperlinks','on')
 end
-
-end
-
-%---------------------------------------------------------------------
-% function INI = extractComputedData(INI)
-%---------------------------------------------------------------------
-function INI = fileAssertions(INI);
-% Move all file assertions here
-
-assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
-
-assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
-
-assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
-
-assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
-
-assert(exist(INI.TRANSECT_DEFS_FILE,'file') == 2, 'File not found.' );
 
 end
 

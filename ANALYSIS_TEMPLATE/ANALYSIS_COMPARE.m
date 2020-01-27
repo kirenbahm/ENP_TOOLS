@@ -61,6 +61,7 @@ INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
 % 3. Set location to read inputfiles containing computed Matlab data
 %---------------------------------------------------------------------
 INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
+%INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Output\generateComputedMatlab_output/';
 
 %---------------------------------------------------------------------
 % 4. Set a tag for this analysis

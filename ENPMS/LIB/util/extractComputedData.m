@@ -33,7 +33,7 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     INI.simRESULT = [INI.MODEL_SIMULATION_SET{i} '.she - Result Files\'];
     INI.DATABASE_COMP = char(strcat(INI.DATA_COMPUTED,'COMPUTED_',INI.simMODEL,'.MATLAB'));
 
-    INI.simRESULTmatlab = [INI.simRESULT 'matlab\'];
+    %INI.simRESULTmatlab = [INI.simRESULT 'matlab\'];
 
     % files for extracting computed data
     INI.fileM11WM = [INI.simRESULT 'MSHE_WM.dfs0'];

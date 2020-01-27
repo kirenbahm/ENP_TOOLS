@@ -1,67 +1,50 @@
 function MAP_COMPUTED_GROUPS = get_GRIDDED_DATA(FILE_DFS, INI)
 
-
-%  UNDER CONSTRUCTION
-
-
 %---------------------------------------------
 % FUNCTION DESCRIPTION:
 %
-% This function reads MIKESHE and MIKE11 raw output files and saves
+% This function reads MIKESHE raw output files and saves
 %   selected items into a .MATLAB file.
-% The data is saved as 1-dimensional daily timeseries, and currently only
-%   saves the last timestep of each day.
+% The structures are stored in a map with station name as
+% MAP KEY and computed data as MAP VALUE. The structure is accessed
+% by providing the key as a character string e.g. D = MAP_ALL_DATA('NP205')
 
-% variable names are given 0 or 1 suffix to indicate whether it is a 0-based
-% value or a 1-based value. since we are switching between these so much...
-%
-% The data saved into the .MATLAB file is in the form of a container,
-%   called MAP_ALL_DATA, that uses the station names as keys.
-%The structures are stored in a map with station name as
-%MAP KEY and computed data as MAP VALUE. The structure is accessed
-%by providing the key as a character string e.g. D = MAP_ALL_DATA('NP205')
+% Note dfs file has first timestep as 0 and matlab saves first timestep
+% as 1
 
-% COMMENTS:
-%
-%----------------------------------------
-% REVISION HISTORY:
-%
-% keb 2016-07-19  removed or rearranged comments.
-%
-% v6:   keb 2015-12-08
-%  -changed DFS read code to allow for a variable number of items in file
-%   (but it still assumes you know the item numbers for the data you want)
-%
-% v4:
-%  -added functionality for dfs2 files  keb 2015-11-10
-%  -incremented to InputDFS2v2
-%  -removed confusing references that opened the file a second time and
-%   referred to the same variables by different names
-% v3:
-%  -added syntax for reading many Excel worksheets (within the same Excel
-%   file) instaead of just one worksheet.
-%  -changed number of columns of Excel data to save in array (minus 3
-%  'scratch' columns that weren't used)
-%----------------------------------------
+% note this script reads the items specified in the Excel sheet. If the
+% number of items in the dfs output file changes, this script might be
+% reading the wrong items. For example, if SZflow in the x-direction is
+% item 1 in one file, and item 2 in another file, this script might pull
+% the wrong data, if the Excel sheet item number was not changed.
+% This will need to be fixed in future revisions of this function.
+
+% the XL sheet requires 6 data items in the .dfs3 file,
+% otherwise code breaks. This requires specific set up in
+% the MIKE grid series output file. The variables could be:
+% groundwater flow in x-direction
+% groundwater flow in y-direction
+% groundwater flux in z-direction for MIKE 2019: the other flux items i.e. x and y directions should be unchecked
+% groundwater flow in z-direction for MIKE 2016 and 2017
 
 format compact
 
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % Load group definition data from Excel or Matlab file
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Load group definition data from Excel or Matlab file
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 XLARRAY = load_XL_GRID(FILE_DFS, INI);
 
 % Assign each vector to corresponding array column
 MyRequestedStnNames=XLARRAY(:,1);
-rows0=XLARRAY(:,2);
-cols0=XLARRAY(:,3);
-lyrs1=XLARRAY(:,4);
-multip=XLARRAY(:,5);
-itms1=XLARRAY(:,6);
+rows0=XLARRAY(:,2);  % rows0 is grid row, start counting at 0 (not 1)
+cols0=XLARRAY(:,3);  % cols0 is grid column, start counting at 0 (not 1)
+lyrs1=XLARRAY(:,4);  % lyrs1 is grid layer, start counting at 1 (not 0)
+multip=XLARRAY(:,5); % multiplier (usually 1 or -1, depending on flow direction needed)
+itms1=XLARRAY(:,6);  % item number, start counting at 1 (not 0)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % get timeseries data
@@ -119,6 +102,8 @@ if DFS2
     % Then pick out item/cell values you need and save to fk array.
     % Assumes 2d array.
     for tstep=0:NumDfsSteps-1
+
+        % Print progress bar to screen as we read file
         ds = datestr(DfsTimeVector(tstep+1,:));
         if mod(tstep-1,10) == 0
             fprintf('.');
@@ -126,11 +111,13 @@ if DFS2
         if mod(tstep-1,366) == 0
             fprintf('\n... now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
         end
-        %fprintf('... Step %i%s%i:: %s :: reading: %s%s\n',...
-        %     tstep+1, '/', NumDfsSteps-1, ds, char(FNAME), char(MyFileExtension))
+
+        % Read file and save in array.
         for i = 1:NumItemsInFile
             Fx{i} = double(TS.S.myDfs.ReadItemTimeStep(i,tstep).To2DArray());
         end
+
+        % Pull out data we want and save in new array.
         for k=1:length(MyRequestedStnNames) % iterate through lines in Excel file
             itemRequested = itms1{k};
             fk = Fx{itemRequested};
@@ -145,6 +132,8 @@ if DFS3
     % Assumes 3d array.
     try
         for tstep=0:NumDfsSteps-1
+
+            % Print progress bar to screen as we read file
             ds = datestr(DfsTimeVector(tstep+1,:));
             if mod(tstep-1,10) == 0
                 fprintf('.');
@@ -152,8 +141,8 @@ if DFS3
             if mod(tstep-1,366) == 0
                 fprintf('\n... now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
             end
-            %fprintf('... Step %i%s%i:: %s :: reading: %s%s\n',...
-            %     tstep+1, '/', NumDfsSteps-1, ds, char(FNAME), char(MyFileExtension))
+
+            % Read file and save in array.
             try
                 for i = 1:NumItemsInFile
                     Fx{i} = double(TS.S.myDfs.ReadItemTimeStep(i,tstep).To3DArray());
@@ -161,14 +150,9 @@ if DFS3
             catch
                 fprintf('\nException: number of requested items greater than available in dfs3 :  %i%s%i \n', i, ' out of ', NumItemsInFile);
             end
+
+            % Pull out data we want and save in new array.
             for k=1:length(MyRequestedStnNames) % iterate through lines in Excel file
-                % the XL sheet requires 6 data items in the .dfs3 file,
-                % otherwise code breaks. This requires specific set up in
-                % the MIKE grid series output file:
-                % groundwater flow in x-direction
-                % groundwater flow in y-direction
-                % groundwater flux in z-direction for MIKE 2019: the other flux items i.e. x and y directions should be unchecked
-                % groundwater flow in z-direction for MIKE 2016 and 2017
                 itemRequested = itms1{k};
                 fk = Fx{itemRequested};
                 TS.ValueMatrix(tstep+1,k) = fk(cols0{k}+1,rows0{k}+1,lyrs1{k}) * multip{k};
@@ -179,23 +163,20 @@ if DFS3
     end
 end
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%---------------------------------------------------------------
 
 ds  = datestr(clock);
 fprintf('\n%s:: Grouping extracted seepage values from %s\n',ds, char(FNAME));
 ARRAY_GROUPS = sum_ARRAY_GROUPS(TS.ValueMatrix,MyRequestedStnNames);
-TV = TS.TIMEVECS(:,1:3);
-DATA = [TV ARRAY_GROUPS];
-GROUPS = unique(MyRequestedStnNames);
-HEADER = [{'Year'}; {'Month'}; {'Day'}; GROUPS]';
-sz = size(ARRAY_GROUPS);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%---------------------------------------------------------------
+
 ds  = datestr(clock);
 % create a map of stations and corresponding sumation
 fprintf('%s:: Creating a MAP of computed from: %s\n',ds, char(FNAME))
+TV = TS.TIMEVECS(:,1:3);
+GROUPS = unique(MyRequestedStnNames);
 MAP_COMPUTED_GROUPS = create_MAP_COMPUTED(TS,GROUPS,ARRAY_GROUPS,TV,itms1,DfsDatesVector);
-%---------------------------------------------------------------
+
 end
 

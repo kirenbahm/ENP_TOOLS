@@ -67,15 +67,15 @@ INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 %     (This tag will be used to name the output directory, combined 
 %      output datasets, and other filenames)
 %---------------------------------------------------------------------
-INI.ANALYSIS_TAG = 'ENP_TOOLS_Sample_Output';
-INI.POST_PROC_DIR = ['..\..\' INI.ANALYSIS_TAG '/'];
+INI.ANALYSIS_TAG = 'M01-M06_test';
+INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Sample_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
 
 %---------------------------------------------------------------------
 % 5. Choose simulations to be analyzed (must be present in INI.DATA_COMPUTED
 %---------------------------------------------------------------------
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test', 'M01'};
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'};
-% 
+
 %---------------------------------------------------------------------
 % 6. Select time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC
 %---------------------------------------------------------------------

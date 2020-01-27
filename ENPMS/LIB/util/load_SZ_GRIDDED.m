@@ -1,10 +1,10 @@
-function MAP_COMPUTED_3DSZQ = load_SZ_GRIDDED(L,INI,MODEL_RESULT_DIR,FILE_3DSZQ)
+function MAP_COMPUTED_3DSZQ = load_SZ_GRIDDED(L,INI,FILE_3DSZQ)
 
 MAP_COMPUTED_3DSZQ = containers.Map();
 
 ML_FILE = [INI.simRESULTmatlab '/MAP_COMPUTED_3DSZQ.MATLAB'];
 if ~exist(INI.simRESULTmatlab,'file')
-    L = 0;% if directoryt doesnt exist, regenerate the matlab TRANSECT data
+    L = 0; % if directory doesnt exist, regenerate the matlab TRANSECT data
     mkdir(char(INI.simRESULTmatlab));
 end
 
@@ -16,8 +16,8 @@ else
         load(char(ML_FILE),'-mat');
     catch
         fprintf('\n... Exception in load_SZ_GRIDDED() \n');
-        fprintf('\n... -> MAP_COMPUTED_3DSZQ.MATLAB not loaded, continuing with MAP_COMPUTED_3DSZQ_DATA = 0 \n');
-    end;
+        fprintf('\n... -> MAP_COMPUTED_3DSZQ.MATLAB not loaded, continuing with MAP_COMPUTED_3DSZQ = 0 \n');
+    end
 end
 
 end

@@ -1,6 +1,4 @@
-function M_ALL = convert_map(INI, M_ALL, MM, id, i)
-
-M = containers.Map();
+function M_ALL = convert_map(INI, M_ALL, MM, i)
 
 S = filesep; % file separator platform specific
 C = strsplit(INI.MODEL_SIMULATION_SET{i},S); % get path names

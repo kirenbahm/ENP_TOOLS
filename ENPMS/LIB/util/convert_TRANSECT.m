@@ -6,12 +6,10 @@ function INI = convert_TRANSECT(INI, i)
 M_ALL = INI.mapCompSelected;
 
 M_OL = INI.TRANSECTS_MLAB.OL;
-id = '_OL';
-M_ALL = convert_map(INI, M_ALL, M_OL, id, i);
+M_ALL = convert_map(INI, M_ALL, M_OL, i);
 
 M_SZ = INI.TRANSECTS_MLAB.SZ;
-id = '_SZ';
-M_ALL = convert_map(INI, M_ALL, M_SZ, id, i);
+M_ALL = convert_map(INI, M_ALL, M_SZ, i);
 
 INI.mapCompSelected = M_ALL;
 

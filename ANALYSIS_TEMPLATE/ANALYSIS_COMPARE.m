@@ -76,6 +76,8 @@ INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Sample_Output\ANALYSIS_COMPARE_output\' IN
 %---------------------------------------------------------------------
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test', 'M01'};
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'};
+%i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test_short', 'M01'};
+%i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test_short', 'M06'};
 
 %---------------------------------------------------------------------
 % 6. Select time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC

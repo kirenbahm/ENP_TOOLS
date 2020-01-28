@@ -27,6 +27,10 @@ function MAP_COMPUTED_GROUPS = get_GRIDDED_DATA(FILE_DFS, INI)
 % groundwater flux in z-direction for MIKE 2019: the other flux items i.e. x and y directions should be unchecked
 % groundwater flow in z-direction for MIKE 2016 and 2017
 
+% This code seems very inefficient, copying arrays of data multiple times,
+% and looping over the same datasets multiple times.
+% This is a good candidate for improvement, if you have the time!
+
 format compact
 
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
@@ -42,7 +46,7 @@ XLARRAY = load_XL_GRID(FILE_DFS, INI);
 MyRequestedStnNames=XLARRAY(:,1);
 rows0=XLARRAY(:,2);  % rows0 is grid row, start counting at 0 (not 1)
 cols0=XLARRAY(:,3);  % cols0 is grid column, start counting at 0 (not 1)
-lyrs1=XLARRAY(:,4);  % lyrs1 is grid layer, start counting at 1 (not 0)
+%lyrs1=XLARRAY(:,4);  % (NO LONGER USED) lyrs1 is grid layer, start counting at 1 (not 0)
 multip=XLARRAY(:,5); % multiplier (usually 1 or -1, depending on flow direction needed)
 itms1=XLARRAY(:,6);  % item number, start counting at 1 (not 0)
 
@@ -142,7 +146,7 @@ if DFS3
                 fprintf('\n... now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
             end
 
-            % Read file and save in array.
+            % Read all items for this timestep and save in array Fx.
             try
                 for i = 1:NumItemsInFile
                     Fx{i} = double(TS.S.myDfs.ReadItemTimeStep(i,tstep).To3DArray());
@@ -151,11 +155,21 @@ if DFS3
                 fprintf('\nException: number of requested items greater than available in dfs3 :  %i%s%i \n', i, ' out of ', NumItemsInFile);
             end
 
+            % Determine number of layers in data array
+            [~,~,numLayers] = size(Fx{1}); % [numCols,numRows,numLayers]
+
             % Pull out data we want and save in new array.
             for k=1:length(MyRequestedStnNames) % iterate through lines in Excel file
+                % Figure ut which item we want data for
                 itemRequested = itms1{k};
+                % Copy data for that item into a new array
                 fk = Fx{itemRequested};
-                TS.ValueMatrix(tstep+1,k) = fk(cols0{k}+1,rows0{k}+1,lyrs1{k}) * multip{k};
+                % Copy data for first layer to TS
+                TS.ValueMatrix(tstep+1,k) = fk(cols0{k}+1,rows0{k}+1,1) * multip{k};
+                % Loop over remaining model layers and sum data into TS
+                for layerNum=2:numLayers
+                    TS.ValueMatrix(tstep+1,k) = TS.ValueMatrix(tstep+1,k) + fk(cols0{k}+1,rows0{k}+1,layerNum) * multip{k}; % hardcode layer to 1 to make sure script doesn't break with new Excel file - CONFIRMED!
+                end  % end loop over model layers
             end
         end
     catch

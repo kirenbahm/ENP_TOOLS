@@ -1,5 +1,9 @@
 function XLARRAY = load_XL_GRID(FILE_DFS, INI)
 
+% Note: hardcode below requires Excel arrays to have at least 6 columns,
+% otherwise the program will not append arrays and store data (usually
+% this means that the SZunderRIV and OL2RIV will be missing)
+
 % determine whether to use dfs2 sheets or dfs3 sheets
 [~,~,FEXT] = fileparts(FILE_DFS);
 if strcmp(FEXT,'.dfs2')
@@ -23,8 +27,9 @@ try
         [~,~,xldata] = xlsread(INI.TRANSECT_DEFS_FILE,xlsheet);
         [numrows,~] = size(xldata);
         
-        % append array of numrows and 11 columns
-        XLARRAY = [XLARRAY;xldata(2:numrows,1:11)];
+        % append array of numrows and 6 columns <== HARDCODED TO 6 COLUMNS
+        % (hardcoded to make sure array sizes match and can be appended)
+        XLARRAY = [XLARRAY;xldata(2:numrows,1:6)];
         
         %     stn_counter_begin = stn_counter_end + 1;
         %     stn_counter_end = stn_counter_end + (numrows - 1); % subtract 1 for header row

@@ -1,4 +1,7 @@
 function D06_generateObservedMatlab()
+
+fprintf('\n *** THIS SCRIPT IS CURRENTLY NOT WORKING ***\n\n');
+
 % This function creates MATLAB data file with
 %observed data
 %   This function reads sheet OBSERVED_DATA_MODEL/ALL_STATION_DATA and the

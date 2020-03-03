@@ -1,4 +1,7 @@
 function D00_dfe_STATION_DATA()
+
+fprintf('\n *** THIS SCRIPT IS CURRENTLY NOT WORKING ***\n\n');
+
 % This script creates a container (MAP_STATIONS) with the structure 
 % (STATIONS); takes the station name (NAME), longitude (X), latitude (Y) 
 % from the input file (station_data_from_dataforever.txt), and an 

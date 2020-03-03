@@ -1,5 +1,7 @@
 function D05_generate_BC2D_H_SZ() 
 
+fprintf('\n *** THIS SCRIPT IS CURRENTLY NOT WORKING ***\n\n');
+
 % -------------------------------------------------------------------------
 % path string of ROOT Directory = DRIVE:/GIT/ENP_TOOLS MAIN Directory = PRE_PROCESSING
 % -------------------------------------------------------------------------

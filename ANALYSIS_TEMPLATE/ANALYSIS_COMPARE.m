@@ -53,15 +53,18 @@ end
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data and observed matlab data inputfiles
 %---------------------------------------------------------------------
-INI.DATA_COMMON = '..\..\ENP_TOOLS_Sample_Input\Data_Common/'; 
+INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/'; 
 
 INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
 
 %---------------------------------------------------------------------
 % 3. Set location to read inputfiles containing computed Matlab data
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
-%INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Output\generateComputedMatlab_output/';
+% use this for unit testing
+INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Model_Output_Processed\';
+
+% use this for sequential testing
+%INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
 
 %---------------------------------------------------------------------
 % 4. Set a tag for this analysis
@@ -69,7 +72,13 @@ INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Input\Model_Output_Processed/';
 %      output datasets, and other filenames)
 %---------------------------------------------------------------------
 INI.ANALYSIS_TAG = 'M01-M06_test';
-INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Sample_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
+%INI.ANALYSIS_TAG = 'M01-M06_test_short';
+
+% use this for unit testing
+INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
+
+% use this for sequential testing
+%INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output_Sequential\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
 
 %---------------------------------------------------------------------
 % 5. Choose simulations to be analyzed (must be present in INI.DATA_COMPUTED

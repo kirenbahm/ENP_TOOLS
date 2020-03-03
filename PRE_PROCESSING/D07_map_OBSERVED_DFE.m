@@ -17,21 +17,38 @@ function D07_map_OBSERVED_DFE()
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 
+% -------------------------------------------------------------------------
 % Location of ENPMS library
+% -------------------------------------------------------------------------
 INI.MATLAB_SCRIPTS = '../ENPMS/';
 
+% -------------------------------------------------------------------------
 % Location of station metadata file (this is the DFE station table)
-DFE_STATION_DATA_FILE = '../../ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
+% -------------------------------------------------------------------------
+DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
 
+% -------------------------------------------------------------------------
 %LOAD directory locations and list PNG directory options
-INI.DIR_FLOW_DFS0 = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/';
-INI.DIR_STAGE_DFS0 = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/STAGE/';
+% -------------------------------------------------------------------------
+% use these for unit testing
+INI.DIR_FLOW_DFS0 = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/';
+INI.DIR_STAGE_DFS0 = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/STAGE/';
+INI.DIR_FLOW_DFS0_OUT = '../../ENP_TOOLS_Output/D07_map_OBSERVED_DFE_output/Obs_Data_Processed/FLOW/';
+INI.DIR_STAGE_DFS0_OUT = '../../ENP_TOOLS_Output/D07_map_OBSERVED_DFE_output/Obs_Data_Processed/STAGE/';
+
+% use these for sequential testing
+%INI.DIR_FLOW_DFS0 = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/FLOW/';
+%INI.DIR_STAGE_DFS0 = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/STAGE/';
+%INI.DIR_FLOW_DFS0_OUT = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/FLOW/';
+%INI.DIR_STAGE_DFS0_OUT = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/STAGE/';
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 % END USER INPUT
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
+mkdir(char(INI.DIR_FLOW_DFS0_OUT));
+mkdir(char(INI.DIR_STAGE_DFS0_OUT));
 
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
@@ -54,7 +71,7 @@ for DType_Flag = {'Discharge','WaterLevel'}
         for ii = 1: length(DFS0_TYPE)
             DIR_FILTER = [INI.DIR_FLOW_DFS0 DFS0_TYPE{ii} '_pngs/'];
             FILE_FILTER = [DIR_FILTER '*.png']; % list only files with extension *.dat
-            KML_FILE = [INI.DIR_FLOW_DFS0 char(DType_Flag) '.' DFS0_TYPE{ii} '.kml'];
+            KML_FILE = [INI.DIR_FLOW_DFS0_OUT char(DType_Flag) '.' DFS0_TYPE{ii} '.kml'];
             fid = fopen(char(KML_FILE),'w');
             fprintf(fid,'<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">');
             fprintf(fid,'\n<Folder><name>PreProcessing Analysis: %s-%s</name><open>1</open>', char(DType_Flag), DFS0_TYPE{ii});
@@ -85,7 +102,7 @@ for DType_Flag = {'Discharge','WaterLevel'}
         fprintf('\n');
         for ii = 1: length(DFS0_TYPE)
             FILE_FILTER = [INI.DIR_STAGE_DFS0 DFS0_TYPE{ii} '_pngs/*.png']; % list only files with extension *.dat
-            KML_FILE = [INI.DIR_STAGE_DFS0 char(DType_Flag) '.' DFS0_TYPE{ii} '.kml'];
+            KML_FILE = [INI.DIR_STAGE_DFS0_OUT char(DType_Flag) '.' DFS0_TYPE{ii} '.kml'];
             fid = fopen(char(KML_FILE),'w');
             fprintf(fid,'<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">');
             fprintf(fid,'\n<Folder><name>PreProcessing Analysis: %s-%s</name><open>1</open>', char(DType_Flag), DFS0_TYPE{ii});

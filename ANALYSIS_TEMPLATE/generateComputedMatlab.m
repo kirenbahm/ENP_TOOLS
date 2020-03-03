@@ -48,12 +48,16 @@ INI = initializeLIB(INI);
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data  
 %---------------------------------------------------------------------
-INI.DATA_COMMON = '..\..\ENP_TOOLS_Sample_Input\Data_Common/'; 
+INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/'; 
 
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation
 %---------------------------------------------------------------------
-INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Sample_Output\generateComputedMatlab_output/';
+% use this for unit testing
+INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_Output_Processed\';
+
+% use this for sequential testing
+%INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
 
 %---------------------------------------------------------------------
 % 4. Provide name of the Excel file with all stations (and data items):
@@ -73,10 +77,10 @@ INI.CONVERT_M11CHAINAGES = 1.0;     % use 1.0 if Excel file chainages in feet an
 % Once data are extracted, simulation files may be deleted
 
 i = 0;
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
-i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test'];
-%i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test_short'];
-%i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test_short'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
+i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test'];
+%i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test_short'];
+%i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test_short'];
 
 %---------------------------------------------------------------------
 % 6. Process transects

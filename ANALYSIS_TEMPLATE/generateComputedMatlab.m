@@ -62,7 +62,7 @@ INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_
 %---------------------------------------------------------------------
 % 4. Provide name of the Excel file with all stations (and data items):
 %---------------------------------------------------------------------
-INI.fileCompCoord = [INI.DATA_COMMON 'OBSERVED_DATA_MODEL_test.xlsx'];
+INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200305.xlsx'];
 
 % Conversion factor for chainage units between Excel file and MSHE_WM.dfs0 file
 %INI.CONVERT_M11CHAINAGES = 0.3048; % use 0.3048 if Excel file chainages in meters and MSHE_WM.dfs0 chainages in feet
@@ -89,7 +89,7 @@ INI.READ_TRANSECTS_MLAB = 1; % set this switch to execute transects code
 INI.LOAD_TRANSECTS_MLAB = 0; % this does not seem to be used for anything?
 INI.LOAD_OL = 0;    % this variable also exists in setup_ini.m but is used in a different way % Load the OL MATLAB file as a preference if available
 INI.LOAD_3DSZQ = 0; % this variable also exists in setup_ini.m but is used in a different way % Load the SZ MATLAB file as a preference if available
-INI.TRANSECT_DEFS_FILE = [ INI.DATA_COMMON 'TRANSECTS_v21.xlsx'];
+INI.TRANSECT_DEFS_FILE = [ INI.DATA_COMMON 'TRANSECTS_20200305.xlsx'];
  
 % define Overland Flow transect sheetnames
 ii=1;

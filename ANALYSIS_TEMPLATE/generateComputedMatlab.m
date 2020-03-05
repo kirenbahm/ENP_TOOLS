@@ -48,7 +48,7 @@ INI = initializeLIB(INI);
 %---------------------------------------------------------------------
 % 2. Set Location of Common Data  
 %---------------------------------------------------------------------
-INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/'; 
+INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common\'; 
 
 %---------------------------------------------------------------------
 % 3. Set location to store computed Matlab datafile for each simulation

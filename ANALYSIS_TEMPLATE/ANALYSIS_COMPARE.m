@@ -25,8 +25,9 @@ i = 0; % initialize simulation count
 % 1. Location of ENPMS scripts e.g. 'some path\ENP_TOOLS\ENPMS\'
 % 2. Location of common data (spreadsheet with chainages ij-coordinates for
 %     each model e.g. 'some path/DATA_COMMON/'
-% 3. Location to read inputfiles containing computed Matlab data
-% 4. A tag for analysis reference (creates also a directory to store all)
+% 3. A tag for analysis reference (creates also a directory to store all)
+% 4. Location to read inputfiles containing computed Matlab data,
+%     and parent directory for postproc output
 % 5. Simulations to be analyzed (must be present in INI.DATA_COMPUTED
 % 6. Time period for analysis BEGIN(I) AND END(F) DATES FOR POSTPROC
 % 7. A list of stations to be analyzed
@@ -58,27 +59,24 @@ INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/';
 INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
 
 %---------------------------------------------------------------------
-% 3. Set location to read inputfiles containing computed Matlab data
-%---------------------------------------------------------------------
-% use this for unit testing
-INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Model_Output_Processed\';
-
-% use this for sequential testing
-%INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
-
-%---------------------------------------------------------------------
-% 4. Set a tag for this analysis
+% 3. Set a tag for this analysis
 %     (This tag will be used to name the output directory, combined 
 %      output datasets, and other filenames)
 %---------------------------------------------------------------------
 INI.ANALYSIS_TAG = 'M01-M06_test';
 %INI.ANALYSIS_TAG = 'M01-M06_test_short';
 
+%---------------------------------------------------------------------
+% 4. Set location to read inputfiles containing computed Matlab data,
+%    and parent directory to store postproc output
+%---------------------------------------------------------------------
 % use this for unit testing
+INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Model_Output_Processed\';
 INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
 
 % use this for sequential testing
-%INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output_Sequential\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
+%INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
+%INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output_Sequential\' INI.ANALYSIS_TAG '/'];
 
 %---------------------------------------------------------------------
 % 5. Choose simulations to be analyzed (must be present in INI.DATA_COMPUTED

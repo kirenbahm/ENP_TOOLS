@@ -56,7 +56,7 @@ end
 %---------------------------------------------------------------------
 INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/'; 
 
-INI.FILE_OBSERVED = [INI.DATA_COMMON '/M06_OBSERVED_DATA_test.MATLAB'];
+INI.FILE_OBSERVED = [INI.DATA_COMMON '/SAMPLE_OBS_DATA_20200305.MATLAB'];
 
 %---------------------------------------------------------------------
 % 3. Set a tag for this analysis

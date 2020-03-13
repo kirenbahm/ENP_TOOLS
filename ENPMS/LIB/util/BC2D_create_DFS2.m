@@ -5,7 +5,7 @@ fprintf('\n\n Beginning BC2D_create_DFS2.m \n\n');
 %turn off interpolation warnings for duplicate points
 warning('off','MATLAB:scatteredInterpolant:DupPtsAvValuesWarnId');
 
-file_dfs2 = BC2D_write_DFS2(INI);
+file_dfs2 = BC2D_write_DFS2_header(INI);
 
 % initialize iteration vectors
 XD = [];

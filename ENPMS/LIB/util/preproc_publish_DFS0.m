@@ -1,5 +1,9 @@
 function preproc_publish_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,time_vector,measurements,dfs0FileName,dfsDoubleOrFloat,DType_Flag)
 
+%%% HARDCODED TO UNITS OF cfs, ft, and UTM-17 %%%
+%%% HARDCODED TO UNITS OF cfs, ft, and UTM-17 %%%
+%%% HARDCODED TO UNITS OF cfs, ft, and UTM-17 %%%
+
 NET.addAssembly('DHI.Generic.MikeZero.EUM');
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 H = NETaddDfsUtil();

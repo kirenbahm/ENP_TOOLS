@@ -26,8 +26,12 @@ while ~feof(fileID)
     D = textscan(fileID,formatString,'HeaderLines',9,'Delimiter','|','EmptyValue',NaN);
     i = i + n;
    try
+      % Field 1 is station name. Convert this to uppercase
         STATION = upper(D{1}); % convert station to upper case
+      % Field 2 is datatype. This is not used.
         %DTYPE = D{2}; (unused)
+      % Field 3 is date or date-time
+      % Field 4 is the measurement value
         D{5}=str2double(strrep(D{4},'null',''));                                                                  % Create new cell array column of measurement values
         B=split(D{3},' '); E = cellstr(B(:,1)); F = cellstr(strrep(B(:,2),':','')); % Split the date-time cell column into separate cell columns
         D{3} = E; D{4} = F; clear ('B','E','F')                                     % Rejoin cell columns to the cell array 'D' and clear excess variables

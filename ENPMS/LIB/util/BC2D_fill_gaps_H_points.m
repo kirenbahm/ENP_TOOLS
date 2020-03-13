@@ -1,5 +1,7 @@
 function INI = BC2D_fill_gaps_H_points(INI,SWITCH)
 
+fprintf('\n\n Beginning BC2D_fill_gaps_H_points.m \n\n');
+
 K = INI.MAP_H_DATA.keys;
 t_i = datenum(INI.DATE_I); %the full period as specified in DATE_I
 t_e = datenum(INI.DATE_E); %the full period as specified in DATE_E

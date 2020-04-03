@@ -6,8 +6,8 @@ mapM11CompP = containers.Map;
 if exist(INI.fileM11WM, 'file')
     tic;
 	fprintf('--- Reading file M11 results::%s\n',char(INI.fileM11WM));
-	toc;
     DATA = read_file_RES11(INI.fileM11WM, 0);
+	toc;
     DATA.V(abs(DATA.V)<1e-8) = NaN; % remove non-physical values < 1e-8
 else
     fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(INI.fileM11WM));

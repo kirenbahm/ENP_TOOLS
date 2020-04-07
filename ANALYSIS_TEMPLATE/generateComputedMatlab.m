@@ -129,8 +129,8 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 %---------------------------------------------------------------------
 
 % Read M11 values from res11 file or dfs0 file?
-INI.USE_RES11 = TRUE;   % read .res11 file (slow and more accurate) - use MODEL_DATA_ITEMS_20200403.xlsx
-%INI.USE_RES11 = FALSE;  % read .dfs0  file (fast and less accurate) - use MODEL_DATA_ITEMS_20200305.xlsx
+INI.USE_RES11 = true;   % read .res11 file (slow and more accurate) - use MODEL_DATA_ITEMS_20200403.xlsx
+%INI.USE_RES11 = false;  % read .dfs0  file (fast and less accurate) - use MODEL_DATA_ITEMS_20200305.xlsx
 
 try
     assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );

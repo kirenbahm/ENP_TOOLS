@@ -6,13 +6,22 @@ function INI = readFileCompCoord(INI)
 % Create empty container
 INI.mapCompSelected = containers.Map;
 
+% Determine which column to read chainages from.
+%   Col 24 is for reading res11 files, q points are reported at q-point locations
+%   Col 17 is for reading dfso files, q-points are reported at h-point locations
+if INI.USE_RES11
+    M11_CHAINAGES_COLUMN = int16(24);
+else
+    M11_CHAINAGES_COLUMN = int16(17);
+end
+
 % Read Excel spreadsheet into generic data arrays
-[NUM,TXT,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
+[~,~,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
 fprintf('--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
 
 % Iterate through data array rows and copy the station data into structures (skipping header row)
 [numRows,~]=size(RAW); 
-for i = 2:numRows % each row has data for a different station
+for i = 3:numRows % each row has data for a different station
     try
         STATION_NAME = char(RAW(i,1));
         %fprintf('--- reading line %d::%s\n', i, char(STATION_NAME))
@@ -25,21 +34,20 @@ for i = 2:numRows % each row has data for a different station
         stationComputed.I = cell2mat(RAW(i,15));
         stationComputed.J = cell2mat(RAW(i,16));
         stationComputed.M11CHAIN = '';
-        stationComputed.N_AREA = char(TXT(i,18));
+        stationComputed.N_AREA = char(RAW(i,18));
         stationComputed.I_AREA = cell2mat(RAW(i,19));
         stationComputed.SZLAYER = cell2mat(RAW(i,20));
         stationComputed.OLLAYER = cell2mat(RAW(i,21));
-        stationComputed.MODEL = char(TXT(i,22));
+        stationComputed.MODEL = char(RAW(i,22));
         stationComputed.NOTE = '';
-        if ~isempty(char(TXT(i,23)))
-            stationComputed.NOTE = char(TXT(i,23));
-        end
-
-        if ~isempty(char(TXT(i,17)))
+         if ~isempty(char(RAW{i,23}))
+             stationComputed.NOTE = char(RAW{i,23});
+         end
+        if ~isnan(RAW{i,M11_CHAINAGES_COLUMN})
             stationComputed.MSHEM11 = 'M11';
             stationComputed.MODEL = INI.MODEL;
             stationComputed.ALTERNATIVE = INI.ALTERNATIVE;
-            M11 = char(RAW(i,17));
+            M11 = char(RAW{i,M11_CHAINAGES_COLUMN});
             STR_TEMP = strsplit(M11,';');
             % convert the string to the format in dfs0 file.
             N = str2num(STR_TEMP{2});

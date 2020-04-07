@@ -62,7 +62,8 @@ INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_
 %---------------------------------------------------------------------
 % 4. Provide name of the Excel file with all stations (and data items):
 %---------------------------------------------------------------------
-INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200305.xlsx'];
+INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200403.xlsx'];  % use this when INI.USE_RES11 = TRUE
+%INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200305.xlsx']; % use this when INI.USE_RES11 = FALSE
 
 % Conversion factor for chainage units between Excel file and MSHE_WM.dfs0 file
 %INI.CONVERT_M11CHAINAGES = 0.3048; % use 0.3048 if Excel file chainages in meters and MSHE_WM.dfs0 chainages in feet
@@ -126,6 +127,10 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------
+
+% Read M11 values from res11 file or dfs0 file?
+INI.USE_RES11 = TRUE;   % read .res11 file (slow and more accurate) - use MODEL_DATA_ITEMS_20200403.xlsx
+%INI.USE_RES11 = FALSE;  % read .dfs0  file (fast and less accurate) - use MODEL_DATA_ITEMS_20200305.xlsx
 
 try
     assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );

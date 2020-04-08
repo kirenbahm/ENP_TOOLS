@@ -12,7 +12,7 @@ if exist(INI.fileM11WM, 'file')
         DATA = read_file_DFS0(INI.fileM11WM);
     end
     toc;
-    DATA.V(abs(DATA.V)<1e-8) = NaN; % remove non-physical values < 1e-8
+    DATA.V(abs(DATA.V)<1e-8 & abs(DATA.V) > 0 ) = NaN; % remove non-physical values < 1e-8, keep zeros
 else
     fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(INI.fileM11WM));
     return

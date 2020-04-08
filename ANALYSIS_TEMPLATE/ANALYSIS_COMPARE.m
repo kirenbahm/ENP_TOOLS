@@ -97,7 +97,7 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 % 7. Select a list of stations to be analyzed
 %---------------------------------------------------------------------
 
-INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/TEST-STATIONS-short.txt']; 
+INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-short.txt']; 
 
 %---------------------------------------------------------------------
 % 8. Select modules to run  (1=yes, 0=no)

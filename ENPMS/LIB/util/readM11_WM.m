@@ -2,21 +2,55 @@ function INI = readM11_WM(INI)
 
 mapM11CompP = containers.Map;
 
-% check if file exist;
-if exist(INI.fileM11WM, 'file')
-    tic;
-    fprintf('--- Reading file M11 results::%s\n',char(INI.fileM11WM));
-    if INI.USE_RES11
-        DATA = read_file_RES11(INI.fileM11WM, 0);
-    else
-        DATA = read_file_DFS0(INI.fileM11WM);
-    end
-    toc;
-    DATA.V(abs(DATA.V)<1e-8 & abs(DATA.V) > 0 ) = NaN; % remove non-physical values < 1e-8, keep zeros
-else
-    fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(INI.fileM11WM));
-    return
+ext = strfind(INI.fileM11WM,'.');
+ % check flag to use res11
+ if (INI.USE_RES11)
+ dfs0File = strcat(INI.fileM11WM(1:ext),'dfs0');
+ dfs0Ex = exist(dfs0File,'file');
+ res11File = strcat(INI.fileM11WM(1:ext),'res11');
+ res11Ex = exist(res11File, 'file');
+ % check if files exist;
+ if(dfs0Ex && res11Ex)
+  fprintf('--- Reading file M11 results::%s\n',char(dfs0File));
+  DFS0 = read_file_DFS0(dfs0File);
+  wi = 1;
+  st = size(DFS0.TYPE);
+  for i=1:st(2)
+   if(~strcmp(DFS0.TYPE{i},'Water Level'))
+    wi = i - 1;
+    break;
+   end
+  end
+  RES11 = read_file_RES11(INI.fileM11WM, 2);
+  % concatinate applicable results together from both files
+  DATA.T = DFS0.T;
+  DATA.V = cat(2,DFS0.V(:,1:wi),RES11.V(2:end,:));
+  DATA.TYPE = cat(2,DFS0.TYPE(1:wi),RES11.TYPE);
+  DATA.UNIT = cat(2,DFS0.UNIT(1:wi),RES11.UNIT);
+  DATA.NAME = cat(2,DFS0.NAME(1:wi),RES11.NAME);
+ else
+  % prints message of which files were missing
+  if(~dfs0Ex)
+  fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(dfs0File));
+  end
+  if(~res11Ex)
+  fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(res11File));
+  end
+  return
+ end
+ else
+ %if not using res11, use old dfs0 read
+ dfs0File = strcat(INI.fileM11WM(1:ext),'dfs0');
+ dfs0Ex = exist(dfs0File,'file');
+ if(dfs0Ex)
+  fprintf('--- Reading file M11 results::%s\n',char(dfs0File));
+  DATA = read_file_DFS0(dfs0File);
+ else
+  fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(dfs0File));
+  return
+ end
 end
+DATA.V(abs(DATA.V)<1e-8 & abs(DATA.V) > 0 ) = NaN; % remove non-physical values < 1e-8
 
 SZ = size(DATA.V);
 %xlswrite(char(INI.fileCompCoord),DATA.NAME','ALL_COMPUTED','B2');

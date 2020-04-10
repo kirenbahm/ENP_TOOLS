@@ -10,17 +10,16 @@ if (~isempty(dmi))
 end
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
-
 %% Lines for debugging
 %%FILE_NAME = 'data\test_all_WM_outputs.res11';
+%%FILE_NAME = 'data\MSHE_WM.res11';
 %%FILE_NAME = 'data\test_all_WM_outputsHDAdd.res11';
 %%OutOption = 0;
-
 %------------------------------------
 % Process user option selections
 %------------------------------------
 %% Determines Output Data
-filetype = FILE_NAME(end-8:end);
+filetype = FILE_NAME(end-10:end);
 if (OutOption == 0) % Outputs all information
     outType = System.String('All');
 elseif (OutOption == -1) % Looks though all for report and display structure
@@ -119,6 +118,7 @@ res11File  = DfsFileFactory.DfsGenericOpen(FILE_NAME);
 names = {};
 type = {};
 unit = {};
+elements = {};
 total = 0;
 indices = zeros(res11File.ItemInfo.Count);
 ind = 0;
@@ -130,6 +130,7 @@ for iitem=1:res11File.ItemInfo.Count % for all ItemInfo.Items
     % If OutOption is all or Item matches desired output
     if(strcmpi(char(itemInfo.Quantity.ItemDescription), char(outType)) || strcmpi(char(System.String('All')), char(outType)))
         ind = ind + 1;
+        elements(ind) = {itemInfo.ElementCount};
         indices(ind) = iitem - 1;
         % item name is on the form: Quantity, branchName chainagefrom-to
         % example: Water Level, VIDAA-NED 8775.000-10800.000
@@ -200,7 +201,6 @@ for iitem=1:res11File.ItemInfo.Count % for all ItemInfo.Items
         end
     end
 end
-
 %------------------------------------
 % Read data from file
 %------------------------------------
@@ -230,26 +230,27 @@ else
         readOrder = 0;
         %% searches through index of selected time series type
         for iitem=1:ind
-            itemInfo = res11File.ItemInfo.Item(indices(iitem));
             current = res11File.ReadItemTimeStep(indices(iitem) + 1, i-1);
+            %current = res11File.ReadItemTimeStepNext(); % this function is only slightly faster, but the downside is that we would need to read the entire file, which is not desirable particularly when reading the HDAdd.res11 file 
             dd = double(current.Data);
-            %% if first element in time step, read timestep information
             if (iitem == 1)
-                time(i) = (DfsExtensions.ToSeconds(res11File.FileInfo.TimeAxis, current.Time) / 86400.0) + START_TIME;
+              time(i) = current.Time;
             end
-            for e=1:itemInfo.ElementCount
-                % Store the indexed values in vals, in the correct columns
-                readOrder = readOrder + 1;
-                vals(i, readOrder) = dd(e);
-            end
+            %% if first element in time step, read timestep information
+            vals(i, readOrder + 1: readOrder + elements{iitem}) = dd;
+            readOrder = readOrder + elements{iitem};
         end
     end
+    
     %% Stores Collected Information into Output
+    for t=1:res11File.FileInfo.TimeAxis.NumberOfTimeSteps
+      time(t) = (DfsExtensions.ToSeconds(res11File.FileInfo.TimeAxis, time(t)) / 86400.0) + START_TIME;
+    end
+    
     DATA.T = time';
     DATA.V = vals;
     DATA.TYPE = type;
     DATA.UNIT = unit;
     DATA.NAME = names;
 end
-
 end

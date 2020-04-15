@@ -3,11 +3,12 @@ function INI = readM11_WM(INI)
 mapM11CompP = containers.Map;
 [fp,fn,fe] = fileparts(INI.fileM11WM); 
 ext = strfind(INI.fileM11WM,'.'); %Location of where extension begins
- % check flag to use res11
+sizeExt = size(ext);
+% check flag to use res11
  if (INI.USE_RES11)
- dfs0File = strcat(INI.fileM11WM(1:ext),'dfs0');
+ dfs0File = strcat(INI.fileM11WM(1:ext(sizeExt(2))),'dfs0');
  dfs0Exists = exist(dfs0File,'file');
- res11File = strcat(INI.fileM11WM(1:ext),'res11');
+ res11File = strcat(INI.fileM11WM(1:ext(sizeExt(2))),'res11');
  res11Exists = exist(res11File, 'file');
  % check if files exist;
  % if dfs0 and res11, use together

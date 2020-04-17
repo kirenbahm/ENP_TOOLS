@@ -1,4 +1,4 @@
-function INI = BC2D_plot_all(INI,SWITCH)
+function INI = BC2D_plot_all(INI)
 
 fprintf('\n\n Beginning BC2D_plot_all.m \n\n');
 
@@ -45,15 +45,20 @@ for K = KEYS
 NN(1) = {['Observed, ft ' DATUM]};
 NN(2) = {'TS interpolation, ft NGVD29'}; %%% THESE SHOULD NOT BE HARDCODED %%%
 NN(3) = {'Grid value, ft NGVD29'};       %%% THESE SHOULD NOT BE HARDCODED %%%
-legend(NN,'Location','SouthEast');
+%%legend(NN,'Location','SouthEast'); %supress legends for now
 title(char(K),'FontSize',10,'FontName','Times New Roman');
 
-
-if strcmpi(SWITCH,'OL')
-    figurefile = [INI.BC2D_DIR 'FIGURES/' char(K) '_HR.png'];
-elseif strcmpi(SWITCH,'SZ')
-    figurefile = [INI.BC2D_DIR 'FIGURES/' char(K) '_DD.png'];
+FIGURE_DIR = [INI.BC2D_DIR 'FIGURES/'];
+if ~exist(FIGURE_DIR, 'dir')
+   mkdir(FIGURE_DIR)
 end
+
+if strcmpi(INI.OLorSZ,'OL')
+    figurefile = [FIGURE_DIR char(K) '_HR.png'];
+elseif strcmpi(INI.OLorSZ,'SZ')
+    figurefile = [FIGURE_DIR char(K) '_DD.png'];
+end
+
 
 print('-dpng',char(figurefile),'-r300');
 end

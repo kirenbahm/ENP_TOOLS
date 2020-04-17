@@ -1,4 +1,5 @@
-function ST = BC2D_fit_gaps_ave_fourier(ST,INI,SWITCH)   
+function ST = BC2D_fit_gaps_ave_fourier(INI,ST,FIG_DIR)   
+%%%%%%function ST = BC2D_fit_gaps_ave_fourier(ST,INI,INI.OLorSZ)   
 
 oT = ST.T; % observed time vector
 xData = ST.T;
@@ -45,6 +46,7 @@ title(char(TITLE));
 %plot( fitresult, xData, yData, 'predobs', 0.90 );
 
 plot(fitresult, ST.dT, ST.dHf, 'predobs', 0.90);
+b = gca; legend(b,'off'); %suppress legend
 datetick('x','yyyy','keeplimits');
 
 % Label axes
@@ -55,17 +57,21 @@ grid on
 % Plot residuals.
 subplot(2, 1, 2);
 plot(fitresult, xData, yData, 'residuals');
+b = gca; legend(b,'off'); %suppress legend
 datetick('x','yyyy','keeplimits');
 % Label axes
 xlabel Year;
 ylabel 'Residuals, ft';
 grid on
 
-% Select Hourly or Daily time increment
-if strcmpi(SWITCH,'OL') 
-    print(char([INI.BC2D_DIR 'DFS0HR/' char(ST.STATION)]),'-dpng');
-elseif strcmpi(SWITCH,'SZ')
-    print(char([INI.BC2D_DIR 'DFS0DD/' char(ST.STATION)]),'-dpng');
-end
+%%%%%%% Select Hourly or Daily time increment
+%%%%%%if strcmpi(INI.OLorSZ,'OL') 
+%%%%%%    print(char([INI.BC2D_DIR 'DFS0HR/' char(ST.STATION)]),'-dpng');
+%%%%%%elseif strcmpi(INI.OLorSZ,'SZ')
+%%%%%%    print(char([INI.BC2D_DIR 'DFS0DD/' char(ST.STATION)]),'-dpng');
+%%%%%%end
+
+print(char([FIG_DIR char(ST.STATION)]),'-dpng');
+
     
 end

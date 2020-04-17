@@ -1,4 +1,4 @@
-function BC2D_save_H_points(INI,SWITCH)
+function BC2D_save_H_points(INI)
 
 % This function writes data in the 'HEADER' format to an *.XLSX spreadsheet
 % It is unclear on the intent of this saved file beyond data evaluation.
@@ -6,9 +6,9 @@ function BC2D_save_H_points(INI,SWITCH)
 XLSX = INI.XLSX;
 HEADER  = {'H_STATION','X','Y','N','T_START','T_END'};
    
-if strcmpi(SWITCH,'OL') 
+if strcmpi(INI.OLorSZ,'OL') 
     SHEET = 'HR';
-elseif strcmpi(SWITCH,'SZ')
+elseif strcmpi(INI.OLorSZ,'SZ')
     SHEET = 'DD';
 end
 

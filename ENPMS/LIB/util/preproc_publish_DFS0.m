@@ -30,10 +30,12 @@ item1 = builder.CreateDynamicItemBuilder();
 % appropriate DHI required inputs for DFS0 creation. This will ned to be
 % expanded upon as new datatypes and DType_Flags are added.
 if strcmpi(DType_Flag,'Discharge')
-    item1.Set(DType_Flag{1}, DHI.Generic.MikeZero.eumQuantity...
+   myStationName = char([station_name '_Q']);
+    item1.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
         (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDoubleOrFloat);
 elseif strcmpi(DType_Flag,'Water Level')
-    item1.Set(DType_Flag{1}, DHI.Generic.MikeZero.eumQuantity...
+   myStationName = char([station_name]);
+    item1.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
         (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDoubleOrFloat);
 end
 item1.SetValueType(DataValueType.Instantaneous);

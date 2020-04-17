@@ -1,4 +1,5 @@
-function ST = BC2D_fit_gaps_ave_day(ST,~)
+function ST = BC2D_fit_gaps_ave_day(ST)
+%%function ST = BC2D_fit_gaps_ave_day(ST,~)
     % temporary vectors for data and time o is for observed
     oH = ST.V;
     oT = ST.T; % observed time vector

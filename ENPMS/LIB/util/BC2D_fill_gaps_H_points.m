@@ -1,4 +1,4 @@
-function INI = BC2D_fill_gaps_H_points(INI,SWITCH)
+function INI = BC2D_fill_gaps_H_points(INI)
 
 fprintf('\n\n Beginning BC2D_fill_gaps_H_points.m \n\n');
 
@@ -7,9 +7,9 @@ t_i = datenum(INI.DATE_I); %the full period as specified in DATE_I
 t_e = datenum(INI.DATE_E); %the full period as specified in DATE_E
 
 % Select Hourly or Daily time increment
-if strcmpi(SWITCH,'OL') 
+if strcmpi(INI.OLorSZ,'OL') 
     dT = (t_i:1/24:t_e)'; %Time vector for the entire period
-elseif strcmpi(SWITCH,'SZ')
+elseif strcmpi(INI.OLorSZ,'SZ')
     dT = (t_i:1:t_e)'; %Time vector for the entire period
 end
 
@@ -34,11 +34,17 @@ for k = K
     fprintf('... processing %d/%d: %s: with N: %d: Records:\n', i, n, char(STATION_NAME),N_OBS);
  
     % function to create new vectors with no gaps
-    ST = BC2D_fit_gaps_ave_day(ST,INI.CREATE_FIGURES);     
+%%%%    ST = BC2D_fit_gaps_ave_day(ST,INI.CREATE_FIGURES);     
+    ST = BC2D_fit_gaps_ave_day(ST);     
     
     Min_fourier = 18;
     if Min_fourier <= length(~isnan(ST.V))
-        ST = BC2D_fit_gaps_ave_fourier(ST,INI,SWITCH);
+%%%%        ST = BC2D_fit_gaps_ave_fourier(ST,INI,INI.OLorSZ);
+        FIG_DIR = [INI.BC2D_DIR 'FIGS/'];
+         if ~exist(FIG_DIR, 'dir')
+            mkdir(FIG_DIR)
+         end
+        ST = BC2D_fit_gaps_ave_fourier(INI,ST,FIG_DIR);
     else
        fprintf('Station: %s has fewer than 18 valid measurements. Fourier gap fitting was not performed.\n', char(STATION_NAME));
     end

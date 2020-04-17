@@ -68,28 +68,28 @@ while ~feof(fileID)
         %FIELD_DTYPE = [FIELD_DTYPE; DTYPE]; (unused)
         FIELD_TIME = [FIELD_TIME; TIME];
         FIELD_MEASUREMENTS = [FIELD_MEASUREMENTS; MEASUREMENTS];
-
-   catch
-      if INI.DEBUG
-        fprintf('EXCEPTION: %d::%s::%s::D0 = %s\n', i, char(STATION(1)), ...
-            char(TSTR(1)),char(D0(1)));
-        fprintf('EXCEPTION::CONTINUING::\n');
-        %        error(errorStruct);
-      end
+        
+    catch
+        if INI.DEBUG
+            fprintf('EXCEPTION: %d::%s::%s::D0 = %s\n', i, char(STATION(1)), ...
+                char(TSTR(1)),char(D0(1)));
+            fprintf('EXCEPTION::CONTINUING::\n');
+            %        error(errorStruct);
+        end
         continue
     end
     if INI.DEBUG && (mod(i,n)==0 || ~feof(fileID))
         toc;
-           fprintf('... %d\t:%s:: %s: %s :: %s\n', length(FIELD_MEASUREMENTS), ...
-               char(STATION(1)), DATESTR(1), MEASUREMENTS(1));
+        fprintf('... %d\t:%s:: %s: %s :: %s\n', length(FIELD_MEASUREMENTS), ...
+            char(STATION(1)), DATESTR(1), MEASUREMENTS(1));
         tic;
-    end    
+    end
 end
 
 % eliminate dates earlier than 1960, there were some errors in the database
 % resulting in reading dates that were negative (once case is S_331_S_173)
 
-IND = find(FIELD_TIME<715876); 
+IND = find(FIELD_TIME<715876);
 FIELD_STATION(IND) = [];
 % FIELD_DTYPE(IND) = []; (unused)
 FIELD_TIME(IND) = [];

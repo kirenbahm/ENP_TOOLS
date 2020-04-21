@@ -1,22 +1,24 @@
 function [DATA] = preproc_read_DFE_file(INI, fileID)
 
-% expected data format:  station_name|datatype|date-time(YYYY-MM-DD HH:MM)|measurement_value
+% Expected data formats:
+% station_name|datatype|date-time(YYYY-MM-DD HH:MM)|measurement_value|other_unneeded_data
+% 
+% Example data strings:
+% 3A28|stage|1957-01-22 null|7.7400|
+% 3A28|stage|1958-06-18 null||1996-06-07
+% 3A28|stage|1958-06-19 null||
+% 3A28|stage|1983-06-19 null|8.9500|2003-02-03
+% 3A28|stage|2019-02-08 23:45|9.3700|
+% 3A28|stage|2019-02-09 00:00|9.3700|
+% C111W15|stage_realtime|2015-05-29 07:45|1.9600|2015-05-29
+% S332BW|tail_water|2000-04-08 null||
+
 
 formatString = '%s %s %s %s %*[^\n]';
 
 n = 100000; % Read file in blocks in 10,000 lines,
 i = uint64(0); % counter
 
-% initialize maps and vectors
-% mapDATA_Q = containers.Map(); (unused)
-% mapDATA_H = containers.Map(); (unused)
-% Q_TIME = []; (unused)
-% Q_VALUE = []; (unused)
-% H_TIME = []; (unused)
-% H_VALUE = []; (unused)
-%
-% CURRENT_STATION = ''; (unused)
-% n_st = 1; (unused)
 FIELD_STATION = [];
 % FIELD_DTYPE = []; (unused)
 FIELD_TIME = [];
@@ -40,7 +42,6 @@ while ~feof(fileID)
         %   Datatype is not used
         % DTYPE = fileData{2};
         
-
         %-----------------------------------
         % FIELD 4:  MEASUREMENT VALUE
         %-----------------------------------
@@ -53,7 +54,7 @@ while ~feof(fileID)
 
         myDATEandTIME=split(fileData{3},' '); % Split the date-time cell column into separate cell columns
         myDATE = cellstr(myDATEandTIME(:,1)); % Put date strings into one cell array (YYYY-MM-DD)
-        myTIME = cellstr(strrep(myDATEandTIME(:,2),':','')); % Put time strings into a call array without ':' (HHMM)
+        myTIME = cellstr(strrep(myDATEandTIME(:,2),':','')); % Put time strings into a cell array without ':' (HHMM)
 
         %-----
         % this section provides alternative handling of the hour:minute values
@@ -76,24 +77,24 @@ while ~feof(fileID)
         % end alternative handling
         %-----
         
-        myTIME = datenum(TSTR,'yyyy-mm-ddHHMM');
-        myDATEVEC = datevec(myTIME);
+        myNewDateTime= datenum(TSTR,'yyyy-mm-ddHHMM');
+        myDATEVEC = datevec(myNewDateTime);
         myDATEandTIMEstring = datestr(myDATEVEC,31);
         
         %-----------------------------------
         % find all NaNs in the data vector, and erase all associated rows in other arrays
-        IND =isnan(MEASUREMENTS);
+        isDataNaN =isnan(MEASUREMENTS);
         
-        STATION(IND) = [];
-        %DTYPE(IND) = []; (unused)
-        myTIME(IND) = [];
-        MEASUREMENTS(IND) = [];
+        STATION(isDataNaN) = [];
+        %DTYPE(isDataNaN) = []; (unused)
+        myNewDateTime(isDataNaN) = [];
+        MEASUREMENTS(isDataNaN) = [];
         
         %-----------------------------------
         
         FIELD_STATION = [FIELD_STATION; STATION];
         %FIELD_DTYPE = [FIELD_DTYPE; DTYPE]; (unused)
-        FIELD_TIME = [FIELD_TIME; myTIME];
+        FIELD_TIME = [FIELD_TIME; myNewDateTime];
         FIELD_MEASUREMENTS = [FIELD_MEASUREMENTS; MEASUREMENTS];
         
     catch
@@ -113,18 +114,17 @@ while ~feof(fileID)
     end
 end
 
-% eliminate dates earlier than 1960, there were some errors in the database
-% resulting in reading dates that were negative (once case is S_331_S_173)
+%-----------------------------------
+% eliminate dates earlier than 1960
+% (there were some errors in the database resulting in reading dates that were negative (once case is S_331_S_173))
 
-fprintf('\n ...eliminating dates earlier than 1960, there were some errors in the database ');
-fprintf('resulting in reading dates that were negative (once case is S_331_S_173). ');
-fprintf('SHOULD WE BE DOING THIS?\n');
+isTimeBefore1960 = find(FIELD_TIME<715876);
 
-IND = find(FIELD_TIME<715876);
-FIELD_STATION(IND) = [];
-% FIELD_DTYPE(IND) = []; (unused)
-FIELD_TIME(IND) = [];
-FIELD_MEASUREMENTS(IND) = [];
+FIELD_STATION(isTimeBefore1960) = [];
+% FIELD_DTYPE(isTimeNaN) = []; (unused)
+FIELD_TIME(isTimeBefore1960) = [];
+FIELD_MEASUREMENTS(isTimeBefore1960) = [];
+%-----------------------------------
 
 % create a structure
 DATA.STATION = FIELD_STATION;

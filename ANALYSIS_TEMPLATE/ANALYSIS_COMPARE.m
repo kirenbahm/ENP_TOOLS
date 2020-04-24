@@ -134,31 +134,33 @@ INI.DEBUG                 = 1; % Set this to 1 to generate extra output for debu
 %---------------------------------------------------------------------
 % Run selected modules
 %---------------------------------------------------------------
-try
-    INI = fileAssertions(INI);
+MatScrExist = exist(INI.MATLAB_SCRIPTS,'file') == 7;
+DataCommonExist = exist(INI.DATA_COMMON,'file') == 7;
+FileObservedExist = exist(INI.FILE_OBSERVED,'file') == 2;
+DataComputedExist = exist(INI.DATA_COMPUTED,'file') == 7;
+SelectedStationExist = exist(INI.SELECTED_STATION_FILE,'file') == 2;
+if(MatScrExist && DataCommonExist && FileObservedExist && DataComputedExist && SelectedStationExist)
     INI = analyze_data_set(INI);
-catch INI
+else
     fprintf('\nException in readMSHE_WM(INI), i=%d\n', i);
-    msgException = getReport(INI,'extended','hyperlinks','on');
+    if(~MatScrExist)
+    fprintf('INI.MATLAB_SCRIPTS directory was not found at %s.\n',char(INI.MATLAB_SCRIPTS));
+    end
+    if(~DataCommonExist)
+    fprintf('INI.DATA_COMMON directory was not found at %s.\n',char(INI.DATA_COMMON));
+    end
+    if(~FileObservedExist)
+    fprintf('INI.FILE_OBSERVED directory was not found at %s.\n',char(INI.FILE_OBSERVED));
+    end
+    if(~DataComputedExist)
+    fprintf('INI.DATA_COMPUTED directory was not found at %s.\n',char(INI.DATA_COMPUTED));
+    end
+    if(~SelectedStationExist)
+    fprintf('INI.SELECTED_STATION_FILE directory was not found at %s.\n',char(INI.SELECTED_STATION_FILE));
+    end
 end
 
 fprintf('\n %s Successful completion of all for %.3g seconds\n',datestr(now), toc);
 
 fprintf('\n\n *** ANALYSIS_COMPARE completed ***\n\n');
-end
-
-
-function INI = fileAssertions(INI);
-% Move all file assertions here
-
-assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
-
-assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
-
-assert(exist(INI.FILE_OBSERVED,'file') == 2, 'File not found.' );
-
-assert(exist(INI.DATA_COMPUTED,'file') == 7, 'Directory not found.' );
-
-assert(exist(INI.SELECTED_STATION_FILE,'file') == 2, 'File not found.' );
-
 end

@@ -126,19 +126,27 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------
-
-try
-    assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
-    assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
-    assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
-    assert(exist(INI.TRANSECT_DEFS_FILE,'file') == 2, 'File not found.' );
-
+MatScrExist = exist(INI.MATLAB_SCRIPTS,'file') == 7;
+DataCommonExist = exist(INI.DATA_COMMON,'file') == 7;
+fileCompCoordExist = exist(INI.fileCompCoord,'file') == 2;
+TransectDefsFileExist = exist(INI.TRANSECT_DEFS_FILE,'file') == 2;
+if(MatScrExist && DataCommonExist && fileCompCoordExist && TransectDefsFileExist)
     INI = extractComputedData(INI);
-catch INI
+else INI
     S = 'extractComputedData(INI)';
     fprintf('...exception in::%s\n',char(S));
-    msgException = getReport(INI,'extended','hyperlinks','on')
+    if(~MatScrExist)
+    fprintf('INI.MATLAB_SCRIPTS directory was not found at %s.\n',char(INI.MATLAB_SCRIPTS));
+    end
+    if(~DataCommonExist)
+    fprintf('INI.DATA_COMMON directory was not found at %s.\n',char(INI.DATA_COMMON));
+    end
+    if(~fileCompCoordExist)
+    fprintf('INI.fileCompCoord directory was not found at %s.\n',char(INI.fileCompCoord));
+    end
+    if(~TransectDefsFileExist)
+    fprintf('INI.TRANSECT_DEFS_FILE directory was not found at %s.\n',char(INI.TRANSECT_DEFS_FILE));
+    end
 end
-
 end
 

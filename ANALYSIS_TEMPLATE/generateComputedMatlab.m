@@ -122,7 +122,7 @@ INI.PLOT_COMPUTED = 1; % The user does not plot computed data
 INI.PLOT_COMPUTED = 0; %  (DEFAULT) The user plots computed data 
 
 INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
-
+INI.Dfs2Domain = ''; % File location of model Domain dfs2 file.
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------

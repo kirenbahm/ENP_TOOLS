@@ -89,7 +89,7 @@ INI.READ_TRANSECTS_MLAB = 1; % set this switch to execute transects code
 INI.LOAD_TRANSECTS_MLAB = 0; % this does not seem to be used for anything?
 INI.LOAD_OL = 0;    % this variable also exists in setup_ini.m but is used in a different way % Load the OL MATLAB file as a preference if available
 INI.LOAD_3DSZQ = 0; % this variable also exists in setup_ini.m but is used in a different way % Load the SZ MATLAB file as a preference if available
-INI.TRANSECT_DEFS_FILE = [ INI.DATA_COMMON 'TRANSECTS_20200305.xlsx'];
+INI.TRANSECT_DEFS_FILE = [ INI.DATA_COMMON 'TRANSECTS_20200403.xlsx'];
  
 % define Overland Flow transect sheetnames
 ii=1;

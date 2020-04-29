@@ -134,33 +134,40 @@ INI.DEBUG                 = 1; % Set this to 1 to generate extra output for debu
 %---------------------------------------------------------------------
 % Run selected modules
 %---------------------------------------------------------------
+
+% Check if required input files and folders exist
 MatScrExist = exist(INI.MATLAB_SCRIPTS,'file') == 7;
 DataCommonExist = exist(INI.DATA_COMMON,'file') == 7;
 FileObservedExist = exist(INI.FILE_OBSERVED,'file') == 2;
 DataComputedExist = exist(INI.DATA_COMPUTED,'file') == 7;
 SelectedStationExist = exist(INI.SELECTED_STATION_FILE,'file') == 2;
+
+% If all required inputs exist, continue script
 if(MatScrExist && DataCommonExist && FileObservedExist && DataComputedExist && SelectedStationExist)
     INI = analyze_data_set(INI);
+    
+% Else print error messages on files/folders not found
 else
-    fprintf('\nException in readMSHE_WM(INI), i=%d\n', i);
+    fprintf('\n');
     if(~MatScrExist)
-    fprintf('INI.MATLAB_SCRIPTS directory was not found at %s.\n',char(INI.MATLAB_SCRIPTS));
+        fprintf('ERROR: INI.MATLAB_SCRIPTS directory was not found at %s.\n',char(INI.MATLAB_SCRIPTS));
     end
     if(~DataCommonExist)
-    fprintf('INI.DATA_COMMON directory was not found at %s.\n',char(INI.DATA_COMMON));
+        fprintf('ERROR: INI.DATA_COMMON directory was not found at %s.\n',char(INI.DATA_COMMON));
     end
     if(~FileObservedExist)
-    fprintf('INI.FILE_OBSERVED directory was not found at %s.\n',char(INI.FILE_OBSERVED));
+        fprintf('ERROR: INI.FILE_OBSERVED file was not found at %s.\n',char(INI.FILE_OBSERVED));
     end
     if(~DataComputedExist)
-    fprintf('INI.DATA_COMPUTED directory was not found at %s.\n',char(INI.DATA_COMPUTED));
+        fprintf('ERROR: INI.DATA_COMPUTED directory was not found at %s.\n',char(INI.DATA_COMPUTED));
     end
     if(~SelectedStationExist)
-    fprintf('INI.SELECTED_STATION_FILE directory was not found at %s.\n',char(INI.SELECTED_STATION_FILE));
+        fprintf('ERROR: INI.SELECTED_STATION_FILE file was not found at %s.\n',char(INI.SELECTED_STATION_FILE));
     end
+    fprintf('\n');
+    error('Execution stopped');
 end
 
-fprintf('\n %s Successful completion of all for %.3g seconds\n',datestr(now), toc);
-
 fprintf('\n\n *** ANALYSIS_COMPARE completed ***\n\n');
+
 end

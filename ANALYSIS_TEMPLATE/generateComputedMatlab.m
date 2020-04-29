@@ -126,27 +126,37 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------
+
+% Check if required input files and folders exist
 MatScrExist = exist(INI.MATLAB_SCRIPTS,'file') == 7;
 DataCommonExist = exist(INI.DATA_COMMON,'file') == 7;
 fileCompCoordExist = exist(INI.fileCompCoord,'file') == 2;
 TransectDefsFileExist = exist(INI.TRANSECT_DEFS_FILE,'file') == 2;
+
+% If all required inputs exist, continue script
 if(MatScrExist && DataCommonExist && fileCompCoordExist && TransectDefsFileExist)
     INI = extractComputedData(INI);
-else INI
-    S = 'extractComputedData(INI)';
-    fprintf('...exception in::%s\n',char(S));
+    
+% Else print error messages on files/folders not found
+else
+    fprintf('\n');
     if(~MatScrExist)
-    fprintf('INI.MATLAB_SCRIPTS directory was not found at %s.\n',char(INI.MATLAB_SCRIPTS));
+        fprintf('ERROR: INI.MATLAB_SCRIPTS directory was not found at %s.\n',char(INI.MATLAB_SCRIPTS));
     end
     if(~DataCommonExist)
-    fprintf('INI.DATA_COMMON directory was not found at %s.\n',char(INI.DATA_COMMON));
+        fprintf('ERROR: INI.DATA_COMMON directory was not found at %s.\n',char(INI.DATA_COMMON));
     end
     if(~fileCompCoordExist)
-    fprintf('INI.fileCompCoord directory was not found at %s.\n',char(INI.fileCompCoord));
+        fprintf('ERROR: INI.fileCompCoord file was not found at %s.\n',char(INI.fileCompCoord));
     end
     if(~TransectDefsFileExist)
-    fprintf('INI.TRANSECT_DEFS_FILE directory was not found at %s.\n',char(INI.TRANSECT_DEFS_FILE));
+        fprintf('ERROR: INI.TRANSECT_DEFS_FILE file was not found at %s.\n',char(INI.TRANSECT_DEFS_FILE));
     end
+    fprintf('\n');
+    error('Execution stopped');
 end
+
+fprintf('\n\n *** generateComputedMatlab completed ***\n\n');
+
 end
 

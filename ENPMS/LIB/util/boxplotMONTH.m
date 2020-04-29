@@ -119,7 +119,7 @@ else
 end
 
 TITLE=strcat(STATION.STATION_NAME,{' '}, LL);
-TITLE = strrep(TITLE,'_','\_');
+%TITLE = strrep(TITLE,'_','\_');
 title(TITLE);
 ylabel(LL);
 

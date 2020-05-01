@@ -86,7 +86,7 @@ else
  ds = size(DATA);
  DataOK = true;
  for di = 1:ds(2)
-  DataOK = DataOK && ~isempty(DATA(di));
+  DataOK = DataOK && ~isempty(DATA{di});
  end
  if(~DataOK)
   return

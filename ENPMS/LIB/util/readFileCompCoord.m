@@ -21,7 +21,7 @@ fprintf('--- Reading file::%s with a list of stations to be extracted from raw d
 
 % Iterate through data array rows and copy the station data into structures (skipping header row)
 [numRows,~]=size(RAW); 
-for i = 3:numRows % each row has data for a different station
+for i = 2:numRows % each row has data for a different station
     try
         STATION_NAME = char(RAW(i,1));
         %fprintf('--- reading line %d::%s\n', i, char(STATION_NAME))

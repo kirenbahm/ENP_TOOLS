@@ -62,8 +62,7 @@ INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_
 %---------------------------------------------------------------------
 % 4. Provide name of the Excel file with all stations (and data items):
 %---------------------------------------------------------------------
-INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200403.xlsx'];  % use this when INI.USE_RES11 = TRUE
-%INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200305.xlsx']; % use this when INI.USE_RES11 = FALSE
+INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200501.xlsx'];
 
 % Conversion factor for chainage units between Excel file and MSHE_WM.dfs0 file
 %INI.CONVERT_M11CHAINAGES = 0.3048; % use 0.3048 if Excel file chainages in meters and MSHE_WM.dfs0 chainages in feet
@@ -90,7 +89,7 @@ INI.READ_TRANSECTS_MLAB = 1; % set this switch to execute transects code
 INI.LOAD_TRANSECTS_MLAB = 0; % this does not seem to be used for anything?
 INI.LOAD_OL = 0;    % this variable also exists in setup_ini.m but is used in a different way % Load the OL MATLAB file as a preference if available
 INI.LOAD_3DSZQ = 0; % this variable also exists in setup_ini.m but is used in a different way % Load the SZ MATLAB file as a preference if available
-INI.TRANSECT_DEFS_FILE = [ INI.DATA_COMMON 'TRANSECTS_20200305.xlsx'];
+INI.TRANSECT_DEFS_FILE = [ INI.DATA_COMMON 'TRANSECTS_20200403.xlsx'];
  
 % define Overland Flow transect sheetnames
 ii=1;
@@ -128,22 +127,40 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------
 
-% Read M11 values from res11 file or dfs0 file?
-INI.USE_RES11 = true;   % read .res11 file (slow and more accurate) - use MODEL_DATA_ITEMS_20200403.xlsx
-%INI.USE_RES11 = false;  % read .dfs0  file (fast and less accurate) - use MODEL_DATA_ITEMS_20200305.xlsx
+% BETA: Read M11 values from res11 file or dfs0 file?
+%INI.USE_RES11 = true;   % read .res11 file (slow and more accurate)
+INI.USE_RES11 = false;  % read .dfs0  file (fast and less accurate)
 
-try
-    assert(exist(INI.MATLAB_SCRIPTS,'file') == 7, 'Directory not found.' );
-    assert(exist(INI.DATA_COMMON,'file') == 7, 'Directory not found.' );
-    assert(exist(INI.fileCompCoord,'file') == 2, 'File not found.' );
-    assert(exist(INI.TRANSECT_DEFS_FILE,'file') == 2, 'File not found.' );
+% Check if required input files and folders exist
+MatScrExist = exist(INI.MATLAB_SCRIPTS,'file') == 7;
+DataCommonExist = exist(INI.DATA_COMMON,'file') == 7;
+fileCompCoordExist = exist(INI.fileCompCoord,'file') == 2;
+TransectDefsFileExist = exist(INI.TRANSECT_DEFS_FILE,'file') == 2;
 
+% If all required inputs exist, continue script
+if(MatScrExist && DataCommonExist && fileCompCoordExist && TransectDefsFileExist)
     INI = extractComputedData(INI);
-catch INI
-    S = 'extractComputedData(INI)';
-    fprintf('...exception in::%s\n',char(S));
-    msgException = getReport(INI,'extended','hyperlinks','on')
+    
+% Else print error messages on files/folders not found
+else
+    fprintf('\n');
+    if(~MatScrExist)
+        fprintf('ERROR: INI.MATLAB_SCRIPTS directory was not found at %s.\n',char(INI.MATLAB_SCRIPTS));
+    end
+    if(~DataCommonExist)
+        fprintf('ERROR: INI.DATA_COMMON directory was not found at %s.\n',char(INI.DATA_COMMON));
+    end
+    if(~fileCompCoordExist)
+        fprintf('ERROR: INI.fileCompCoord file was not found at %s.\n',char(INI.fileCompCoord));
+    end
+    if(~TransectDefsFileExist)
+        fprintf('ERROR: INI.TRANSECT_DEFS_FILE file was not found at %s.\n',char(INI.TRANSECT_DEFS_FILE));
+    end
+    fprintf('\n');
+    error('Execution stopped');
 end
+
+fprintf('\n\n *** generateComputedMatlab completed ***\n\n');
 
 end
 

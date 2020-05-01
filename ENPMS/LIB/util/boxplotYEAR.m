@@ -82,6 +82,15 @@ C = fliplr(C);
 
 if isempty(DATA)
     return
+else
+ ds = size(DATA);
+ DataOK = true;
+ for di = 1:ds(2)
+  DataOK = DataOK && ~isempty(DATA{di});
+ end
+ if(~DataOK)
+  return
+ end
 end % code to skip timeseries with zero length
 
 % Input arguments to boxplots_N with a Year label 

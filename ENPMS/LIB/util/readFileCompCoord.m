@@ -19,6 +19,9 @@ end
 [~,~,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
 fprintf('--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
 
+% Get map of active grid cells (to screen out stations outside domain)
+activeCellCodes = readDomainGridCodes(INI.filePP);
+
 % Iterate through data array rows and copy the station data into structures (skipping header row)
 [numRows,~]=size(RAW); 
 for i = 2:numRows % each row has data for a different station
@@ -31,8 +34,31 @@ for i = 2:numRows % each row has data for a different station
         stationComputed.X_UTM = cell2mat(RAW(i,6));
         stationComputed.Y_UTM = cell2mat(RAW(i,7));
         stationComputed.Z = cell2mat(RAW(i,8));
+        
+        % read cell coordinates, and if inactive cell, change row&col to 0
         stationComputed.I = cell2mat(RAW(i,15));
         stationComputed.J = cell2mat(RAW(i,16));
+        if(activeCellCodes.saxis.X0 ~= 0 && activeCellCodes.saxis.Y0 ~= 0)
+          % check of station indexes
+          i1= (stationComputed.X_UTM-activeCellCodes.saxis.X0)/activeCellCodes.saxis.Dx; % Converting to index
+          j1= (stationComputed.Y_UTM-activeCellCodes.saxis.Y0)/activeCellCodes.saxis.Dy; % Converting to index
+          if(abs(i1 - stationComputed.I) > 0.5 || abs(j1 - stationComputed.J) > 0.5)
+            fprintf('--- Warning: Station %s at excel row %i with a coordinate indexes of (%i , %i) is estimated as (%i , %i) based on model domain dfs2\n',...
+            char(stationComputed.STATION_NAME), i, stationComputed.I, stationComputed.J, i1, j1);
+            %stationComputed.I = i1;  
+            %stationComputed.J = j1;
+          end
+        end
+        % Here we are only accepting cells of GridCode value 1, change last condition to == 0 to accept border as well
+        if((stationComputed.I + 1 > activeCellCodes.Cols || stationComputed.I + 1 <= 0) ||...
+           (stationComputed.J + 1 > activeCellCodes.Rows || stationComputed.J + 1 <= 0) ||...
+            activeCellCodes.V(stationComputed.J + 1, stationComputed.I + 1)...
+            ~= 1)
+        
+           stationComputed.I = 0;
+           stationComputed.J = 0;
+        end
+        
         stationComputed.M11CHAIN = '';
         stationComputed.N_AREA = char(RAW(i,18));
         stationComputed.I_AREA = cell2mat(RAW(i,19));
@@ -40,9 +66,9 @@ for i = 2:numRows % each row has data for a different station
         stationComputed.OLLAYER = cell2mat(RAW(i,21));
         stationComputed.MODEL = char(RAW(i,22));
         stationComputed.NOTE = '';
-         if ~isempty(char(RAW{i,23}))
+        if ~isempty(char(RAW{i,23}))
              stationComputed.NOTE = char(RAW{i,23});
-         end
+        end
         if ~isnan(RAW{i,M11_CHAINAGES_COLUMN})
             stationComputed.MSHEM11 = 'M11';
             stationComputed.MODEL = INI.MODEL;

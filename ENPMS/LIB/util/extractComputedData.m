@@ -27,9 +27,6 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     INI.LOG_XLSX_SH = char(INI.simMODEL);
     INI.ALTERNATIVE = INI.simMODEL;
 
-    % read excel file with coordinates
-    INI = readFileCompCoord(INI);
-
     INI.simRESULT = [INI.MODEL_SIMULATION_SET{i} '.she - Result Files\'];
     INI.DATABASE_COMP = char(strcat(INI.DATA_COMPUTED,'COMPUTED_',INI.simMODEL,'.MATLAB'));
 
@@ -46,7 +43,12 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     INI.fileOL = char(strcat(INI.simRESULT, INI.simMODEL, '_overland.dfs2'));
     INI.fileSZ = char(strcat(INI.simRESULT, INI.simMODEL, '_3DSZ.dfs3'));
 
-    if ~exist(INI.DATA_COMPUTED, 'dir'), mkdir(char(INI.DATA_COMPUTED)),end;
+    INI.filePP = char(strcat(INI.simRESULT, INI.simMODEL, '_PreProcessed.DFS2'));
+
+    % read excel file with coordinates
+    INI = readFileCompCoord(INI);
+
+    if ~exist(INI.DATA_COMPUTED, 'dir'), mkdir(char(INI.DATA_COMPUTED)),end
 
     if INI.SAVE_IN_MATLAB
 

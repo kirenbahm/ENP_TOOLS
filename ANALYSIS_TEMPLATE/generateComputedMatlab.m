@@ -127,6 +127,10 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------
 
+% BETA: Read M11 values from res11 file or dfs0 file?
+%INI.USE_RES11 = true;   % read .res11 file (slow and more accurate)
+INI.USE_RES11 = false;  % read .dfs0  file (fast and less accurate)
+
 % Check if required input files and folders exist
 MatScrExist = exist(INI.MATLAB_SCRIPTS,'file') == 7;
 DataCommonExist = exist(INI.DATA_COMMON,'file') == 7;

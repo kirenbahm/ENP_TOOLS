@@ -36,7 +36,13 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     %INI.simRESULTmatlab = [INI.simRESULT 'matlab\'];
 
     % files for extracting computed data
-    INI.fileM11WM = [INI.simRESULT 'MSHE_WM.dfs0'];
+    if INI.USE_RES11
+        INI.fileM11WM      = [INI.simRESULT 'MSHE_WM.res11'];
+        INI.fileM11WMHDAdd = [INI.simRESULT 'MSHE_WMHDAdd.res11'];
+    else
+        INI.fileM11WM      = [INI.simRESULT 'MSHE_WM.dfs0'];
+    end
+    
     INI.fileOL = char(strcat(INI.simRESULT, INI.simMODEL, '_overland.dfs2'));
     INI.fileSZ = char(strcat(INI.simRESULT, INI.simMODEL, '_3DSZ.dfs3'));
 

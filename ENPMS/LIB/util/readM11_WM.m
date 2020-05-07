@@ -2,6 +2,72 @@ function INI = readM11_WM(INI)
 
 mapM11CompP = containers.Map;
 
+
+%BETA%  [fp,fn,fe] = fileparts(INI.fileM11WM);
+%BETA%  ext = strfind(INI.fileM11WM,'.'); %Location of where extension begins
+%BETA%  sizeExt = size(ext);
+%BETA%  % check flag to use res11
+%BETA%  if (INI.USE_RES11)
+%BETA%      dfs0File = strcat(INI.fileM11WM(1:ext(sizeExt(2))),'dfs0');
+%BETA%      dfs0Exists = exist(dfs0File,'file');
+%BETA%      res11File = strcat(INI.fileM11WM(1:ext(sizeExt(2))),'res11');
+%BETA%      res11Exists = exist(res11File, 'file');
+%BETA%      % check if files exist;
+%BETA%      % if dfs0 and res11, use together
+%BETA%      if(dfs0Exists && res11Exists)
+%BETA%          fprintf('--- Reading file M11 results::%s and %s\n',char(dfs0File), char(res11File));
+%BETA%          DFS0 = read_file_DFS0(dfs0File);
+%BETA%          wi = 1; %stores end index of water level items
+%BETA%          sizetype = size(DFS0.TYPE); %for determining loop length
+%BETA%          % determines how much of dfs0 data to use
+%BETA%          for i=1:sizetype(2)
+%BETA%              if(~strcmp(DFS0.TYPE{i},'Water Level'))
+%BETA%                  wi = i - 1;
+%BETA%                  break;
+%BETA%              end
+%BETA%          end
+%BETA%          RES11 = read_file_RES11(res11File, 2);
+%BETA%          % concatinate applicable results together from both files
+%BETA%          DATA.T = DFS0.T;
+%BETA%          DATA.V = cat(2,DFS0.V(:,1:wi),RES11.V(2:end,:));
+%BETA%          DATA.TYPE = cat(2,DFS0.TYPE(1:wi),RES11.TYPE);
+%BETA%          DATA.UNIT = cat(2,DFS0.UNIT(1:wi),RES11.UNIT);
+%BETA%          DATA.NAME = cat(2,DFS0.NAME(1:wi),RES11.NAME);
+%BETA%          %elseif only use res11
+%BETA%      elseif (res11Exists)
+%BETA%          fprintf('--- Reading file M11 results::%s\n',char(res11File));
+%BETA%          DATA = read_file_RES11(res11File, 0);
+%BETA%          %elseif only use dfs0
+%BETA%      elseif (dfs0Exists)
+%BETA%          fprintf('--- Reading file M11 results::%s\n',char(dfs0File));
+%BETA%          DATA = read_file_DFS0(dfs0File);
+%BETA%          %else can't use res11 option
+%BETA%      else
+%BETA%          % prints message of which files were missing
+%BETA%          if(~dfs0Exists)
+%BETA%              fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(dfs0File));
+%BETA%          end
+%BETA%          if(~res11Exists)
+%BETA%              fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(res11File));
+%BETA%          end
+%BETA%          return
+%BETA%      end
+%BETA%  else
+%BETA%      %if not using res11, use old dfs0 read
+%BETA%      dfs0File = strcat(INI.fileM11WM(1:ext),'dfs0');
+%BETA%      dfs0Exists = exist(dfs0File,'file');
+%BETA%      if(dfs0Exists)
+%BETA%          fprintf('--- Reading file M11 results::%s\n',char(dfs0File));
+%BETA%          DATA = read_file_DFS0(dfs0File);
+%BETA%      else
+%BETA%          fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(dfs0File));
+%BETA%          return
+%BETA%      end
+%BETA%  end
+%BETA%  DATA.V(abs(DATA.V)<1e-8 & abs(DATA.V) > 0 ) = NaN; % remove non-physical values < 1e-8
+
+
+% THE FOLLOWING CODE MAY BE REPLACED BY BETA CODE ABOVE
 % check if file exist;
 if exist(INI.fileM11WM, 'file')
     fprintf('--- Reading file M11 results::%s\n',char(INI.fileM11WM));
@@ -11,6 +77,9 @@ else
     fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(INI.fileM11WM));
     return
 end
+% THE PRECEEDING CODE MAY BE REPLACED BY BETA CODE ABOVE
+
+
 
 SZ = size(DATA.V);
 %xlswrite(char(INI.fileCompCoord),DATA.NAME','ALL_COMPUTED','B2');

@@ -1,23 +1,13 @@
 function INI = readFileCompCoord(INI)
 
-% read the excel file to determine the computed coordinates and save in
-% mapComputedDataCoord
+% read the excel file to determine the computed coordinates and save in mapComputedDataCoord
 
 % Create empty container
 INI.mapCompSelected = containers.Map;
 
-% Determine which column to read chainages from.
-%   Col 24 is for reading res11 files, q points are reported at q-point locations
-%   Col 17 is for reading dfso files, q-points are reported at h-point locations
-if INI.USE_RES11
-    M11_CHAINAGES_COLUMN = int16(24);
-else
-    M11_CHAINAGES_COLUMN = int16(17);
-end
-
 % Read Excel spreadsheet into generic data arrays
 [~,~,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
-fprintf('--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
+fprintf('--- Reading station metadata file: %s\n', char(INI.fileCompCoord));
 
 % Iterate through data array rows and copy the station data into structures (skipping header row)
 [numRows,~]=size(RAW); 
@@ -43,11 +33,11 @@ for i = 2:numRows % each row has data for a different station
          if ~isempty(char(RAW{i,23}))
              stationComputed.NOTE = char(RAW{i,23});
          end
-        if ~isnan(RAW{i,M11_CHAINAGES_COLUMN})
+        if ~isnan(RAW{i,INI.M11_CHAINAGES_COLUMN})
             stationComputed.MSHEM11 = 'M11';
             stationComputed.MODEL = INI.MODEL;
             stationComputed.ALTERNATIVE = INI.ALTERNATIVE;
-            M11 = char(RAW{i,M11_CHAINAGES_COLUMN});
+            M11 = char(RAW{i,INI.M11_CHAINAGES_COLUMN});
             STR_TEMP = strsplit(M11,';');
             % convert the string to the format in dfs0 file.
             N = str2num(STR_TEMP{2});
@@ -64,6 +54,7 @@ for i = 2:numRows % each row has data for a different station
     end
 end
 
-fprintf('--- Stations file::%s: has %i stations\n\n', char(INI.fileCompCoord), length(INI.mapCompSelected));
+%fprintf('--- Stations file: %s: has %i stations\n\n', char(INI.fileCompCoord), length(INI.mapCompSelected));
+fprintf('      done' );
 
 end

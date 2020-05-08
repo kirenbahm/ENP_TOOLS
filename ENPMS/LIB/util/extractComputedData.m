@@ -27,31 +27,39 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     INI.LOG_XLSX_SH = char(INI.simMODEL);
     INI.ALTERNATIVE = INI.simMODEL;
 
+    % Model output files for extracting computed data
+    INI.simRESULT         = [INI.MODEL_SIMULATION_SET{i} '.she - Result Files\'];
+    
+    INI.fileOL            = [INI.simRESULT INI.simMODEL, '_overland.dfs2'];
+    INI.fileSZ            = [INI.simRESULT INI.simMODEL, '_3DSZ.dfs3'];
+    INI.fileM11Dfs0       = [INI.simRESULT 'MSHE_WM.dfs0'];
+    INI.fileM11Res11      = [INI.simRESULT 'MSHE_WM.res11'];
+    %INI.fileM11HDAddRes11 = [INI.simRESULT 'MSHE_WMHDAdd.res11']; % not used yet
+
+    dfs0Exists  = exist(INI.fileM11Dfs0,'file');
+    res11Exists = exist(INI.fileM11Res11, 'file');
+    
+    % Determine which column to read chainages from.
+    %   Col 24 is for reading res11 files, q points are reported at q-point locations
+    %   Col 17 is for reading dfso files, q-points are reported at h-point locations
+    if (INI.USE_RES11 && isfile(INI.fileM11Res11))
+        INI.M11_CHAINAGES_COLUMN = int16(24);
+    else
+        INI.M11_CHAINAGES_COLUMN = int16(17);
+    end
+    
     % read excel file with coordinates
     INI = readFileCompCoord(INI);
 
-    INI.simRESULT = [INI.MODEL_SIMULATION_SET{i} '.she - Result Files\'];
     INI.DATABASE_COMP = char(strcat(INI.DATA_COMPUTED,'COMPUTED_',INI.simMODEL,'.MATLAB'));
 
-    %INI.simRESULTmatlab = [INI.simRESULT 'matlab\'];
 
-    % files for extracting computed data
-    if INI.USE_RES11
-        INI.fileM11WM      = [INI.simRESULT 'MSHE_WM.res11'];
-        INI.fileM11WMHDAdd = [INI.simRESULT 'MSHE_WMHDAdd.res11'];
-    else
-        INI.fileM11WM      = [INI.simRESULT 'MSHE_WM.dfs0'];
-    end
-    
-    INI.fileOL = char(strcat(INI.simRESULT, INI.simMODEL, '_overland.dfs2'));
-    INI.fileSZ = char(strcat(INI.simRESULT, INI.simMODEL, '_3DSZ.dfs3'));
-
-    if ~exist(INI.DATA_COMPUTED, 'dir'), mkdir(char(INI.DATA_COMPUTED)),end;
+    if ~exist(INI.DATA_COMPUTED, 'dir'), mkdir(char(INI.DATA_COMPUTED)),end
 
     if INI.SAVE_IN_MATLAB
 
         try
-            INI = readM11_WM(INI);
+            INI = readM11_WM(INI,res11Exists,dfs0Exists);
         catch INI
             fprintf('\nException in readM11_WM(INI), i=%d\n', i);
             msgException = getReport(INI,'extended','hyperlinks','on')

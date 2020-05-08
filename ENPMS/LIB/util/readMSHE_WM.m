@@ -3,6 +3,8 @@ function INI = readMSHE_WM(INI)
 % read file  INI.fileSZ for head in saturated zone
 infile = INI.fileSZ;
 
+fprintf('\n--- Reading MSHE data file: %s',char(infile));
+
 % get all MSHE stations
 mapMSHESEL = getMSHEmap(INI);
 
@@ -22,9 +24,6 @@ i3 = 1; % codes of extracted cells
 nsteps = TS.S.nsteps;
 
 T = TS.S.TSTART - 1;
-% this is to set the location of the array where to store data if the data
-% starts later
-i_1 = TS.S.TSTART ;
 
 for i=0:nsteps-1
     %ds = datestr(TIME(i,:),2);
@@ -38,7 +37,7 @@ for i=0:nsteps-1
        %fprintf('... Reading SZ Values: %s: %s %i %s %i\n', ds, ' Step: ', i, '/', TS.S.nsteps);
     end
     if ~mod(i,366)
-       fprintf('\n... Reading step %i%s%i:: %s ::and counting',i+1, '/', nsteps-1, ds);
+       fprintf('\n      reading step %i%s%i and counting',i+1, '/', nsteps-1);
     end
     
     SZ_ELEV = double(TS.S.DFS.ReadItemTimeStep(1,i).To3DArray());
@@ -67,7 +66,7 @@ end
 for i = 1:length(ST)
     NAME = ST(i).NAME;
     K = NAME;
-    fprintf('...computed::%s\n', char(K));
+    %fprintf('...computed::%s\n', char(K));
     STATION = INI.mapCompSelected(char(K));
 %     STATION.COMP_DATE = ST(i).DATE;
     STATION.MSHE_SZ_ELEV = ST(i).SZ_ELEV;
@@ -89,6 +88,7 @@ for i = 1:length(ST)
     end
     INI.mapCompSelected(char(NAME)) = STATION;
 end
+fprintf('\n      done' );
 
 end
 

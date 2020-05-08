@@ -1,6 +1,8 @@
 % Use OutOption= -1 for options
 function DATA = read_file_RES11(FILE_NAME, OutOption)
 
+fprintf('\n--- Reading M11 data file: %s\n',char(FILE_NAME));
+
 %------------------------------------
 % Import Statements
 %------------------------------------
@@ -226,8 +228,16 @@ else
     START_TIME = double(datenum(yy,mo,da,hh,mi,se));
     
     %% Read data from file and store in vals
+    fprintf('      reading step 1/%i and counting',res11File.FileInfo.TimeAxis.NumberOfTimeSteps);
     for i=1:res11File.FileInfo.TimeAxis.NumberOfTimeSteps
         readOrder = 0;
+        % print progress bar to screen for file reading
+        if ~mod(i+1,10) % print only every 10 days
+           fprintf('.');
+        end
+        if ~mod(i,366)
+           fprintf('\n      reading step %i%s%i and counting',i, '/', res11File.FileInfo.TimeAxis.NumberOfTimeSteps);
+        end
         %% searches through index of selected time series type
         for iitem=1:ind
             current = res11File.ReadItemTimeStep(indices(iitem) + 1, i-1);
@@ -253,4 +263,5 @@ else
     DATA.UNIT = unit;
     DATA.NAME = names;
 end
+fprintf('\n      done' );
 end

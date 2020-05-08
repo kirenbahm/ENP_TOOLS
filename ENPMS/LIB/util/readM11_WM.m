@@ -1,95 +1,83 @@
-function INI = readM11_WM(INI)
+function INI = readM11_WM(INI,res11Exists,dfs0Exists)
 
 mapM11CompP = containers.Map;
 
 
-%BETA%  [fp,fn,fe] = fileparts(INI.fileM11WM);
-%BETA%  ext = strfind(INI.fileM11WM,'.'); %Location of where extension begins
-%BETA%  sizeExt = size(ext);
-%BETA%  % check flag to use res11
-%BETA%  if (INI.USE_RES11)
-%BETA%      dfs0File = strcat(INI.fileM11WM(1:ext(sizeExt(2))),'dfs0');
-%BETA%      dfs0Exists = exist(dfs0File,'file');
-%BETA%      res11File = strcat(INI.fileM11WM(1:ext(sizeExt(2))),'res11');
-%BETA%      res11Exists = exist(res11File, 'file');
-%BETA%      % check if files exist;
-%BETA%      % if dfs0 and res11, use together
-%BETA%      if(dfs0Exists && res11Exists)
-%BETA%          fprintf('--- Reading file M11 results::%s and %s\n',char(dfs0File), char(res11File));
-%BETA%          DFS0 = read_file_DFS0(dfs0File);
-%BETA%          wi = 1; %stores end index of water level items
-%BETA%          sizetype = size(DFS0.TYPE); %for determining loop length
-%BETA%          % determines how much of dfs0 data to use
-%BETA%          for i=1:sizetype(2)
-%BETA%              if(~strcmp(DFS0.TYPE{i},'Water Level'))
-%BETA%                  wi = i - 1;
-%BETA%                  break;
-%BETA%              end
-%BETA%          end
-%BETA%          RES11 = read_file_RES11(res11File, 2);
-%BETA%          % concatinate applicable results together from both files
-%BETA%          DATA.T = DFS0.T;
-%BETA%          DATA.V = cat(2,DFS0.V(:,1:wi),RES11.V(2:end,:));
-%BETA%          DATA.TYPE = cat(2,DFS0.TYPE(1:wi),RES11.TYPE);
-%BETA%          DATA.UNIT = cat(2,DFS0.UNIT(1:wi),RES11.UNIT);
-%BETA%          DATA.NAME = cat(2,DFS0.NAME(1:wi),RES11.NAME);
-%BETA%          %elseif only use res11
-%BETA%      elseif (res11Exists)
-%BETA%          fprintf('--- Reading file M11 results::%s\n',char(res11File));
-%BETA%          DATA = read_file_RES11(res11File, 0);
-%BETA%          %elseif only use dfs0
-%BETA%      elseif (dfs0Exists)
-%BETA%          fprintf('--- Reading file M11 results::%s\n',char(dfs0File));
-%BETA%          DATA = read_file_DFS0(dfs0File);
-%BETA%          %else can't use res11 option
-%BETA%      else
-%BETA%          % prints message of which files were missing
-%BETA%          if(~dfs0Exists)
-%BETA%              fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(dfs0File));
-%BETA%          end
-%BETA%          if(~res11Exists)
-%BETA%              fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(res11File));
-%BETA%          end
-%BETA%          return
-%BETA%      end
-%BETA%  else
-%BETA%      %if not using res11, use old dfs0 read
-%BETA%      dfs0File = strcat(INI.fileM11WM(1:ext),'dfs0');
-%BETA%      dfs0Exists = exist(dfs0File,'file');
-%BETA%      if(dfs0Exists)
-%BETA%          fprintf('--- Reading file M11 results::%s\n',char(dfs0File));
-%BETA%          DATA = read_file_DFS0(dfs0File);
-%BETA%      else
-%BETA%          fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(dfs0File));
-%BETA%          return
-%BETA%      end
-%BETA%  end
-%BETA%  DATA.V(abs(DATA.V)<1e-8 & abs(DATA.V) > 0 ) = NaN; % remove non-physical values < 1e-8
+% check flag to use res11
+if (INI.USE_RES11)
+    % check if files exist;
+    % if dfs0 and res11, use together
+    if(dfs0Exists && res11Exists)
+        DFS0 = read_file_DFS0(INI.fileM11Dfs0);
+        wi = 1; %stores end index of water level items
+        sizetype = size(DFS0.TYPE); %for determining loop length
+        % determines how much of dfs0 data to use
+        for i=1:sizetype(2)
+            if(~strcmp(DFS0.TYPE{i},'Water Level'))
+                wi = i - 1;
+                break;
+            end
+        end
+        RES11 = read_file_RES11(INI.fileM11Res11, 2);
+        % concatinate applicable results together from both files
+        DATA.T = DFS0.T;
+        DATA.V = cat(2,DFS0.V(:,1:wi),RES11.V(2:end,:));
+        DATA.TYPE = cat(2,DFS0.TYPE(1:wi),RES11.TYPE);
+        DATA.UNIT = cat(2,DFS0.UNIT(1:wi),RES11.UNIT);
+        DATA.NAME = cat(2,DFS0.NAME(1:wi),RES11.NAME);
 
+    % elseif only use res11
+    elseif (res11Exists)
+        DATA = read_file_RES11(INI.fileM11Res11, 0);
 
-% THE FOLLOWING CODE MAY BE REPLACED BY BETA CODE ABOVE
-% check if file exist;
-if exist(INI.fileM11WM, 'file')
-    fprintf('--- Reading file M11 results::%s\n',char(INI.fileM11WM));
-    DATA = read_file_DFS0(INI.fileM11WM);
-    DATA.V(abs(DATA.V)<1e-8) = NaN; % remove non-physical values < 1e-8
+    % elseif only use dfs0
+    elseif (dfs0Exists)
+        DATA = read_file_DFS0(INI.fileM11Dfs0);
+
+    % else can't use res11 option
+    else
+        % prints message of which files were missing
+        if(~dfs0Exists)
+            fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
+        end
+        if(~res11Exists)
+            fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res11));
+        end
+        return
+    end
 else
-    fprintf('WARNING: missing M11 file MSHE_WM for:%s\n',char(INI.fileM11WM));
-    return
+    % if not using res11, use old dfs0 read
+    if(dfs0Exists)
+        DATA = read_file_DFS0(INI.fileM11Dfs0);
+    else
+        fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
+        return
+    end
 end
-% THE PRECEEDING CODE MAY BE REPLACED BY BETA CODE ABOVE
+
+
+
+
+
+
+% Is this line necessary? Specifically what data is it trying to filter out?
+% This might need to be removed. -keb
+DATA.V(abs(DATA.V)<1e-8 & abs(DATA.V) > 0 ) = NaN; % remove non-physical values < 1e-8
+
+
+
 
 
 
 SZ = size(DATA.V);
 %xlswrite(char(INI.fileCompCoord),DATA.NAME','ALL_COMPUTED','B2');
-fprintf('--- M11 results have %d Computational Points with %d Timesteps\n',SZ(2),SZ(1));
+%fprintf('--- M11 results have %d Computational Points with %d Timesteps\n',SZ(2),SZ(1));
 
 % create a map of chainages with Station Names as values
 mapM11chain = getMapM11Chainages(INI);
 
 CF = INI.CONVERT_M11CHAINAGES;
-fprintf('--- CONVERSION FACTOR FOR CHAINAGES::%f\n',CF);
+%fprintf('--- CONVERSION FACTOR FOR CHAINAGES::%f\n',CF);
 
 fi = 0;
 fn = 0;
@@ -116,7 +104,7 @@ for i=1:SZ(2)
         end
 
         fi = fi + 1;
-        fprintf('-%d\t\t Requested M11 Station \t%s \t mapped to:\t%s\n',fi,char(NAME),char(M11CHAIN));
+        %fprintf('-%d\t\t Requested M11 Station \t%s \t mapped to:\t%s\n',fi,char(NAME),char(M11CHAIN));
         STATION = INI.mapCompSelected(char(NAME));
         STATION.M11NAME = STATION.STATION_NAME;
         STATION.M11UNIT = DATA.UNIT(i);
@@ -178,13 +166,13 @@ xlswrite(char(INI.LOG_XLSX),STATIONS_NOT_FOUND,char(XLSH),'G2');
 xlswrite(char(INI.LOG_XLSX),{'ALL CHAINAGES'},char(XLSH),'I1');
 xlswrite(char(INI.LOG_XLSX),XNFOUND,char(XLSH),'I2');
 
-fprintf('--- Summary of M11 results from file %s \n',char(INI.fileM11WM));
-fprintf('    - %d Requested M11 stations\n', length(mapM11chain));
-fprintf('    - %d Computed nodes mapped to requested M11 Stations \n',length(XFOUND));
-fprintf('    - %d Computed nodes Not-Mapped to requested M11 Stations\n',length(mapM11chain)-length(XFOUND));
+fprintf('\n    - Summary of M11 results\n');
+fprintf('      - %d Requested M11 stations\n', length(mapM11chain));
+fprintf('      - %d Computed nodes mapped to requested M11 Stations \n',length(XFOUND));
+fprintf('      - %d Computed nodes Not-Mapped to requested M11 Stations\n',length(mapM11chain)-length(XFOUND));
 S = strcat(INI.LOG_XLSX, '\', XLSH);
-fprintf('    - Review LOG File %s for summary of Requested, Mapped, Not-Mapped M11 chainages::\n', char(S));
-fprintf('    - Review Sheet::%s for exact listing of matched M11 computation nodes and stations\n\n', ['ALL_COMPUTED_' INI.MODEL]);
+fprintf('      - Review LOG File %s for summary of Requested, Mapped, Not-Mapped M11 chainages::\n', char(S));
+fprintf('      - Review Sheet::%s for exact listing of matched M11 computation nodes and stations\n\n', ['ALL_COMPUTED_' INI.MODEL]);
 
 end
 

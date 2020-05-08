@@ -4,6 +4,8 @@ function XLARRAY = load_XL_GRID(FILE_DFS, INI)
 % otherwise the program will not append arrays and store data (usually
 % this means that the SZunderRIV and OL2RIV will be missing)
 
+fprintf('\n--- Reading file: %s\n',char(INI.TRANSECT_DEFS_FILE));
+
 % determine whether to use dfs2 sheets or dfs3 sheets
 [~,~,FEXT] = fileparts(FILE_DFS);
 if strcmp(FEXT,'.dfs2')
@@ -13,13 +15,11 @@ if strcmp(FEXT,'.dfs3')
     FILE_SHEETNAMES = [INI.TRANSECT_DEFS_SHEETNAMES_3DSZQ];
 end
 
-% Load group definition data from Excel file
-fprintf('%s Reading file: %s\n',datestr(now), char(INI.TRANSECT_DEFS_FILE));
-
 % stn_counter_begin = 0;
 % stn_counter_end = 0;
 num_sheets = length(FILE_SHEETNAMES);
 
+% Load group definition data from Excel file
 XLARRAY=[];
 try
     for sheetnum = 1:num_sheets  % iterate through sheet names given in A0 setup script

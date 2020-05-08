@@ -54,6 +54,8 @@ itms1=XLARRAY(:,6);  % item number, start counting at 1 (not 0)
 % get timeseries data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+fprintf('\n--- Reading MSHE data file: %s',char(FILE_DFS));
+
 TS.S = get_TS_GRID(FILE_DFS);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,11 +111,13 @@ if DFS2
 
         % Print progress bar to screen as we read file
         ds = datestr(DfsTimeVector(tstep+1,:));
-        if mod(tstep-1,10) == 0
-            fprintf('.');
+
+        if ~mod(tstep+1,10) % print only every 10 days
+           fprintf('.');
+           %fprintf('... Reading SZ Values: %s: %s %i %s %i\n', ds, ' Step: ', i, '/', TS.S.nsteps);
         end
-        if mod(tstep-1,366) == 0
-            fprintf('\n... now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
+        if ~mod(tstep,366)
+            fprintf('\n      now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
         end
 
         % Read file and save in array.
@@ -139,11 +143,12 @@ if DFS3
 
             % Print progress bar to screen as we read file
             ds = datestr(DfsTimeVector(tstep+1,:));
-            if mod(tstep-1,10) == 0
-                fprintf('.');
+            if ~mod(tstep+1,10) % print only every 10 days
+               fprintf('.');
+               %fprintf('... Reading SZ Values: %s: %s %i %s %i\n', ds, ' Step: ', i, '/', TS.S.nsteps);
             end
-            if mod(tstep-1,366) == 0
-                fprintf('\n... now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
+            if ~mod(tstep,366)
+                fprintf('\n      now on step %i%s%i:: %s ::and counting',tstep+1, '/', NumDfsSteps-1, ds);
             end
 
             % Read all items for this timestep and save in array Fx.
@@ -176,18 +181,19 @@ if DFS3
         fprintf('\nException in reading dfs3, step %i, item %i\n',tstep, k);
     end
 end
+fprintf('\n      done' );
 
 %---------------------------------------------------------------
 
 ds  = datestr(clock);
-fprintf('\n%s:: Grouping extracted seepage values from %s\n',ds, char(FNAME));
+fprintf('\n      Grouping extracted seepage values from %s',char(FNAME));
 ARRAY_GROUPS = sum_ARRAY_GROUPS(TS.ValueMatrix,MyRequestedStnNames);
 
 %---------------------------------------------------------------
 
 ds  = datestr(clock);
 % create a map of stations and corresponding sumation
-fprintf('%s:: Creating a MAP of computed from: %s\n',ds, char(FNAME))
+fprintf('\n      Creating a MAP of computed from: %s\n', char(FNAME))
 TV = TS.TIMEVECS(:,1:3);
 GROUPS = unique(MyRequestedStnNames);
 MAP_COMPUTED_GROUPS = create_MAP_COMPUTED(TS,GROUPS,ARRAY_GROUPS,TV,itms1,DfsDatesVector);

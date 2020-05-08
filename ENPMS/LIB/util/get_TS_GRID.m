@@ -1,6 +1,6 @@
 function TS = get_TS_GRID(FILE_DFS)
 
-fprintf('%s Reading file: %s\n',datestr(now), char(FILE_DFS));
+%fprintf('%s Reading file: %s\n',datestr(now), char(FILE_DFS));
 [DIR,FNAME,EXT] = fileparts(FILE_DFS);
 
 try

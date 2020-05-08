@@ -1,9 +1,9 @@
-function INI = BC2D_import_dfs0(INI,SWITCH)
+function INI = BC2D_import_dfs0(INI)
 
 % Select Hourly or Daily dfs0 files
-if strcmpi(SWITCH,'OL') 
+if strcmpi(INI.OLorSZ,'OL') 
     FILE_FILTER = 'DFS0HR/*.dfs0'; % list only files with extension .out
-elseif strcmpi(SWITCH,'SZ')
+elseif strcmpi(INI.OLorSZ,'SZ')
     FILE_FILTER = 'DFS0DD/*.dfs0'; % list only files with extension .out
 end
 

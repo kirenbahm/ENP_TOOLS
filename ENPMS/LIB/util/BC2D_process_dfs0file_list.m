@@ -13,7 +13,7 @@ for i = 1:n
         fprintf('... reading: %d/%d: %s \n', i, n, char(NAME));
         
         % read database file
-        DFS0 = BC2D_read_DFS0(FILE_NAME);
+        DFS0 = read_file_DFS0_delete_nulls(FILE_NAME);
         nn = length(DFS0.V);
         % determine the file coordinates and make a structure
         C = strsplit(NAME,'.');

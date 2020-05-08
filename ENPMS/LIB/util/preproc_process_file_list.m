@@ -16,12 +16,12 @@ for i = 1:n
         fprintf('... processing %d/%d: ', i, n);
         FOLDER = s.folder; % get folder name
         FILE_NAME = [FOLDER '\' NAME];
-        FILE_ID = fopen(char(FILE_NAME));
+        myFILE = char(FILE_NAME);
         
         % read DFE data file into DATA structure
         fprintf('reading %s... ', char(NAME));
-        [DATA] = preproc_read_DFE_file(INI, FILE_ID);
-        
+        [DATA] = preproc_read_DFE_file(myFILE);
+
         % extract filename parts, convert station part of name to upper case
         [~,B,~] = fileparts(FILE_NAME);
         splitFilename=split(B,'.');

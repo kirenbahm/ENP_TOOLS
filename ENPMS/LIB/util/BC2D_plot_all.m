@@ -1,4 +1,6 @@
-function INI = BC2D_plot_all(INI,SWITCH)
+function INI = BC2D_plot_all(INI)
+
+fprintf('\n\n Beginning BC2D_plot_all.m \n\n');
 
 M = INI.MAP_H_DATA; 
 KEYS = M.keys;
@@ -7,7 +9,7 @@ for K = KEYS
     clf;
     fprintf('... plotting: %s \n', char(K));
     STATION = M(char(K));
-    DATUM = 'NGVD29';
+    DATUM = 'NGVD29'; %%% THESE SHOULD NOT BE HARDCODED %%%
     if isfield(STATION,'DATUM')
         if strcmp(STATION.DATUM,'NAVD88')
             DATUM = 'NAVD88';
@@ -35,23 +37,28 @@ for K = KEYS
     TTS3.TimeInfo.Format = 'mmm-yyyy';
     plot(TTS3,'Linestyle', '-', 'Color', 'k', 'Marker','none');
     
-    tstart = datetime(1999,1,1);
-    tend = datetime(2015,12,31);
+    tstart = datetime(1999,1,1); %%% THESE SHOULD NOT BE HARDCODED %%%
+    tend = datetime(2015,12,31); %%% THESE SHOULD NOT BE HARDCODED %%%
     ax = gca;
     ax.XLim = [tstart tend];
 
 NN(1) = {['Observed, ft ' DATUM]};
-NN(2) = {'TS interpolation, ft NGVD29'};
-NN(3) = {'Grid value, ft NGVD29'};    
-legend(NN,'Location','SouthEast');
+NN(2) = {'TS interpolation, ft NGVD29'}; %%% THESE SHOULD NOT BE HARDCODED %%%
+NN(3) = {'Grid value, ft NGVD29'};       %%% THESE SHOULD NOT BE HARDCODED %%%
+%%legend(NN,'Location','SouthEast'); %supress legends for now
 title(char(K),'FontSize',10,'FontName','Times New Roman');
 
-
-if strcmpi(SWITCH,'OL')
-    figurefile = [INI.BC2D_DIR 'FIGURES/' char(K) '_HR.png'];
-elseif strcmpi(SWITCH,'SZ')
-    figurefile = [INI.BC2D_DIR 'FIGURES/' char(K) '_DD.png'];
+FIGURE_DIR = [INI.BC2D_DIR 'FIGURES/'];
+if ~exist(FIGURE_DIR, 'dir')
+   mkdir(FIGURE_DIR)
 end
+
+if strcmpi(INI.OLorSZ,'OL')
+    figurefile = [FIGURE_DIR char(K) '_HR.png'];
+elseif strcmpi(INI.OLorSZ,'SZ')
+    figurefile = [FIGURE_DIR char(K) '_DD.png'];
+end
+
 
 print('-dpng',char(figurefile),'-r300');
 end

@@ -1,102 +1,98 @@
-function [DATA] = preproc_read_DFE_file(INI, fileID)
+function [DATA] = preproc_read_DFE_file(myFILE)
 
-formatString = '%s %s %s %s %*[^\n]';
+% Expected data formats:
+% station_name|datatype|date-time(YYYY-MM-DD HH:MM)|measurement_value|other_unneeded_data
+%
+% Example data strings:
+% 3A28|stage|1957-01-22 null|7.7400|
+% 3A28|stage|1958-06-18 null||1996-06-07
+% 3A28|stage|1958-06-19 null||
+% 3A28|stage|1983-06-19 null|8.9500|2003-02-03
+% 3A28|stage|2019-02-08 23:45|9.3700|
+% 3A28|stage|2019-02-09 00:00|9.3700|
+% C111W15|stage_realtime|2015-05-29 07:45|1.9600|2015-05-29
+% S332BW|tail_water|2000-04-08 null||
 
-n = 100000; % Read file in blocks in 10,000 lines, 
-i = uint64(0); % counter
 
-% initialize maps and vectors
-% mapDATA_Q = containers.Map(); (unused)
-% mapDATA_H = containers.Map(); (unused)
-% Q_TIME = []; (unused)
-% Q_VALUE = []; (unused)
-% H_TIME = []; (unused)
-% H_VALUE = []; (unused)
-% 
-% CURRENT_STATION = ''; (unused)
-% n_st = 1; (unused)
-FIELD_STATION = [];
-% FIELD_DTYPE = []; (unused)
-FIELD_TIME = [];
-FIELD_MEASUREMENTS = [];
+% read file
 
-%tic;
-while ~feof(fileID)
+fileID = fopen( myFILE );
+formatString = '%s %s %s %f %*[^\n]';
+fileData = textscan(fileID,formatString,'HeaderLines',9,'Delimiter','|','EmptyValue',NaN);
+[~] = fclose( fileID );
 
-    D = textscan(fileID,formatString,'HeaderLines',9,'Delimiter','|','EmptyValue',NaN);
-    i = i + n;
-   try
-        STATION = upper(D{1}); % convert station to upper case
-        %DTYPE = D{2}; (unused)
-        D{5}=str2double(strrep(D{4},'null',''));                                                                  % Create new cell array column of measurement values
-        B=split(D{3},' '); E = cellstr(B(:,1)); F = cellstr(strrep(B(:,2),':','')); % Split the date-time cell column into separate cell columns
-        D{3} = E; D{4} = F; clear ('B','E','F')                                     % Rejoin cell columns to the cell array 'D' and clear excess variables
-        % this section provides alternative handling of the hour:minute
-        % values
-        DN = str2double(D{4});
-        if isnan(DN(1)), DN(1) = 0; end
-        D0 = sprintf('%04d',DN(1));
-        if length(DN) > 1
-            for i2 = 2:length(DN)
-                dn = DN(i2);
-                if isnan(dn), dn = 0; end
-                D0 = [D0; sprintf('%04d',dn)];
-            end
-        end
-        TSTR = strcat(D{3},D0);
-        % end alternative handling
-        
-        TIME = datenum(TSTR,'yyyy-mm-ddHHMM');
-        DATEVEC = datevec(TIME);
-        DATESTR = datestr(DATEVEC,31);
-        MEASUREMENTS = D{5};
 
-        % find all NaNs in the data vector
-        IND =isnan(MEASUREMENTS);
-        
-        % Erase all  rows that have V=NaN's
-        STATION(IND) = [];
-        %DTYPE(IND) = []; (unused)
-        TIME(IND) = [];
-        MEASUREMENTS(IND) = [];
-        
-        FIELD_STATION = [FIELD_STATION; STATION];
-        %FIELD_DTYPE = [FIELD_DTYPE; DTYPE]; (unused)
-        FIELD_TIME = [FIELD_TIME; TIME];
-        FIELD_MEASUREMENTS = [FIELD_MEASUREMENTS; MEASUREMENTS];
+%-----------------------------------
+% FIELD 1:  STATION NAME
+%-----------------------------------
+%   Convert this to uppercase
+FIELD_STATION = upper(fileData{1});
 
-   catch
-      if INI.DEBUG
-        fprintf('EXCEPTION: %d::%s::%s::D0 = %s\n', i, char(STATION(1)), ...
-            char(TSTR(1)),char(D0(1)));
-        fprintf('EXCEPTION::CONTINUING::\n');
-        %        error(errorStruct);
-      end
-        continue
+%-----------------------------------
+% FIELD 2:  DATATYPE
+%-----------------------------------
+%   Datatype is not used
+
+%-----------------------------------
+% FIELD 3:  DATE-TIME
+%-----------------------------------
+
+try
+    try
+        % the next two lines provide for two types of input formats.
+        % it is expected that times will match one of the formats, and will be put in the corresponding array. the other parts of the array will be NaN.
+        % the arrays should contain all the timestamps between them, with no
+        % overlap.
+        % (if the hour is 24:00 or above, it will not process correctly and
+        % might error)
+        myTimes1 = datenum(datetime(fileData{3},'Inputformat','yyyy-MM-dd HH:mm'));
+        fprintf(' myTimes1 successful ');
+    catch
+        fprintf(' myTimes1 failed ');
+        myTimes1 = 0;
     end
-    if INI.DEBUG && (mod(i,n)==0 || ~feof(fileID))
-        toc;
-           fprintf('... %d\t:%s:: %s: %s :: %s\n', length(FIELD_MEASUREMENTS), ...
-               char(STATION(1)), DATESTR(1), MEASUREMENTS(1));
-        tic;
-    end    
+    
+    try
+        myTimes2 = datenum(datetime(fileData{3},'Inputformat','yyyy-MM-dd'' null'));
+        fprintf(' myTimes2 successful ');
+    catch
+        fprintf(' myTimes2 failed ');
+        myTimes2 = 0;
+    end
+catch
+    fprintf(' couldnt parse date-time format ');
 end
 
-% eliminate dates earlier than 1960, there were some errors in the database
-% resulting in reading dates that were negative (once case is S_331_S_173)
+% next we convert any NaN values to zeros so the arrays can be added
+iznan = isnan(myTimes1);
+myTimes1(iznan) = 0;
+iznan = isnan(myTimes2);
+myTimes2(iznan) = 0;
 
-IND = find(FIELD_TIME<715876); 
-FIELD_STATION(IND) = [];
-% FIELD_DTYPE(IND) = []; (unused)
-FIELD_TIME(IND) = [];
-FIELD_MEASUREMENTS(IND) = [];
+% this adds the arrays, creating one complete date-time array for the
+% two complimentary arrays
+FIELD_TIME = myTimes1 + myTimes2;
+
+%-----------------------------------
+% FIELD 4:  MEASUREMENT VALUE
+%-----------------------------------
+% Take measurement value strings, remove any strings that say 'null', convert to double, and save
+FIELD_MEASUREMENTS = fileData{4};
+
+
+%-----------------------------------
+% find all NaNs in the data vector, and erase all associated rows in other arrays
+isDataNaN =isnan(FIELD_MEASUREMENTS);
+
+FIELD_STATION(isDataNaN) = [];
+FIELD_TIME(isDataNaN) = [];
+FIELD_MEASUREMENTS(isDataNaN) = [];
+
+%-----------------------------------
 
 % create a structure
 DATA.STATION = FIELD_STATION;
-% DATA.DTYPE = upper(FIELD_DTYPE); (unused)
 DATA.TIME = FIELD_TIME;
 DATA.MEASUREMENTS = FIELD_MEASUREMENTS;
 
-%STATION = unique(DATA.STATION); (unused)
-%TYPE = unique(DATA.DTYPE); (unused)
 end

@@ -40,7 +40,7 @@ F.Color = 'red';
 
 hold on;
 %Plot title
-title(strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT));
+title(strcat(strrep(NAME,'_','\_'),{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT));
 
 %Plot axis details
 %L = strcat(DFS0.TYPE,',', {' '}, DFS0.UNIT);
@@ -49,8 +49,8 @@ xtickformat('MMM-yyyy');
 ylabel(strcat(DFS0.TYPE,',', {' '}, DFS0.UNIT));
 
 %Legend format
-legend(strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT));
-legend boxoff;
+%legend(strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT));
+%legend boxoff;
 
 %Save plot as *.png
 [~,NA,~] = fileparts(DFS0.NAME);

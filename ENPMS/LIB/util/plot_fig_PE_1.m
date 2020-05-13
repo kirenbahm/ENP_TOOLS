@@ -40,15 +40,15 @@ end
 grid on
 
 % Title format
-title(strcat(NAME));
+title(strcat(strrep(NAME,'_','\_')));
 
 % Axis format
 ylabel(strcat(DFS0.UNIT));
 xlabel(strcat('Probability Exceedance'));
 
 % Legend format
-legend(strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT));
-legend boxoff;
+%legend(strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT));
+%legend boxoff;
 
 % Save plot as *.png
 [~,NA,~] = fileparts(DFS0.NAME);

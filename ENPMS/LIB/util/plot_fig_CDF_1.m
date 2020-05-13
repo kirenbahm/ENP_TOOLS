@@ -33,8 +33,8 @@ title=strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT);
 
 ylabel('Cumulative Probability');
 xlabel(L);
-legend(N);
-legend boxoff;
+%legend(N);
+%legend boxoff;
 
 [~,NA,~] = fileparts(DFS0.NAME);
 % NA = strrep(NA,'.','_');

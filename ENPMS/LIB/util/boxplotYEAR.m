@@ -83,14 +83,17 @@ C = fliplr(C);
 if isempty(DATA)
     return
 else
- ds = size(DATA);
- DataOK = true;
- for di = 1:ds(2)
-  DataOK = DataOK && ~isempty(DATA{di});
- end
- if(~DataOK)
-  return
- end
+    ds = size(DATA);
+    DataOK = false;
+    for di = 1:ds(1)
+        for dj = 1:ds(2)
+            DataOK = DataOK || ~isempty(DATA{di,dj});
+        end
+    end
+    if(~DataOK)
+        fprintf('...All timeseries values are NaN, continue');
+        return
+    end
 end % code to skip timeseries with zero length
 
 % Input arguments to boxplots_N with a Year label 

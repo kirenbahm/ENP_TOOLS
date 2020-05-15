@@ -45,7 +45,7 @@ for i = 2:numRows % each row has data for a different station
                 j1= (stationComputed.Y_UTM-activeCellCodes.saxis.Y0)/activeCellCodes.saxis.Dy; % Converting to index
                 if(abs(i1 - stationComputed.I) > 0.5 || abs(j1 - stationComputed.J) > 0.5)
                    fprintf('--- Warning: Station %s at excel row %i with a coordinate indexes of (%i , %i) is estimated as (%i , %i) based on model domain dfs2\n',...
-                   char(stationComputed.STATION_NAME), i, stationComputed.I, stationComputed.J, i1, j1);
+                   char(stationComputed.STATION_NAME), i, stationComputed.I, stationComputed.J, round(i1), round(j1));
                    %stationComputed.I = i1;
                    %stationComputed.J = j1;
                 end

@@ -6,7 +6,7 @@ V(IND) = [];
 T = DFS0.T;
 T(IND) = [];
 
-DFS0.DRED = reduce_NONEQDIST(T,V);
+DFS0.DRED = reduce_NONEQDIST(T,V,'h');
 
 end
 

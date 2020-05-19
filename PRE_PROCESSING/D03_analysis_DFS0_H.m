@@ -80,7 +80,7 @@ end
 %Initialize .NET libraries
 INI = initializeLIB(INI);
 
-% iterate over all files
+% iterate over all DFS0 files
 stage_process_DFS0(INI);
 
 stage_process_DFS0DD(INI);

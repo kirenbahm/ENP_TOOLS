@@ -1,4 +1,4 @@
-function [DRED] = reduce_NONEQDIST(date_v,x)
+function [DRED] = reduce_NONEQDIST(date_v,x,R)
 %get_ave_discharges() Computes yearly and monthly averages and totals 
 %   Takes arguments: date_v - DATE vector, x - DATA vector
 %   Returns a DS structure with wighted averages and cumlatives YY,MM,DD,HH
@@ -101,6 +101,10 @@ for i = 1:n
         DRED.DD_WAVE(i) = dot(X(1:end-1),DT)/sum(DT); % weighted average
         DRED.DD_WSUM(i) = sum(times(X(1:end-1),DT)); %X*DT sumation for Flow
     end
+end
+
+if strcmp(R,'d')
+    return % no need to compute hourly
 end
 
 %compute  hourly:

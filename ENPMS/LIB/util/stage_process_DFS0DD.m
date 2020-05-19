@@ -33,7 +33,7 @@ for i = 1:n
    DFS0.STATION = B;
    % save the file in a new directory
    fprintf('saving... ')
-   create_DFS0_GENERIC_DD_H(INI,DFS0,FILE_NAME);
+   create_DFS0_GENERIC_DD(INI,DFS0,FILE_NAME);
    
    % read the new daily file
    fprintf('reading saved file...\n');

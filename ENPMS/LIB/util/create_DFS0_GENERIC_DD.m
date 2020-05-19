@@ -1,4 +1,4 @@
-function create_DFS0_GENERIC_DD_Q(INI,DFS0,FILE_NAME)
+function create_DFS0_GENERIC_DD(INI,DFS0,FILE_NAME)
 S = DFS0.STATION;
 
 DATA.TIME = datenum(DFS0.DRED.DD_ARRAY);
@@ -39,7 +39,6 @@ if ~isempty(DATA.V)
    F = FILE_NAME;
    if (exist(F,'file') && INI.DELETE_EXISTING_DFS0), delete(F), end
    DT = DFS0.TYPE;
-%   U = DFS0.UNIT;
    TS = DATA.TIME;
    D = DATA.V;
    create1DFS0_G(INI,S,F,DT,TS,D,dfsDT);

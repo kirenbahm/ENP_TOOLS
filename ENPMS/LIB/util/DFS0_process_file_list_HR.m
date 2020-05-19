@@ -31,7 +31,7 @@ for i = 1:n
    DFS0.STATION = B;
    % save the file in a new directory
    fprintf('saving... ')
-   create_DFS0_GENERIC_HR_Q(INI,DFS0,FILE_NAME);
+   create_DFS0_GENERIC_HR(INI,DFS0,FILE_NAME);
    
    % read the new hourly file
    fprintf('reading saved file...\n');

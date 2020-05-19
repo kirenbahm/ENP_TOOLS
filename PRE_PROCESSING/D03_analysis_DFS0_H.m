@@ -81,11 +81,11 @@ end
 INI = initializeLIB(INI);
 
 % iterate over all DFS0 files
-stage_process_DFS0(INI);
+DFS0_process_H_file_list(INI);
 
-stage_process_DFS0DD(INI);
-
-stage_process_DFS0HR(INI);
+DFS0_process_H_file_list_DD(INI);
+ 
+DFS0_process_H_file_list_HR(INI);
 
 fprintf('\n DONE \n\n');
 

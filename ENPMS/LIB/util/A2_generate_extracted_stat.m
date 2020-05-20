@@ -76,7 +76,8 @@ for M =  STATIONS_LIST % {'{'T19'}'} % % this uses only the list of the selected
         STATION.TIMEVECTOR = TIMEVECTOR;
         STATION.TIMESERIES = TIMESERIES;
         STATION.DFSTYPE = STATION.DATATYPE;
-        for ii = 1:nD
+        datai = size(STATION.DATA);
+        for ii = 1:datai(2)
             DV = STATION.DATA(ii).TIMESERIES;
             TV = STATION.DATA(ii).TIMEVECTOR;
             if ~isempty(DV)

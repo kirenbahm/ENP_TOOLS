@@ -36,6 +36,8 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     INI.fileM11Res11      = [INI.simRESULT 'MSHE_WM.res11'];
     %INI.fileM11HDAddRes11 = [INI.simRESULT 'MSHE_WMHDAdd.res11']; % not used yet
 
+    INI.filePP = char(strcat(INI.simRESULT, INI.simMODEL, '_PreProcessed.DFS2'));
+	
     dfs0Exists  = exist(INI.fileM11Dfs0,'file');
     res11Exists = exist(INI.fileM11Res11, 'file');
     

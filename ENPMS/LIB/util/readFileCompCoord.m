@@ -41,8 +41,8 @@ for i = 2:numRows % each row has data for a different station
         if( strcmp(cell2mat(RAW(i,14)),'MSHE'))
             if(activeCellCodes.saxis.X0 ~= 0 && activeCellCodes.saxis.Y0 ~= 0 )
             % check of station indexes
-                i1= (stationComputed.X_UTM-activeCellCodes.saxis.X0)/activeCellCodes.saxis.Dx; % Converting to index
-                j1= (stationComputed.Y_UTM-activeCellCodes.saxis.Y0)/activeCellCodes.saxis.Dy; % Converting to index
+                i1= (stationComputed.X_UTM-activeCellCodes.saxis.X0)/activeCellCodes.saxis.Dx - 0.5; % Converting to index
+                j1= (stationComputed.Y_UTM-activeCellCodes.saxis.Y0)/activeCellCodes.saxis.Dy - 0.5; % Converting to index
                 if(abs(i1 - stationComputed.I) > 0.5 || abs(j1 - stationComputed.J) > 0.5)
                    fprintf('--- Warning: Station %s at excel row %i with a coordinate indexes of (%i , %i) is estimated as (%i , %i) based on model domain dfs2\n',...
                    char(stationComputed.STATION_NAME), i, stationComputed.I, stationComputed.J, round(i1), round(j1));

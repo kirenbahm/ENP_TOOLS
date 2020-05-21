@@ -4,23 +4,24 @@ function [] = generate_latex_files_by_area(MO,MS,INI)
 
 fprintf('\n\n--Generating the LATEX files by area:');
 fidTEX = generate_latex_head(INI);
+if(MS ~= 0)
+    FILEDATA = INI.FILESAVE_TS;
+    fprintf('\n\n--Loading Computed and observed data from file:\n\t%s', char(FILEDATA));
+    load(FILEDATA, '-mat');
 
-FILEDATA = INI.FILESAVE_TS;
-fprintf('\n\n--Loading Computed and observed data from file:\n\t%s', char(FILEDATA));
-load(FILEDATA, '-mat');
+    mapAreas = getMapAreas(MAP_ALL_DATA,MS); % use this map to print by areas
 
-mapAreas = getMapAreas(MAP_ALL_DATA,MS); % use this map to print by areas
-
-% for M = keys(MO)
-fprintf('\n\n--Generating figures and tables:');
-for M = mapAreas.keys   
-    STATION_LIST = mapAreas(char(M));        
+    % for M = keys(MO)
+    fprintf('\n\n--Generating figures and tables:');
+    for M = mapAreas.keys   
+        STATION_LIST = mapAreas(char(M));        
     
-    generate_page_figures(M, STATION_LIST,MAP_ALL_DATA,INI,fidTEX);
-    %     if INI.MAKE_STATISTICS_TABLE
-    %     fprintf('... Including statistics in the LATEX file\n');
-    generate_area_tables(M, MS, STATION_LIST,INI,fidTEX);
-    %     end
+        generate_page_figures(M, STATION_LIST,MAP_ALL_DATA,INI,fidTEX);
+        %     if INI.MAKE_STATISTICS_TABLE
+        %     fprintf('... Including statistics in the LATEX file\n');
+        generate_area_tables(M, MS, STATION_LIST,INI,fidTEX);
+        %     end
+    end
 end
 generate_latex_tail(fidTEX);
 

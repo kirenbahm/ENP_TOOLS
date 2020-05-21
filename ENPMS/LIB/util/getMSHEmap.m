@@ -1,6 +1,10 @@
 function mapMSHESEL = getMSHEmap(INI)
 
+% This function copies the STATION metadata for JUST the MSHE stations into a
+% separate variable
+
 mapMSHESEL = containers.Map;
+
 mapCompSelected = INI.mapCompSelected;
 KEYS = mapCompSelected.keys;
 

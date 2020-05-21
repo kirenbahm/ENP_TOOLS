@@ -26,25 +26,29 @@ S.XCount = saxis.XCount;
 S.YCount = saxis.YCount;
 
 for i = 0:S.DFS.ItemInfo.Count-1
-    S.item(i+1).itemname = char(S.DFS.ItemInfo.Item(i).Name);
-    S.item(i+1).itemtype = char(S.DFS.ItemInfo.Item(i).DataType);
-    %S.item(i+1).itemvalue = char(S.myDfs.ItemInfo.Item(i).ValueType); % Instantaneous
-    S.item(i+1).itemunit = char(S.DFS.ItemInfo.Item(i).Quantity.UnitAbbreviation);
-    S.item(i+1).itemdescription=char(S.DFS.ItemInfo.Item(i).Quantity.ItemDescription);
-    %S.item(i+1).unitdescription=char(S.myDfs.ItemInfo.Item(i).Quantity.UnitDescription);
+    S.item(i+1).itemname       = char(S.DFS.ItemInfo.Item(i).Name);
+    S.item(i+1).itemtype       = char(S.DFS.ItemInfo.Item(i).DataType);
+    %S.item(i+1).itemvalue     = char(S.DFS.ItemInfo.Item(i).ValueType); % Instantaneous
+    S.item(i+1).itemunit       = char(S.DFS.ItemInfo.Item(i).Quantity.UnitAbbreviation);
+    S.item(i+1).itemdescription= char(S.DFS.ItemInfo.Item(i).Quantity.ItemDescription);
+    %S.item(i+1).unitdescription=char(S.DFS.ItemInfo.Item(i).Quantity.UnitDescription);
 end
-S.count = S.DFS.ItemInfo.Count;
-S.deltat   = S.DFS.FileInfo.TimeAxis.TimeStep;
+S.count     = S.DFS.ItemInfo.Count;
+
+S.DELETE    = S.DFS.FileInfo.DeleteValueFloat;
+
+S.deltat    = S.DFS.FileInfo.TimeAxis.TimeStep;
 S.unitt   = char(S.DFS.FileInfo.TimeAxis.TimeUnit);
-S.nsteps   = S.DFS.FileInfo.TimeAxis.NumberOfTimeSteps;
-S.DELETE = S.DFS.FileInfo.DeleteValueFloat;
+S.nsteps    = S.DFS.FileInfo.TimeAxis.NumberOfTimeSteps;
+S.TIMESTEPD = S.DFS.FileInfo.TimeAxis.TimeStep/86400;
+
 aD = S.DFS.FileInfo.TimeAxis.StartDateTime.Day;
 aM = S.DFS.FileInfo.TimeAxis.StartDateTime.Month;
 aY = S.DFS.FileInfo.TimeAxis.StartDateTime.Year;
 aH = S.DFS.FileInfo.TimeAxis.StartDateTime.Hour;
 am = S.DFS.FileInfo.TimeAxis.StartDateTime.Minute;
 aS = S.DFS.FileInfo.TimeAxis.StartDateTime.Second;
-S.TIMESTEPD = S.DFS.FileInfo.TimeAxis.TimeStep/86400;
+
 S.TSTART = datenum(double([aY aM aD aH am aS]));
 S.TV = (S.TSTART:S.TSTART+S.nsteps);
 

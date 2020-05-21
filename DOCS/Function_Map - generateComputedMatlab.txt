@@ -1,0 +1,29 @@
+generateComputedMatlab
+  initializeLIB
+  extractComputedData
+    readFileCompCoord
+    readDomainGridCodes
+    readM11_WM
+      read_file_DFS0
+      read_file_RES11
+      getMapM11Chainages
+      findM11NotFound
+    readMSHE_WM
+      getMSHEmap
+      get_TS_GRIDini
+        iniDFS3
+    extractTRANSECTS_MLAB
+      load_OL_GRIDDED
+        get_GRIDDED_DATA
+          load_XL_GRID
+          get_TS_GRID
+            InputDFS2
+            InputDFS3v1
+          nummthyr
+          sum_ARRAY_GROUPS
+          create_MAP_COMPUTED
+      load_SZ_GRIDDED
+        (same subfunctions as load_OL_GRIDDED)
+      convert_TRANSECT
+        convert_map
+    plot_all

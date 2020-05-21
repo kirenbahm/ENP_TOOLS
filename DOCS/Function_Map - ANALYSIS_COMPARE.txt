@@ -1,0 +1,82 @@
+ANALYSIS_COMPARE
+  analyze_data_set
+    setup_ini
+    get_station_list
+
+    A1_load_extracted_timeseries
+       loadCompData
+       initialize_STATION
+       setStationInfo
+       setStationData
+
+    A2_generate_extracted_stat
+      get_daily_data2
+      remove_nan
+      get_station_stat
+        get_COUNT
+        get_ME
+        get_MAE
+        get_RMSE
+        get_STDres
+        get_NS
+        get_COVAR
+        get_COR
+        get_PEV
+        calculate_exceedance
+
+    A2a_cumulative_flows
+      summarize_YM
+        get_ave_YM
+          nanmean
+          nansum
+      write_QYM
+        print_ACCUMULATED
+      write_QYMYEARLY
+        print_ACCUMULATEDyearly
+      print_M_AVE
+      print_Y_AVE
+
+    A3_create_figures_timeseries
+      plot_timeseries
+        add_ground_level
+
+    A3_create_figures_acc_timeseries
+      plot_timeseries_accumulated
+
+    A3B_BoxPlot
+      boxplotYEAR
+        boxplots_N
+        add_ground_level
+      boxplotMONTH
+        boxplots_N
+        add_ground_level
+
+    A4_create_figures_exceedance
+      plot_exceedance
+        add_ground_level
+
+    A5_create_summary_stat
+      get_map_station_stat
+        get_stat_station
+          get_PE
+
+    A9_make_latex_report
+      get_map_station_stat
+        get_stat_station
+          get_PE
+      generate_latex_files_by_area
+        generate_latex_head
+        getMapAreas
+        generate_page_figures
+          head_figure
+          tail_figure
+        generate_area_tables
+          print_table_stat_header
+          print_table_PE_header
+        generate_latex_tail
+      generate_latex_files
+        generate_latex_head
+        generate_page_figures
+          head_figure
+          tail_figure
+        generate_latex_tail

@@ -58,6 +58,7 @@ for i = 1:nn % This loop iterates over each simulation to extract data
 
     if INI.SAVE_IN_MATLAB
 
+        % Read M11 data from dfs0 and/or res11 files
         try
             INI = readM11_WM(INI,res11Exists,dfs0Exists);
         catch INI
@@ -65,6 +66,7 @@ for i = 1:nn % This loop iterates over each simulation to extract data
             msgException = getReport(INI,'extended','hyperlinks','on')
         end
 
+        % Read MSHE data from dfs3 file
         try
             INI = readMSHE_WM(INI);
         catch INI
@@ -72,7 +74,7 @@ for i = 1:nn % This loop iterates over each simulation to extract data
             msgException = getReport(INI,'extended','hyperlinks','on')
         end
 
-        % TRANSECTS_MLAB
+        % Read TRANSECTS data from dfs2 and dfs3 files
         if INI.READ_TRANSECTS_MLAB
             try
                 INI.MAPXLS = INI.TRANSECT_DEFS_FILE;
@@ -84,14 +86,18 @@ for i = 1:nn % This loop iterates over each simulation to extract data
             end
         end
 
+        % Save all data to a variable that gets written to a file
         mapCompSelected = INI.mapCompSelected;
         save(char(INI.DATABASE_COMP),'mapCompSelected','-v7.3');
 
+    % If you didn't want read and save the data, read a pre-saved version here
+    % (this is not really used anymore - could delete this 'if-else' section)
     else
         load(char(INI.DATABASE_COMP), '-mat');
         INI.mapCompSelected = mapCompSelected;
     end
-
+    
+    % Plot all the timeseries if requested
     if INI.PLOT_COMPUTED
         try
             ME = plot_all(INI);
@@ -101,11 +107,9 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     end
 end
 
-% %include computing seepage
+% %include computing seepage (not implemented)
 % % map of requested seepage, note the scripts are MAPF specfic because they
 % % accumulate X and Y seepage values in specific way
 % U.MAPF = [INI.DATA_COMMON 'SEEPAGE_MAP.dfs2'];;
-
-%     INI.MAPXLS = INI.mapCompSelected; % needed for transect calculations
 
 end

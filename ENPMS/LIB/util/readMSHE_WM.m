@@ -65,9 +65,7 @@ end
 
 for i = 1:length(ST)
     NAME = ST(i).NAME;
-    K = NAME;
-    %fprintf('...computed::%s\n', char(K));
-    STATION = INI.mapCompSelected(char(K));
+    STATION = INI.mapCompSelected(char(NAME));
 %     STATION.COMP_DATE = ST(i).DATE;
     STATION.MSHE_SZ_ELEV = ST(i).SZ_ELEV;
 %     STATION.MSHE_OL_DEPTH = ST(i).OL_DEPTH;
@@ -82,12 +80,15 @@ for i = 1:length(ST)
     STATION.DCOMPUTED = DN';
     STATION.DATATYPE = STATION.MSHE_TYPE_SZ_ELEV;
     UNIT = STATION.MSHE_UNIT_SZ_ELEV;
+
     if strcmp(UNIT,'m')
         STATION.DCOMPUTED = STATION.DCOMPUTED/0.3048;
         STATION.UNIT = 'ft';
     end
     INI.mapCompSelected(char(NAME)) = STATION;
 end
+
+TS.S.DFS.Close
 fprintf('\n      done' );
 
 end

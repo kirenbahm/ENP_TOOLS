@@ -1,8 +1,5 @@
 function INI = readM11_WM(INI,res11Exists,dfs0Exists)
 
-mapM11CompP = containers.Map;
-
-
 % check flag to use res11
 if (INI.USE_RES11)
     % check if files exist;
@@ -76,19 +73,19 @@ SZ = size(DATA.V);
 % create a map of chainages with Station Names as values
 mapM11chain = getMapM11Chainages(INI);
 
-CF = INI.CONVERT_M11CHAINAGES;
-%fprintf('--- CONVERSION FACTOR FOR CHAINAGES::%f\n',CF);
+%fprintf('--- CONVERSION FACTOR FOR CHAINAGES::%f\n',INI.CONVERT_M11CHAINAGES);
 
 fi = 0;
 fn = 0;
-ii = 0;
+
 for i=1:SZ(2)
-    M11CHAIN = DATA.NAME{i};
-    M11CHAIN = strrep(M11CHAIN,' ','');
-    STR_TEMP = strsplit(M11CHAIN,';');
-    N = str2num(STR_TEMP{2})*CF; %if chainage is per foot -> meters
-    NSTR = sprintf('%.0f',N);
-    M11CHAIN = [STR_TEMP{1} ';' NSTR ';' STR_TEMP{3}];
+    % Convert chainage units from Excel file if requested
+    M11CHAIN = DATA.NAME{i};            % copy name (expected format: 'stationName;chainage;riverName'
+    M11CHAIN = strrep(M11CHAIN,' ',''); % remove spaces
+    STR_TEMP = strsplit(M11CHAIN,';');  % break apart string into components
+    N = str2num(STR_TEMP{2})*INI.CONVERT_M11CHAINAGES; % convert unit of chainage if requested
+    NSTR = sprintf('%.0f',N);           % save the converted chainage
+    M11CHAIN = [STR_TEMP{1} ';' NSTR ';' STR_TEMP{3}]; % re-assemble and write over original variable
 
     try
         XSEL{i} = M11CHAIN;

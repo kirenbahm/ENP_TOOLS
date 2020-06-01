@@ -126,6 +126,7 @@ INI.INCLUDE_OBSERVED      = 1; % Include observed in the output figs and tables.
 INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 
 INI.DEBUG                 = 1; % Set this to 1 to generate extra output for debugging
+INI.AGGREGATE_EQUATIONS = [INI.DATA_COMMON 'aggregate_rules_file_example-AGG.txt'];
 
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------

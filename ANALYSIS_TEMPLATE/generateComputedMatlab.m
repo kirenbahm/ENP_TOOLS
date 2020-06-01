@@ -55,6 +55,7 @@ INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common\';
 %---------------------------------------------------------------------
 % use this for unit testing
 INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_Output_Processed\';
+INI.AGGREGATE_EQUATIONS = [INI.DATA_COMMON 'aggregate_rules_file_example-AGG.txt'];
 
 % use this for sequential testing
 %INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';

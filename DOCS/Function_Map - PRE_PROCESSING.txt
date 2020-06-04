@@ -36,6 +36,7 @@ D02_analysis_DFS0_Q                 | D03_analysis_DFS0_H
       DFS0_data_reduce_DD           |       DFS0_data_reduce_DD
         reduce_NONEQDIST            |          reduce_NONEQDIST
            calc_DaysInYear          |            calc_DaysInYear
+           calc_LeapYear            |            calc_LeapYear
            eomday                   |            eomday
       create_DFS0_GENERIC_DD        |       create_DFS0_GENERIC_DD
          create1DFS0_G              |          create1DFS0_G
@@ -51,6 +52,7 @@ D02_analysis_DFS0_Q                 | D03_analysis_DFS0_H
       DFS0_data_reduce_HR           |       DFS0_data_reduce_HR
          reduce_NONEQDIST           |          reduce_NONEQDIST
            calc_DaysInYear          |            calc_DaysInYear
+           calc_LeapYear            |            calc_LeapYear
            eomday                   |            eomday
       create_DFS0_GENERIC_HR        |       create_DFS0_GENERIC_HR
          create1DFS0_G              |          create1DFS0_G

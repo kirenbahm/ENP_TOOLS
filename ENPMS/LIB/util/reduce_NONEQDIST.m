@@ -32,8 +32,15 @@ DRED.YY_SUM(1:n) = NaN; % annual  sumation
 for i = 1:n
     yy = YY_ARRAY(i);
     I1 = find(DATE_VEC(:,1)==yy); % select year
+    if(I1(end) ~= size(date_v, 1)) % index inserted due to last time step missing
+        I1(end + 1, 1) = I1(end) + 1; 
+    end
     t1 = date_v(I1); % selected time vector
     DT = diff(t1)*86400; % difference in seconds
+    numdays = calc_DaysInYear(yy);
+    if sum(DT) > numdays * 86400 % Limit to 1 year in case missing data between last timestep in year and next available timestep
+       DT(end) =  DT(end) - (sum(DT) - (numdays * 86400));
+    end
     X = x(I1); % determine number of seconds per period
     DRED.YY_AVE(i) = mean(X); % simple average
     DRED.YY_SUM(i) = sum(X); % sumation for rainfall, ET, PET
@@ -60,9 +67,25 @@ DRED.MM_SUM(1:n) = NaN; % annual  sumation
 for i = 1:n
     yy = MM_ARRAY(i,1);
     mm = MM_ARRAY(i,2);
+    numdays = 0;
+    if mm == 1 || mm == 3 || mm == 5 || mm == 7 || mm == 8 || mm == 10 || mm == 12
+        numdays = 31;
+    elseif mm == 4 || mm == 6 || mm == 9 || mm == 11
+        numdays = 30;
+    elseif mm ==2 && calc_LeapYear(yy)
+        numdays = 29;
+    elseif mm == 2 && ~calc_LeapYear(yy)
+        numdays = 28;
+    end
     I1 = find(DATE_VEC(:,1)==yy & DATE_VEC(:,2)==mm ); % select year
+    if(I1(end) ~= size(date_v, 1)) % index inserted due to last time step missing
+        I1(end + 1, 1) = I1(end) + 1; 
+    end
     t1 = date_v(I1); % selected time vector
     DT = diff(t1)*86400; % difference in seconds
+    if sum(DT) > numdays * 86400 % Limit to 1 month in case missing data between last timestep in month and next available timestep
+       DT(end) =  DT(end) - (sum(DT) - (numdays * 86400));
+    end
     X = x(I1); % determine number of seconds per period
     % weighted average
     DRED.MM_AVE(i) = mean(X); % simple average
@@ -88,8 +111,14 @@ for i = 1:n
     mm = DD_ARRAY(i,2);
     dd = DD_ARRAY(i,3);
     I1 = find(DATE_VEC(:,1)==yy & DATE_VEC(:,2)==mm &DATE_VEC(:,3)==dd ); % select year
+    if(I1(end) ~= size(date_v, 1)) % index inserted due to last time step missing
+        I1(end + 1, 1) = I1(end) + 1; 
+    end
     t1 = date_v(I1); % selected time vector
     DT = diff(t1)*86400; % difference in seconds
+    if sum(DT) > 86400 % Limit to 1 day in case missing data between last timestep in day and next available timestep
+       DT(end) =  DT(end) - (sum(DT) - 86400);
+    end
     X = x(I1); % determine number of seconds per period
     % weighted average
     DRED.DD_AVE(i) = mean(X); % simple average
@@ -102,11 +131,9 @@ for i = 1:n
         DRED.DD_WSUM(i) = sum(times(X(1:end-1),DT)); %X*DT sumation for Flow
     end
 end
-
 if strcmp(R,'d')
     return % no need to compute hourly
 end
-
 %compute  hourly:
 n = length(HR_ARRAY);
 DRED.HR_WAVE(1:n) = NaN; % annual weighted average
@@ -123,8 +150,14 @@ for i = 1:n
         DATE_VEC(:,2)==mm & ...
         DATE_VEC(:,3)==dd & ...
         DATE_VEC(:,4)==hh); % select year
+    if(I1(end) ~= size(date_v, 1)) % index inserted due to last time step missing
+        I1(end + 1, 1) = I1(end) + 1; 
+    end
     t1 = date_v(I1); % selected time vector
     DT = diff(t1)*86400; % difference in seconds
+    if sum(DT) > 3600 % Limit to 1 hour in case missing data between last timestep in hour and next available timestep
+       DT(end) =  DT(end) - (sum(DT) - 3600);
+    end
     X = x(I1); % determine number of seconds per period
     % weighted average
     DRED.HR_AVE(i) = mean(X); % simple average

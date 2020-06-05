@@ -50,13 +50,12 @@ while ischar(tline)
         catch
             % Aggregate Station name isn't taken
             fprintf('Success.\n');
-            EqRi = 4;
             EqReport{1} = char(parts{1});
             sumi = 2;
             stationflow = {}; %stores if station is discharge
             stationsexist = {}; % stores if station is found
-            stationsdaily = {}; % stores if sation timeseries is daily
-            
+            stationsdaily = {}; % stores if station timeseries is daily
+            stations = {}; % stores station
             % stores scalar for timeseries values
             % Ex + = 1, - = -1, not found = 0
             stationaddsub = {};
@@ -69,7 +68,7 @@ while ischar(tline)
             while sumi <= sizeparts(2)
                 % Second cell should be equals
                 if sumi == 2
-                    EqReport{2} = char(parts{2});
+                    EqReport{sumi} = char(parts{sumi});
                     if strcmp('=',char(parts{sumi})) == true
                         pass = pass & true;
                     else
@@ -80,7 +79,7 @@ while ischar(tline)
                     % If 3rd cell is operator, modcheck changes to match
                     if strcmp('-',char(parts{sumi})) || strcmp('+',char(parts{sumi}))
                         modcheck = false;
-                        EqReport{3} = char(parts{3});
+                        EqReport{sumi} = char(parts{sumi});
                         pass = pass & true;
                     else
                         modcheck = true;
@@ -101,17 +100,23 @@ while ischar(tline)
                                         daily = daily & false;
                                     end
                                 end
-                                EqReport{3} = char(parts{3});
+                                EqReport{sumi} = char(parts{sumi});
                                 stationsdaily{stationi} = daily; % boolean if daily
                                 stationsexist{stationi} = true; % boolean if found
                                 stationsaddsub{stationi} = 1; % scalar for multiplying values
                                 stationsflow{stationi} = strcmpi(STATION.DATATYPE, 'discharge');
                                 if ~stationsflow{stationi}
-                                    EqReport{3} = '';
+                                    EqReport{sumi} = '';
                                     fprintf('...Not Flow\n');
+                                    if sumi ~= 3
+                                        EqReport{sumi - 1} = '';
+                                    end
                                 elseif ~stationsdaily{stationi}
-                                    EqReport{3} = '';
+                                    EqReport{sumi} = '';
                                     fprintf('...Not Daily\n');
+                                    if sumi ~= 3
+                                        EqReport{sumi - 1} = '';
+                                    end
                                 end
                                 stations{stationi} = STATION; % stores station for later reference
                                 UsableAggregate = UsableAggregate | (stationsdaily{stationi} & stationsexist{stationi} & stationsflow{stationi});
@@ -124,7 +129,7 @@ while ischar(tline)
                             % station not found
                             catch
                                 fprintf('...Not found\n');
-                                EqReport{3} = '';
+                                EqReport{sumi} = '';
                                 stationsdaily{stationi} = false; % boolean if daily
                                 stationsexist{stationi} = false; % boolean if found
                                 stationsaddsub{stationi} = 0; % scalar for multiplying values
@@ -151,16 +156,22 @@ while ischar(tline)
                                     daily = daily & false;
                                 end
                             end
-                            EqReport{EqRi} = char(parts{sumi});
+                            EqReport{sumi} = char(parts{sumi});
                             stationsdaily{stationi} = daily; % boolean if daily
                             stationsexist{stationi} = true; % boolean if found
                             stationsflow{stationi} = strcmpi(STATION.DATATYPE, 'discharge');
                             if ~stationsflow{stationi}
-                                EqReport{3} = '';
+                                EqReport{sumi} = '';
                                 fprintf('...Not Flow\n');
+                                if sumi ~= 3
+                                    EqReport{sumi - 1} = '';
+                                end
                             elseif ~stationsdaily{stationi}
-                                EqReport{3} = '';
+                                EqReport{sumi} = '';
                                 fprintf('...Not Daily\n');
+                                if sumi ~= 3
+                                    EqReport{sumi - 1} = '';
+                                end
                             end
                             % Parses which scalar to use
                             if strcmp('-',char(parts{sumi - 1}))
@@ -191,7 +202,7 @@ while ischar(tline)
                             stationi = stationi + 1;
                         end
                     elseif mod(sumi,2) == ~modcheck
-                        EqReport{EqRi} = char(parts{sumi});
+                        EqReport{sumi} = char(parts{sumi});
                         % operator should be plus or minus
                         if strcmp('-',char(parts{sumi})) || strcmp('+',char(parts{sumi}))
                             pass = pass & true;
@@ -199,7 +210,6 @@ while ischar(tline)
                             pass = pass & false;
                         end
                     end
-                    EqRi = EqRi + 1;
                 end
                 sumi = sumi + 1;
             end
@@ -258,7 +268,7 @@ while ischar(tline)
         for emi = 1:sR(2)
             if emi == 1
                 reportmsg = strcat(reportmsg, char(EqReport{emi}));
-            else
+            elseif ~isempty(char(EqReport{emi}))
                 reportmsg = strcat(reportmsg, " ", char(EqReport{emi}));
             end
         end

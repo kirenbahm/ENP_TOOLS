@@ -90,6 +90,7 @@ for i = 1:nn % This loop iterates over each simulation to extract data
 
         % Save all data to a variable that gets written to a file
         mapCompSelected = INI.mapCompSelected;
+        INI = Aggregate_Station_Data(INI);
         save(char(INI.DATABASE_COMP),'mapCompSelected','-v7.3');
 
     % If you didn't want read and save the data, read a pre-saved version here

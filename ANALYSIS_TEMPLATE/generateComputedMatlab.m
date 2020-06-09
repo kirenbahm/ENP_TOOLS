@@ -103,13 +103,9 @@ INI.TRANSECT_DEFS_SHEETNAMES_3DSZQ{ii} = 'SZunderRIV'; ii=ii+1;
 INI.TRANSECT_DEFS_SHEETNAMES_3DSZQ{ii} = 'SZ2RIV'; ii=ii+1;
 
 %---------------------------------------------------------------------
-% 6. Process and seepage maps
+% 6. Define file containing rules for aggregating flow data
 %---------------------------------------------------------------------
-INI.READ_SEEPAGE_MAP = 0;
-% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
-% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
-% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M06_SEEPAGE_MAP.dfs2'];
-% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+INI.AGGREGATE_EQUATIONS = [ INI.DATA_COMMON 'aggregate_rules_file_20200604.txt'];
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality
@@ -121,7 +117,8 @@ INI.SAVE_IN_MATLAB = 1; % (DEFAULT) force recreate and write matlab database
 INI.PLOT_COMPUTED = 1; % The user does not plot computed data
 INI.PLOT_COMPUTED = 0; %  (DEFAULT) The user plots computed data 
 
-INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
+INI.DEBUG = 0; % 0 = no debug output
+INI.DEBUG = 1; % 1 = generate extra output for debugging
 
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
@@ -131,15 +128,28 @@ INI.DEBUG = 0; % go in debug mdoe to executed ebug statements
 %INI.USE_RES11 = true;   % read .res11 file (slow and more accurate)
 INI.USE_RES11 = false;  % read .dfs0  file (fast and less accurate)
 
-% Check if required input files and folders exist
+% Process seepage maps (this code is currently not implemented)
+INI.READ_SEEPAGE_MAP = 0;
+% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M01_SEEPAGE_MAP.dfs2'];
+% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+% INI.SEEPAGE_MAP = [ INI.DATA_COMMON 'M06_SEEPAGE_MAP.dfs2'];
+% assert(exist(INI.SEEPAGE_MAP,'file') == 2, 'File not found.' );
+
+
+% Check if required input FOLDERS exist
 MatScrExist = exist(INI.MATLAB_SCRIPTS,'file') == 7;
 DataCommonExist = exist(INI.DATA_COMMON,'file') == 7;
+
+% Check if required input FILES exist
 fileCompCoordExist = exist(INI.fileCompCoord,'file') == 2;
 TransectDefsFileExist = exist(INI.TRANSECT_DEFS_FILE,'file') == 2;
+AggScrExist = exist(INI.AGGREGATE_EQUATIONS,'file') == 2;
+
 
 % If all required inputs exist, continue script
-if(MatScrExist && DataCommonExist && fileCompCoordExist && TransectDefsFileExist)
+if(MatScrExist && DataCommonExist && fileCompCoordExist && TransectDefsFileExist && AggScrExist)
     INI = extractComputedData(INI);
+
     
 % Else print error messages on files/folders not found
 else
@@ -155,6 +165,9 @@ else
     end
     if(~TransectDefsFileExist)
         fprintf('ERROR: INI.TRANSECT_DEFS_FILE file was not found at %s.\n',char(INI.TRANSECT_DEFS_FILE));
+    end
+    if(~AggScrExist)
+        fprintf('ERROR: INI.AGGREGATE_EQUATIONS directory was not found at %s.\n',char(INI.AGGREGATE_EQUATIONS));
     end
     fprintf('\n');
     error('Execution stopped');

@@ -23,16 +23,17 @@ function INI = Aggregate_Station_Data (INI)
 
 % Read Text file with equations
 fid = fopen(INI.AGGREGATE_EQUATIONS);
-fprintf('\n--Reading Aggregate Staions Equations from file....\n');
+fprintf('\n--- Reading Aggregate Stations Equations from file: %s\n\n', char(INI.AGGREGATE_EQUATIONS));
+
 tline = fgetl(fid);
 stations = {};
-fprintf('--Creating Aggregate Staions based on file Equations....\n');
+fprintf('--- Creating Aggregate Stations based on file Equations....\n');
+fprintf('      (for more details, generate DEBUG output)\n');
 % while loop reads file line by line
 while ischar(tline)
     % If line isn't empty and doesn't contain a comment then parse equation
     if ~contains(tline,'#') && ~isempty(tline)
-        fprintf('\n----Parsing Equation\n');
-        fprintf('----%s\n', tline);
+        fprintf('\n  Requested Equation: %s\n', tline);
         parts = strsplit(tline, ' '); % split line based on spaces Ex. A = B + C => [{A} {=} {B} {+} {C}]
         sizeparts = size(parts); % get size of split
         pass = true;
@@ -40,16 +41,16 @@ while ischar(tline)
             % Block will complete if desired Aggregate station name is
             % already taken
             EqReport = {}; % Stores parts of print line
-            fprintf("----Assigning Aggregate Station ID: %s....", char(parts{1}));
+            if INI.DEBUG fprintf("----Assigning Aggregate Station ID: %s....", char(parts{1})); end
             STATION = INI.mapCompSelected(char(parts{1}));
             % Reches here if new aggregate station name is already in
             % database
-            fprintf('failed. ID already used.\n');
+            if INI.DEBUG fprintf('failed. ID already used.\n'); end
             EqReport{1} = strcat(char(parts{1}), ' (not calculated)');
             pass = false;
         catch
             % Aggregate Station name isn't taken
-            fprintf('Success.\n');
+            if INI.DEBUG fprintf('Success.\n'); end
             EqReport{1} = char(parts{1});
             sumi = 2;
             stationflow = {}; %stores if station is discharge
@@ -87,7 +88,7 @@ while ischar(tline)
                         if mod(sumi,2) == modcheck
                             % Block completes if station found
                             try
-                                fprintf('----Checking Summand Station %s', char(parts{sumi}));
+                                if INI.DEBUG fprintf('----Checking Summand Station %s', char(parts{sumi})); end
                                 STATION = INI.mapCompSelected(char(parts{sumi}));
                                 tsize = size(STATION.TIMEVECTOR);
                                 daily = true;
@@ -107,13 +108,13 @@ while ischar(tline)
                                 stationsflow{stationi} = strcmpi(STATION.DATATYPE, 'discharge');
                                 if ~stationsflow{stationi}
                                     EqReport{sumi} = '';
-                                    fprintf('...Not Flow\n');
+                                    if INI.DEBUG fprintf('...Not Flow\n'); end
                                     if sumi ~= 3
                                         EqReport{sumi - 1} = '';
                                     end
                                 elseif ~stationsdaily{stationi}
                                     EqReport{sumi} = '';
-                                    fprintf('...Not Daily\n');
+                                    if INI.DEBUG fprintf('...Not Daily\n'); end
                                     if sumi ~= 3
                                         EqReport{sumi - 1} = '';
                                     end
@@ -123,12 +124,12 @@ while ischar(tline)
                                 DateMin = min(DateMin, STATION.TIMEVECTOR(1,1)); % checks if first date in time series is minimum
                                 DateMax = max(DateMax, STATION.TIMEVECTOR(end,1));% checks if last date in time series is maximum
                                 if stationsdaily{stationi} && stationsexist{stationi} && stationsflow{stationi}
-                                    fprintf('...OK\n');
+                                    if INI.DEBUG fprintf('...OK\n'); end
                                 end
                                 stationi = stationi + 1;
                             % station not found
                             catch
-                                fprintf('...Not found\n');
+                                if INI.DEBUG fprintf('...Not found\n'); end
                                 EqReport{sumi} = '';
                                 stationsdaily{stationi} = false; % boolean if daily
                                 stationsexist{stationi} = false; % boolean if found
@@ -143,7 +144,7 @@ while ischar(tline)
                 else
                     if mod(sumi,2) == modcheck
                         try
-                            fprintf('----Checking Summand Station %s', char(parts{sumi}));
+                            if INI.DEBUG fprintf('----Checking Summand Station %s', char(parts{sumi})); end
                             STATION = INI.mapCompSelected(char(parts{sumi}));
                             tsize = size(STATION.TIMEVECTOR);
                             daily = true;
@@ -162,13 +163,13 @@ while ischar(tline)
                             stationsflow{stationi} = strcmpi(STATION.DATATYPE, 'discharge');
                             if ~stationsflow{stationi}
                                 EqReport{sumi} = '';
-                                fprintf('...Not Flow\n');
+                                if INI.DEBUG fprintf('...Not Flow\n'); end
                                 if sumi ~= 3
                                     EqReport{sumi - 1} = '';
                                 end
                             elseif ~stationsdaily{stationi}
                                 EqReport{sumi} = '';
-                                fprintf('...Not Daily\n');
+                                if INI.DEBUG fprintf('...Not Daily\n'); end
                                 if sumi ~= 3
                                     EqReport{sumi - 1} = '';
                                 end
@@ -187,11 +188,11 @@ while ischar(tline)
                             DateMin = min(DateMin, STATION.TIMEVECTOR(1,1));
                             DateMax = max(DateMax, STATION.TIMEVECTOR(end,1));
                             if stationsdaily{stationi} && stationsexist{stationi} && stationsflow{stationi}
-                                fprintf('...OK\n');
+                                if INI.DEBUG fprintf('...OK\n'); end
                             end
                             stationi = stationi + 1;
                         catch
-                            fprintf('...Not found\n');
+                            if INI.DEBUG fprintf('...Not found\n'); end
                             EqReport{sumi - 1} = '';
                             EqReport{sumi} = '';
                             stationsdaily{stationi} = false; % boolean if daily
@@ -272,9 +273,10 @@ while ischar(tline)
                 reportmsg = strcat(reportmsg, " ", char(EqReport{emi}));
             end
         end
-        fprintf('----Final Equation: %s \n',reportmsg);
+        fprintf('      Final Equation: %s\n',reportmsg);
     end
     tline = fgetl(fid);
 end
+fprintf('\n\n')
 fclose(fid);
 end

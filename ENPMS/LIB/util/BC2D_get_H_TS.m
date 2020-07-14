@@ -15,7 +15,11 @@ for k = K
     A = INI.MAP_H_DATA(char(k));
     X(i) = A.X_UTM;
     Y(i) = A.Y_UTM;
-    H(i) = A.dHf(nTS);
+    if INI.USE_FOURIER_BC2D
+        H(i) = A.dHf(nTS);
+    else
+        H(i) = A.dHd(nTS);
+    end
     L{1,i} = k;
 end
 

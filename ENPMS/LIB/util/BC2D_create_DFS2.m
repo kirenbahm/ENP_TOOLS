@@ -29,7 +29,12 @@ NSTEPS = INI.NSTEPS;
 for i = 1:NSTEPS
     %print mark on each 100 step
     if (~mod(i,100))
-        t = datestr(datetime(INI.DATE_I,'InputFormat','dd/MM/yyyy') + hours(i - 1));
+        if strcmpi(INI.OLorSZ,'OL')
+            dt = hours(i - 1);
+        elseif strcmpi(INI.OLorSZ,'SZ')
+            dt = days(i - 1);
+        end
+        t = datestr(datetime(INI.DATE_I,'InputFormat','dd/MM/yyyy') + dt);
         fprintf(' ... Step: %s: %d/%d \n', char(t), i,NSTEPS);
     end
      
@@ -54,6 +59,7 @@ for i = 1:NSTEPS
     HI(N) = -1e-030;
     
     HH =HI';
+    
     file_dfs2.WriteItemTimeStepNext(0, NET.convertArray(single(HH(:)))); 
     
     

@@ -38,7 +38,7 @@ for i = 1:n
     t1 = date_v(I1); % selected time vector
     DT = diff(t1)*86400; % difference in seconds
     numdays = calc_DaysInYear(yy);
-    if sum(DT) > numdays * 86400 % Limit to 1 year in case missing data between last timestep in year and next available timestep
+    if sum(DT) > numdays * 86400 % Limit to 1 day in case missing data between last timestep in day and next available timestep
        DT(end) =  DT(end) - (sum(DT) - (numdays * 86400));
     end
     X = x(I1); % determine number of seconds per period
@@ -83,7 +83,7 @@ for i = 1:n
     end
     t1 = date_v(I1); % selected time vector
     DT = diff(t1)*86400; % difference in seconds
-    if sum(DT) > numdays * 86400 % Limit to 1 month in case missing data between last timestep in month and next available timestep
+    if sum(DT) > numdays * 86400 % Limit to 1 day in case missing data between last timestep in day and next available timestep
        DT(end) =  DT(end) - (sum(DT) - (numdays * 86400));
     end
     X = x(I1); % determine number of seconds per period

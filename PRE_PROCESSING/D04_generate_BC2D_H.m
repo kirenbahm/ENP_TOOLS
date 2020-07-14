@@ -13,6 +13,7 @@ function D04_generate_BC2D_H()
 % This 'SWITCH' is used to identify the time increment used on the imported DFS0 files either SZ (daily) or OL (hourly)
 INI.OLorSZ = 'SZ';
 %INI.OLorSZ = 'OL';
+INI.USE_FOURIER_BC2D = true; % Use Fourier for creating BC2D maps, otherwise use Julian Day Average
 
 % Input directories and files:
 
@@ -99,7 +100,7 @@ INI.CREATE_FIGURES = 0;
 % This approach provides relatively 
 
 INI.DATE_I = '1/1/1999'; 
-INI.DATE_E = '12/31/2018'; 
+INI.DATE_E = '12/31/2019'; 
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
@@ -125,8 +126,8 @@ INI.NY = -0.1743006671603;
 
 
 INI.cell = 1600;
-INI.nx = ceil((558000-INI.X0)/1600);
-INI.ny = ceil((2867500-INI.Y0)/1600);
+INI.nx = ceil((558000-INI.X0)/INI.cell);
+INI.ny = ceil((2867500-INI.Y0)/INI.cell);
 
 % mapshow(INI.SHPFILE1);
 % mapshow(INI.SHPFILE2);
@@ -141,6 +142,7 @@ INI.ny = ceil((2867500-INI.Y0)/1600);
 
 INI.MAP_STATIONS = containers.Map();
 
+% Going to read from master excel file
 BC2D_read_shape(INI); % (function input: INI.SHPFILE1,2,3,  output: INI.MAP_STATIONS)
 
 if SAVE_IN_MATLAB    
@@ -154,7 +156,8 @@ if SAVE_IN_MATLAB
      save(char(INI.H_STATIONS_MATLAB),'M','-v7.3');
      
      %save points in excel to convert to a shape file
-     BC2D_save_H_points(INI);
+     % Removing functionality
+     %BC2D_save_H_points(INI);
      
      %not needed
      %INI = add_anchor_points (INI); % Commented out due to author comment
@@ -184,4 +187,6 @@ end
 
 BC2D_plot_all(INI);
 
+fclose('all');
+fprintf('\n DONE \n\n');
 end

@@ -12,12 +12,12 @@ function D03_analysis_DFS0_H()
 % Location of dfs0 STAGE files 
 % -------------------------------------------------------------------------
 % use these for unit testing
-INI.DIR_INFILES          = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/STAGE/';
-INI.DIR_OUTFILES         = '../../ENP_TOOLS_Output/D03_analysis_DFS0_H_output/Obs_Data_Processed/STAGE/';
+%INI.DIR_INFILES          = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/STAGE/';
+%INI.DIR_OUTFILES         = '../../ENP_TOOLS_Output/D03_analysis_DFS0_H_output/Obs_Data_Processed/STAGE/';
 
 % use these for sequential testing
-%INI.DIR_INFILES         = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/STAGE/';
-%INI.DIR_OUTFILES        = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/STAGE/';
+INI.DIR_INFILES         = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/Stage/';
+INI.DIR_OUTFILES        = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/Stage/';
 
 % -------------------------------------------------------------------------
 % Set up directory structure (this shouldn't need changing)

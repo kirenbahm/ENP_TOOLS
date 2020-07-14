@@ -18,7 +18,12 @@ for i = 1:n
         % determine the file coordinates and make a structure
         C = strsplit(NAME,'.');
         % mapping is by site name
-        STATION = INI.MAP_STATIONS(char(C{1}));
+        try
+            STATION = INI.MAP_STATIONS(char(C{1}));
+        catch
+            fprintf('%s:  EXCEPTION in: %d/%d: Not in Domain\n', char(NAME), i, n);
+            continue;
+        end
         STATION.V_OBS = DFS0.V;
         if isfield(STATION,'DATUM')
             if strcmp(STATION.DATUM,'NAVD88')
@@ -27,7 +32,10 @@ for i = 1:n
                 else
                     fprintf('... WARNING: NO CONVERSION to NAVD88 %d/%d: %s \n', i, n, char(NAME));
                 end
+            elseif ~strcmp(STATION.DATUM,'NGVD29')
+                fprintf('... WARNING: Datum not NGVD29 or NAVD88 (NGVD29 assumed) %d/%d: %s \n', i, n, char(NAME));
             end
+            
         end
         STATION.TYPE = DFS0.TYPE;
         STATION.T = DFS0.T;

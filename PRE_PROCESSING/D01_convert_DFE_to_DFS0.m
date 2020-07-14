@@ -33,8 +33,8 @@ DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_
 % -------------------------------------------------------------------------
 % Location of input raw DFE measurement files (flow and stage in separate folders, one station per file)
 % -------------------------------------------------------------------------
-INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Raw/Flow/';
-INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Raw/Stage/';
+INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow/';
+INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
 
 % Suffix of raw DFE data files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';
@@ -44,8 +44,8 @@ INI.OBS_DFE_FILETYPE = '*.dat';
 % -------------------------------------------------------------------------
 
 % use these for unit testing
-%INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/FLOW/DFS0/';
-%INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/STAGE/DFS0/';
+% INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/FLOW/DFS0/';
+% INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/STAGE/DFS0/';
 
 % use these for sequential testing
 INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/Flow/DFS0/';

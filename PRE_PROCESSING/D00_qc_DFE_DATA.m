@@ -37,8 +37,8 @@ DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_
 % -------------------------------------------------------------------------
 % Location of input raw DFE measurement files (flow and stage in separate folders, one station per file)
 % -------------------------------------------------------------------------
-INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Raw/Flow/';
-INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Raw/Stage/';
+INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow/';
+INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
 
 % Suffix of raw DFE data files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';

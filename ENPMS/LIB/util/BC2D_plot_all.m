@@ -49,8 +49,8 @@ for K = KEYS
     TTS3.TimeInfo.Format = 'mmm-yyyy';
     plot(TTS3,'Linestyle', '-', 'Color', 'k', 'Marker','none');
     
-    tstart = datetime(1999,1,1); %%% THESE SHOULD NOT BE HARDCODED %%%
-    tend = datetime(2015,12,31); %%% THESE SHOULD NOT BE HARDCODED %%%
+    tstart = datetime(INI.DATE_I, 'InputFormat', 'MM/dd/yyyy');
+    tend = datetime(INI.DATE_E, 'InputFormat', 'MM/dd/yyyy');
     ax = gca;
     ax.XLim = [tstart tend];
     

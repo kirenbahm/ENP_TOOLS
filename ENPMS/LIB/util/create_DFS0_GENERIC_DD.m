@@ -43,18 +43,6 @@ if ~isempty(DATA.V)
    D = DATA.V;
    create1DFS0_G(INI,S,F,DT,TS,D,dfsDT);
 
-%    % BEGIN new stuff from Lago (originally applied to Q only, not H)
-%    [FP,FN,FE] = fileparts(char(F));
-%    TS_EQ = zeros(TS(end) - TS(1) + 1, 1);
-%    TS_EQ(1) = TS(1);
-%    D_EQ = zeros(TS(end) - TS(1) + 1, 1);
-%    D_EQ(1:end, 1) = -1e-35;
-%    for i=1:size(TS,1)
-%        D_EQ((TS(i) - TS(1)) + 1) = D(i);
-%    end
-%    create1DFS0_EQ(INI,S,[FP '/' FN '_EQ' FE],DT,TS_EQ,D_EQ,dfsDT,86400);
-%    % END new stuff from Lago (originally applied to Q only, not H)
-
 end
 
 end

@@ -99,8 +99,8 @@ INI.CREATE_FIGURES = 0;
 % the CDF to generate random values for points which are entirely missing.
 % This approach provides relatively 
 
-INI.DATE_I = '1/1/1999'; 
-INI.DATE_E = '12/31/2019'; 
+INI.DATE_I = '01/01/1999'; % Should be format MM/dd/yyyy
+INI.DATE_E = '12/31/2019'; % Should be format MM/dd/yyyy
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------

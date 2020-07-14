@@ -1,4 +1,8 @@
 function [DATA] = preproc_flag_DFE_file(myFILE, myFLAG, DFS0name, UseDfsFlags, DType_Flag, lowerRange, upperRange, constantPeriodLimit)
+% This function reads a dat file, and optionally a dfs0 file.
+% The funcions takes this information and writes a copy of the dat file
+% with data flags as well as outputs the values and flags to be written to
+% a 3-column dfs0 files.
 % Input:
 %    myFILE - Full file path of dat file to read
 %    myFLAG - Full file path of flagged dat file to write
@@ -251,9 +255,6 @@ for di = 1:dataSize(1)
             end
         end
         % If using dfs0 flags, and raw data matches, and DateTime matches
-        if di == 6527
-            bp = true;
-        end
         if UseDfsFlags && Measurements(di) == round(dfsData(dfsi, 2),4) && FIELD_TIME(di) == dfsTime(dfsi)
             if dfsData(dfsi, 3) == 1
                 FlagsNum(di) = 1; % flag as original

@@ -1,6 +1,6 @@
 function DFS0 = read_file_DFS0(FILE_NAME)
 
-fprintf('\n--- Reading M11 data file: %s\n',char(FILE_NAME));
+fprintf('--- Reading M11 data file: %s',char(FILE_NAME));
 
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
@@ -31,6 +31,6 @@ end
 % plot(A,DFS0.V);
 
 dfs0File.Close();
-fprintf('      done' );
+fprintf('      done\n' );
 
 end

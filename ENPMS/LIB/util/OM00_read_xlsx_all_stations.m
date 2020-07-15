@@ -30,8 +30,9 @@ for i = 1:n
     while k <= nR && ~found
         if strcmpi(STR_TEMP{1}, RAW(k,2)) && strcmpi(STR_TEMP{2}, RAW(k,3))
             found = true;
+        else
+            k = k + 1;
         end
-        k = k + 1;
     end
     % If in domain, read and add to structure
     if found

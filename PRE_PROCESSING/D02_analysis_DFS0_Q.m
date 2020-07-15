@@ -49,8 +49,6 @@ INI.MATLAB_SCRIPTS = '../ENPMS/';
 % Other options (0 = NO, 1 = YES)
 % -------------------------------------------------------------------------
 INI.DELETE_EXISTING_DFS0 = 1; 
-INI.INTERPOLATE_PERIOD = 3; 
-INI.EXTRAPOLATE_PERIOD = 1;
 % -------------------------------------------------------------------------
 % Location of blank figure
 % -------------------------------------------------------------------------

@@ -43,15 +43,5 @@ if ~isempty(DATA.V)
    D = DATA.V;
    create1DFS0_G(INI,S,F,DT,TS,D,dfsDT);
 end
-% if ~isempty(H.H_V)
-%     S = strcat(S,'_H');
-%     F = ['./',char(S),'.dfs0'];
-%     if (exist(F,'file') & INI.DELETE_EXISTING_DFS0), delete(F), end;
-%     T = 'Water Level';
-%     U = 'ft';
-%     TS = H.H_TIME;
-%     D = H.H_V;
-%     create1DFS0_H(INI,S, TS, D, F, dfsDT);
-% end
 
 end

@@ -1,5 +1,14 @@
 function D05_BC1D_Flow_Fill_Gaps()
 
+% -------------------------------------------------------------------------
+% Location of ENPMS library
+% -------------------------------------------------------------------------
+INI.MATLAB_SCRIPTS = '../ENPMS/';
+try
+    addpath(genpath(INI.MATLAB_SCRIPTS));
+catch
+    addpath(genpath(INI.MATLAB_SCRIPTS,0));
+end
 %% Import Startements
 dmi = NET.addAssembly('DHI.Mike.Install');
 if (~isempty(dmi))

@@ -30,10 +30,12 @@ for i = 1:n
                 if isnumeric(STATION.NAVD_CONV)
                     DFS0.V = DFS0.V - STATION.NAVD_CONV;
                 else
-                    fprintf('... WARNING: NO CONVERSION to NAVD88 %d/%d: %s \n', i, n, char(NAME));
+                    fprintf('... WARNING: NO CONVERSION to NAVD88 Excluding... \n');
+                    continue;
                 end
             elseif ~strcmp(STATION.DATUM,'NGVD29')
-                fprintf('... WARNING: Datum not NGVD29 or NAVD88 (NGVD29 assumed) %d/%d: %s \n', i, n, char(NAME));
+                fprintf('... WARNING: Datum not NGVD29 or NAVD88. Excluding... \n');
+                continue;
             end
             
         end

@@ -37,7 +37,7 @@ for i = 1:n
     % If in domain, read and add to structure
     if found
         
-        fprintf('... reading: %d/%d: %s \n', i, n, char(FILEPATH));
+        fprintf('\n... reading: %d/%d: %s \n', i, n, char(FILEPATH));
         % XLS Data
         STATION.STATION_NAME = RAW(k,1);
         STATION.TIMEVECTOR = [];

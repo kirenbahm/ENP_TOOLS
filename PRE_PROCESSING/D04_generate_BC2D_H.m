@@ -13,7 +13,7 @@ function D04_generate_BC2D_H()
 % This 'SWITCH' is used to identify the time increment used on the imported DFS0 files either SZ (daily) or OL (hourly)
 INI.OLorSZ = 'SZ';
 %INI.OLorSZ = 'OL';
-INI.USE_FOURIER_BC2D = true; % Use Fourier for creating BC2D maps, otherwise use Julian Day Average
+INI.USE_FOURIER_BC2D = false; % Use Fourier for creating BC2D maps, otherwise use Julian Day Average
 
 % Input directories and files:
 
@@ -29,7 +29,7 @@ end
 
 if strcmpi(INI.OLorSZ,'OL')
 	INI.DELT = 3600;
-	INI.DIR_DATA   = [INI.INPUT_DIR 'Obs_Data_Processed/STAGE_for_BC2D/DFS0HR/']; % use these for unit testing
+	INI.DIR_DATA             = [INI.STAGE_DIR 'DFS0HR/']; % use these for unit testing
 	INI.XLSX                 = [INI.BC2D_DIR 'H_POINTS_HR.xlsx'];     % output
 	INI.DFS2                 = [INI.BC2D_DIR 'BC2D_H_OL.dfs2'];       % output
 	INI.OL_H_MATLAB          = [INI.BC2D_DIR 'OL_H.MATLAB'];          % output
@@ -40,7 +40,7 @@ if strcmpi(INI.OLorSZ,'OL')
 	INI.H_STATIONS_MATLAB = INI.OL_H_STATIONS_MATLAB; % hack to get OL and SZ in same script. fix later.
 elseif strcmpi(INI.OLorSZ,'SZ')
 	INI.DELT = 86400;
-	INI.DIR_DATA   = [INI.INPUT_DIR 'Obs_Data_Processed/STAGE_for_BC2D/DFS0DD/']; % use these for unit testing
+	INI.DIR_DATA             = [INI.STAGE_DIR 'DFS0DD/']; % use these for unit testing
 	INI.XLSX                 = [INI.BC2D_DIR 'H_POINTS_DD.xlsx'];     % output
 	INI.DFS2                 = [INI.BC2D_DIR 'BC2D_H_SZ.dfs2'];       % output
 	INI.SZ_H_MATLAB          = [INI.BC2D_DIR 'SZ_H.MATLAB'];          % output
@@ -99,8 +99,8 @@ INI.CREATE_FIGURES = 0;
 % the CDF to generate random values for points which are entirely missing.
 % This approach provides relatively 
 
-INI.DATE_I = '01/01/1999'; % Should be format MM/dd/yyyy
-INI.DATE_E = '12/31/2019'; % Should be format MM/dd/yyyy
+INI.DATE_I = '01/01/2000'; % Should be format MM/dd/yyyy
+INI.DATE_E = '12/31/2001'; % Should be format MM/dd/yyyy
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------

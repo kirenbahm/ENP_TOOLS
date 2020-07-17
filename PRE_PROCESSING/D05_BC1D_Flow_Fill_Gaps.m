@@ -9,7 +9,9 @@ try
 catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
-%% Import Startements
+% -------------------------------------------------------------------------
+% Import Startements
+% -------------------------------------------------------------------------
 dmi = NET.addAssembly('DHI.Mike.Install');
 if (~isempty(dmi))
     DHI.Mike.Install.MikeImport.SetupLatest({DHI.Mike.Install.MikeProducts.MikeCore});
@@ -31,13 +33,13 @@ eval('import DHI.Generic.MikeZero.*');
 % -------------------------------------------------------------------------
 
 % Input Output Directories
-INI.OBS_FLOW_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/DFS0/';
+INI.OBS_FLOW_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/DFS0/';
 INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output_Sequential/D05_BC1D_Flow_Fill_Gaps_output/';
 INI.OBS_DFE_FILETYPE = '*.dfs0';
 
 % Model Simulation Period
 INI.START_DATE = '01/01/1999 00:00';
-INI.END_DATE   = '12/31/2010 00:00';
+INI.END_DATE   = '12/31/2030 00:00';
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
@@ -66,24 +68,30 @@ for i = 1:n
         FOLDER = s.folder; % get folder name
         FILE_NAME = [FOLDER '\' NAME];
         myFILE = char(FILE_NAME);
+        % Open dfs0 file and copy metadata for new file
         dfs0File  = DfsFileFactory.DfsGenericOpen(myFILE);
+        FileTitle = dfs0File.FileInfo.FileTitle;
+        station_name = dfs0File.ItemInfo.Item(0).Name;
         dfsDoubleOrFloat = dfs0File.ItemInfo.Item(0).DataType;
+        ProjWktString = dfs0File.FileInfo.Projection.WKTString;
+        ProjLong = dfs0File.FileInfo.Projection.Longitude;
+        ProjLat = dfs0File.FileInfo.Projection.Latitude;
+        ProjOri = dfs0File.FileInfo.Projection.Orientation;
         utmXmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateX;
         utmYmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateY;
         elev_ngvd29_ft = dfs0File.ItemInfo.Item(0).ReferenceCoordinateZ;
+        % Read Time Series flow values
         dd = double(Dfs0Util.ReadDfs0DataDouble(dfs0File));
-        
+        % Read Start datetime
         yy = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Year);
         mo = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Month);
         da = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Day);
         hh = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Hour);
         mi = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Minute);
         se = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Second);
-        
+        % Create array of time step values 
         START_TIME = datenum(yy,mo,da,hh,mi,se);
-        
         DFS0.T = datenum(dd(:,1))/86400 + START_TIME;
-        %DFS0.TSTR = datestr(DFS0.T); not needed, slow
         DFS0.V = dd(:,2:end);
         
         for i = 0:dfs0File.ItemInfo.Count - 1
@@ -97,22 +105,23 @@ for i = 1:n
         % second remove the data vector elements
         DFS0.V(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
         
-        % plot(DFS0.T,DFS0.V)
-        % A = datestr(DFS0.T);
-        % plot(A,DFS0.V);
-        
         dfs0File.Close();
         
+        % initialize new time series arrays at minimum size
         measurements = zeros(size(DFS0.V, 1), 1);
         time_vector = zeros(size(DFS0.V, 1), 1);
         DFSi = 1;
         newi = 1;
+        % Loop through dfs0 data. 
         while DFSi <= size(DFS0.V, 1)
             if DFSi > 1
+                % if period between time steps is more than a day, create
+                % new time step with flow of zero
                 if DFS0.T(DFSi) - time_vector(newi - 1, 1) > 1
                     measurements(newi, 1) = 0;
                     time_vector(newi, 1) = floor(time_vector(newi - 1)) + 1;
                     newi = newi + 1;
+                % otherwise use current value
                 else
                     
                     measurements(newi, 1) = DFS0.V(DFSi, 1);
@@ -121,10 +130,15 @@ for i = 1:n
                     DFSi = DFSi + 1;
                 end
             else
+                % If first time step is after simulation start create a new
+                % time step at simulation start with zero flow
                 if DFS0.T(DFSi, 1) > INI.START_DATE_NUM && time_vector(1, 1) ~= INI.START_DATE_NUM
                     measurements(newi, 1) = 0;
                     time_vector(newi, 1) = INI.START_DATE_NUM;
                     newi = newi + 1;
+                    % If first time step is also not zero, then add azero
+                    % flow time step the day before first time step from
+                    % dfs0
                     if DFS0.V(DFSi, 1) ~= 0
                         measurements(newi, 1) = 0;
                         if mod(DFS0.T(DFSi, 1), 1) > 0
@@ -134,6 +148,7 @@ for i = 1:n
                         end
                         newi = newi + 1;
                     end
+                % otherwise use current value
                 else
                     measurements(newi, 1) = DFS0.V(DFSi, 1);
                     time_vector(newi, 1) = DFS0.T(DFSi, 1);
@@ -142,7 +157,10 @@ for i = 1:n
                 end
             end
         end
+        %If last time from dfs0 is before simulation end date step
         if DFS0.T(end, 1) < INI.END_DATE_NUM
+            %if last vlaue is non zero, add a zero flow time step the day
+            %after
             if DFS0.V(end, 1) ~= 0
                 measurements(newi, 1) = 0;
                 if mod(DFS0.T(end, 1), 1) > 0
@@ -152,46 +170,41 @@ for i = 1:n
                 end
                 newi = newi + 1;
             end
+            % Then add a time step at end simulation date
             measurements(newi, 1) = 0;
             time_vector(newi, 1) = INI.END_DATE_NUM;
         end
-        
-        NameSplit = strsplit(NAME, '_');
-        station_name = NameSplit{2};
-        
+        % create output dfs0
         factory = DfsFactory();
-        builder = DfsBuilder.Create(char(station_name),'Matlab DFS',0);
-        
+        builder = DfsBuilder.Create(char(FileTitle),'Matlab DFS',0);
+        %save projection and file metadata 
         T = datevec(time_vector(1));
         builder.SetDataType(0);
         builder.DeleteValueDouble = -1e-35;
-        builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin('UTM-17',12,54,2.6));
+        builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin(ProjWktString,ProjLong,ProjLat,ProjOri));
         builder.SetTemporalAxis(factory.CreateTemporalNonEqCalendarAxis...
             (eumUnit.eumUsec,System.DateTime(T(1),T(2),T(3),T(4),T(5),T(6))));
         
         % Add an Item
         item1 = builder.CreateDynamicItemBuilder();
         
-        % if statement that translates the Data Type Flag 'DType_Flag' into the
-        % appropriate DHI required inputs for DFS0 creation. This will ned to be
-        % expanded upon as new datatypes and DType_Flags are added.
-        myStationName = char([station_name '_Q']);
+        %save item metadata
+        myStationName = char([station_name]);
         item1.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
             (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDoubleOrFloat);
-        
         item1.SetValueType(DataValueType.Instantaneous);
         item1.SetAxis(factory.CreateAxisEqD0());
         item1.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
         builder.AddDynamicItem(item1.GetDynamicItemInfo());
         
-        dfs0FileName = strcat(INI.OBS_FLOW_OUT_DIR, "BC_", myStationName, ".dfs0");
+        dfs0FileName = strcat(INI.OBS_FLOW_OUT_DIR, NAME);
         if exist(dfs0FileName,'file')
             delete(dfs0FileName)
         end
         builder.CreateFile(dfs0FileName);
         
         dfs = builder.GetFile();
-        % Add  data in the file
+        % Add data in the file
         tic
         % Write to file using the MatlabDfsUtil
         MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((time_vector-time_vector(1))*86400), ...

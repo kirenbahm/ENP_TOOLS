@@ -50,17 +50,17 @@ try
         % (if the hour is 24:00 or above, it will not process correctly and
         % might error)
         myTimes1 = datenum(datetime(fileData{3},'Inputformat','yyyy-MM-dd HH:mm'));
-        fprintf(' myTimes1 successful ');
+        %fprintf(' myTimes1 successful ');
     catch
-        fprintf(' myTimes1 failed ');
+        %fprintf(' myTimes1 failed ');
         myTimes1 = 0;
     end
     
     try
         myTimes2 = datenum(datetime(fileData{3},'Inputformat','yyyy-MM-dd'' null'));
-        fprintf(' myTimes2 successful ');
+        %fprintf(' myTimes2 successful ');
     catch
-        fprintf(' myTimes2 failed ');
+        %fprintf(' myTimes2 failed ');
         myTimes2 = 0;
     end
 catch

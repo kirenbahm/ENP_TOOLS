@@ -1,6 +1,6 @@
 function DFS0 = read_file_DFS0(FILE_NAME)
 
-fprintf('--- Reading M11 data file: %s',char(FILE_NAME));
+fprintf('--- Reading data file: %s',char(FILE_NAME));
 
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
@@ -22,9 +22,12 @@ DFS0.T = datenum(dd(:,1))/86400 + START_TIME;
 DFS0.V = dd(:,2:end);
 
 for i = 0:dfs0File.ItemInfo.Count - 1
-    DFS0.TYPE(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.ItemDescription)};
-    DFS0.UNIT(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.UnitAbbreviation)};
-    DFS0.NAME(i+1) = {char(dfs0File.ItemInfo.Item(i).Name)};
+    DFS0.NAME(i+1)           = {char(dfs0File.ItemInfo.Item(i).Name)};
+    DFS0.TYPE(i+1)           = {char(dfs0File.ItemInfo.Item(i).Quantity.ItemDescription)};
+    DFS0.UNIT(i+1)           = {char(dfs0File.ItemInfo.Item(i).Quantity.UnitAbbreviation)};
+    DFS0.X_UTM_METERS(i+1)   = dfs0File.ItemInfo.Item(i).ReferenceCoordinateX;
+    DFS0.Y_UTM_METERS(i+1)   = dfs0File.ItemInfo.Item(i).ReferenceCoordinateY;
+    DFS0.ELEV_FT_NGVD29(i+1) = dfs0File.ItemInfo.Item(i).ReferenceCoordinateZ;
 end
 % plot(DFS0.T,DFS0.V)
 % A = datestr(DFS0.T);

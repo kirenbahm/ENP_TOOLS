@@ -28,28 +28,23 @@ function D01_convert_DFE_to_DFS0()
 % -------------------------------------------------------------------------
 
 % Location of input station metadata file (this is the DFE station table)
-DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
+DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table_20200715.txt';
 
 % -------------------------------------------------------------------------
-% Location of input raw DFE measurement files (flow and stage in separate folders, one station per file)
+% Location of input QC'd DFE measurement files (flow and stage in separate folders, one station per file)
 % -------------------------------------------------------------------------
-INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow/';
-INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
+INI.OBS_FLOW_DFE_DIR  = '../../ENP_TOOLS_Output/Obs_Data_Final/Flow/';
+INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Output/Obs_Data_Final/Stage/';
 
-% Suffix of raw DFE data files (used to generate a list of files to process)
+% Suffix of QC'd DFE measurement files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';
 
 % -------------------------------------------------------------------------
 % Location of dfs0 output files (each datatype needs a separate folder)
 % -------------------------------------------------------------------------
 
-% use these for unit testing
-% INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/FLOW/DFS0/';
-% INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/STAGE/DFS0/';
-
-% use these for sequential testing
-INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/Flow/DFS0/';
-INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/Stage/DFS0/';
+INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/DFS0/';
+INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Stage/DFS0/';
 
 % -------------------------------------------------------------------------
 % Location of ENPMS library

@@ -22,7 +22,7 @@ INI.GIS        = [INI.INPUT_DIR 'Obs_Data_Processed/BC2D_GIS/']; % use these for
 INI.STAGE_DIR  = [INI.INPUT_DIR 'Obs_Data_Processed/STAGE_for_BC2D/']; % use these for unit testing
 
 % Output directory and file:
-INI.BC2D_DIR   = '../../ENP_TOOLS_Output/D04_generate_BC2D_H/Obs_Data_Processed/BC2D/'; % use these for unit testing
+INI.BC2D_DIR   = '../../ENP_TOOLS_Output/BC2D/out'; % use these for unit testing
 if ~exist(INI.BC2D_DIR, 'dir')
    mkdir(INI.BC2D_DIR)
 end

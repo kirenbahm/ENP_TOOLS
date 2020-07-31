@@ -33,9 +33,10 @@ eval('import DHI.Generic.MikeZero.*');
 % -------------------------------------------------------------------------
 
 % Input Output Directories
-INI.OBS_FLOW_DFE_DIR = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/DFS0/';
-INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output_Sequential/D05_BC1D_Flow_Fill_Gaps_output/';
-INI.OBS_DFE_FILETYPE = '*.dfs0';
+INI.OBS_FLOW_IN_DIR = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/DFS0/';
+INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Data_BC1D/';
+
+INI.OBS_FILETYPE = '*.dfs0';
 
 % Model Simulation Period
 INI.START_DATE = '01/01/1999 00:00';
@@ -51,11 +52,11 @@ INI.START_DATE_NUM = datenum(datetime(INI.START_DATE,'Inputformat','MM/dd/yyyy H
 INI.END_DATE_NUM = datenum(datetime(INI.END_DATE,'Inputformat','MM/dd/yyyy HH:mm'));
 
 % If input directory doesn't exist end
-if ~exist(INI.OBS_FLOW_DFE_DIR, 'dir')
+if ~exist(INI.OBS_FLOW_IN_DIR, 'dir')
     fprintf('No directory found');
     return
 end
-FILE_FILTER = [INI.OBS_FLOW_DFE_DIR INI.OBS_DFE_FILETYPE]; % list only files with extension *.dfs0
+FILE_FILTER = [INI.OBS_FLOW_IN_DIR INI.OBS_FILETYPE]; % list only files with extension *.dfs0
 LISTING  = dir(char(FILE_FILTER));
 
 n = length(LISTING);

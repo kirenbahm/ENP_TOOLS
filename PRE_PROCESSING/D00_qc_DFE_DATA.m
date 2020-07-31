@@ -32,13 +32,13 @@ function D00_qc_DFE_DATA()
 % -------------------------------------------------------------------------
 
 % Location of input station metadata file (this is the DFE station table)
-DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
+DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table_20200715.txt';
 
 % -------------------------------------------------------------------------
 % Location of input raw DFE measurement files (flow and stage in separate folders, one station per file)
 % -------------------------------------------------------------------------
-INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow/';
-INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
+INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Raw/Flow/';
+INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Raw/Stage/';
 
 % Suffix of raw DFE data files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';
@@ -49,14 +49,14 @@ INI.OBS_DFE_FILETYPE = '*.dat';
 %  (When INI.USE_DFS0_FLAGS = 0, these files will be created)
 %  (When INI.USE_DFS0_FLAGS = 1, these files will read and then overwritten)
 % -------------------------------------------------------------------------
-INI.DIR_FLOW_DFS0  = '../../ENP_TOOLS_Output_Sequential/Obs_Data_QC_files/Flow/';
-INI.DIR_STAGE_DFS0 = '../../ENP_TOOLS_Output_Sequential/Obs_Data_QC_files/Stage/';
+INI.DIR_FLOW_DFS0  = '../../ENP_TOOLS_Output/Obs_Data_QC/Flow/';
+INI.DIR_STAGE_DFS0 = '../../ENP_TOOLS_Output/Obs_Data_QC/Stage/';
 
 % -------------------------------------------------------------------------
 % Location of ascii output files (each datatype needs a separate folder)
 % -------------------------------------------------------------------------
-INI.OBS_FLOW_FLAG_DIR  = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/Flow/';
-INI.OBS_STAGE_FLAG_DIR = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/Stage/';
+INI.OBS_FLOW_FLAG_DIR  = '../../ENP_TOOLS_Output/Obs_Data_Final/Flow/';
+INI.OBS_STAGE_FLAG_DIR = '../../ENP_TOOLS_Output/Obs_Data_Final/Stage/';
 
 % -------------------------------------------------------------------------
 % Settings used to determine which values will be flagged

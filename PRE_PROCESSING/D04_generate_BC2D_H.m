@@ -1,5 +1,11 @@
 function D04_generate_BC2D_H()
 
+% This function requires artificial stations far away enough in
+% order to cover the entire area. The artificial stations can be developed
+% as the average of several stations (or based on statistical analysis of a
+% group of files. 
+
+
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 % BEGIN USER INPUT
@@ -13,21 +19,73 @@ function D04_generate_BC2D_H()
 % This 'SWITCH' is used to identify the time increment used on the imported DFS0 files either SZ (daily) or OL (hourly)
 INI.OLorSZ = 'SZ';
 %INI.OLorSZ = 'OL';
+
+% Input directory:
+INI.STAGE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_BC2D/';
+
+
 % Use Fourier for creating BC2D maps, otherwise use Julian Day Average
 INI.USE_FOURIER_BC2D = false; 
 
-% Input directories and files:
+% Output directory:
+INI.BC2D_DIR   = '../../ENP_TOOLS_Output/BC2D-Julian/'; 
+%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/BC2D-Fourier/'; 
+
+
+% Location of ENPMS Scripts
+INI.MATLAB_SCRIPTS = '../ENPMS/';
+
+% -------------------------------------------------------------------------
+% Settings and options
+% -------------------------------------------------------------------------
+
+INI.DATE_I = '01/01/2000'; % Should be format MM/dd/yyyy
+INI.DATE_E = '12/31/2001'; % Should be format MM/dd/yyyy
+
+% Save in MATLAB format? (0 = FALSE, 1 = TRUE)
+SAVE_IN_MATLAB = 1;                                 % to save the H data and the ALL_STATIONS data
+
+% Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
+INI.DELETE_EXISTING_DFS0 = 1;
+
 
 INI.INPUT_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/'; % use these for unit testing
 INI.GIS        = [INI.INPUT_DIR 'Obs_Data_Processed/BC2D_GIS/']; % use these for unit testing
-INI.STAGE_DIR  = [INI.INPUT_DIR 'Obs_Data_Processed/STAGE_for_BC2D/']; % use these for unit testing
 
 % Create figures of just timeseries interpolation results? (0 = NO, 1 = YES)
 % (Currently works with Fourier method only)
 INI.CREATE_RESIDUALS_FIGURES = 0;
 
-% Output directory and file:
-INI.BC2D_DIR   = '../../ENP_TOOLS_Output/BC2D/out'; % use these for unit testing
+% -------------------------------------------------------------------------
+% Grid info
+% -------------------------------------------------------------------------
+% *****  OLD VALUES  ******
+% INI.X0 = 458400;
+% INI.Y0 = 2777500;
+% INI.LON= -81.412625;
+% INI.LAT = 25.112786;
+% INI.NY = -0.1742935;
+% *****  OLD VALUES  ******
+
+% *****  NEW VALUES  ******
+INI.X0 = 458600;
+INI.Y0 = 2777800;
+INI.LON= -81.41065021250006;
+INI.LAT = 25.11550027870545;
+INI.NY = -0.1743006671603;
+% *****  NEW VALUES  ******
+
+
+INI.cell = 1600;
+INI.nx = ceil((558000-INI.X0)/INI.cell);
+INI.ny = ceil((2867500-INI.Y0)/INI.cell);
+
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% END USER INPUT
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+
 % Create output directory if it doesn't already exist
 if ~exist(INI.BC2D_DIR, 'dir')
    mkdir(INI.BC2D_DIR)
@@ -75,8 +133,6 @@ INI.NSTEPS_FILE = [INI.BC2D_DIR 'NSTEPS.MATLAB'];
 % -------------------------------------------------------------------------
 % SETUP Location of ENPMS Scripts and Initialize
 % -------------------------------------------------------------------------
-INI.MATLAB_SCRIPTS = '../ENPMS/';
-
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
 catch
@@ -86,61 +142,6 @@ end
 %Initialize .NET libraries
 INI = initializeLIB(INI);
 
-% -------------------------------------------------------------------------
-% Settings and options
-% -------------------------------------------------------------------------
-
-% Save in MATLAB format? (0 = FALSE, 1 = TRUE)
-SAVE_IN_MATLAB = 1;                                 % to save the H data and the ALL_STATIONS data
-
-% Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
-INI.DELETE_EXISTING_DFS0 = 1;
-
-INI.CREATE_FIGURES = 0;
-
-% This function requires a directory where dfs0 are stored and a list of
-% coordinates which will be used to generate the groundwater map. In
-% additon, the function requires artificial stations far away enough in
-% order to cover the entire area. The artificial stations can be developed
-% as the average of several stations (or based on statistical analysis of a
-% group of files. 
-
-% the function develops OL and SZ water levels for the period between
-% 1965-2015. The missing water levels are constructed by grouping selected
-% stations, analyzing the probability density function on a monthly basis,
-% determining the parameters of the theoretical fit of the CDF and using
-% the CDF to generate random values for points which are entirely missing.
-% This approach provides relatively 
-
-INI.DATE_I = '01/01/2000'; % Should be format MM/dd/yyyy
-INI.DATE_E = '12/31/2001'; % Should be format MM/dd/yyyy
-
-% -------------------------------------------------------------------------
-% -------------------------------------------------------------------------
-% END USER INPUT
-% -------------------------------------------------------------------------
-% -------------------------------------------------------------------------
-
-% *****  OLD VALUES  ******
-% INI.X0 = 458400;
-% INI.Y0 = 2777500;
-% INI.LON= -81.412625;
-% INI.LAT = 25.112786;
-% INI.NY = -0.1742935;
-% *****  OLD VALUES  ******
-
-% *****  NEW VALUES  ******
-INI.X0 = 458600;
-INI.Y0 = 2777800;
-INI.LON= -81.41065021250006;
-INI.LAT = 25.11550027870545;
-INI.NY = -0.1743006671603;
-% *****  NEW VALUES  ******
-
-
-INI.cell = 1600;
-INI.nx = ceil((558000-INI.X0)/INI.cell);
-INI.ny = ceil((2867500-INI.Y0)/INI.cell);
 
 INI.MAP_STATIONS = containers.Map();
 

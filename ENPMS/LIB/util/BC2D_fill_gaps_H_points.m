@@ -38,14 +38,11 @@ for k = K
 %%%%    ST = BC2D_fit_gaps_ave_day(ST,INI.CREATE_FIGURES);     
     ST = BC2D_fit_gaps_ave_day(ST);     
     
+    % function to perform Fourier gap filling
     Min_fourier = 18;
     if Min_fourier <= length(~isnan(ST.V))
-%%%%        ST = BC2D_fit_gaps_ave_fourier(ST,INI,INI.OLorSZ);
-        FIG_DIR = [INI.BC2D_DIR 'FIGS/'];
-         if ~exist(FIG_DIR, 'dir')
-            mkdir(FIG_DIR)
-         end
-        ST = BC2D_fit_gaps_ave_fourier(INI,ST,FIG_DIR);
+        FIG_DIR_RESIDUALS = [INI.BC2D_DIR 'FIGURES-residuals/'];
+        ST = BC2D_fit_gaps_ave_fourier(INI,ST,FIG_DIR_RESIDUALS);
     else
        fprintf('Station: %s has fewer than 18 valid measurements. Fourier gap fitting was not performed.\n', char(STATION_NAME));
     end

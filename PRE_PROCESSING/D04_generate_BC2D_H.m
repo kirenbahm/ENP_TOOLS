@@ -13,7 +13,8 @@ function D04_generate_BC2D_H()
 % This 'SWITCH' is used to identify the time increment used on the imported DFS0 files either SZ (daily) or OL (hourly)
 INI.OLorSZ = 'SZ';
 %INI.OLorSZ = 'OL';
-INI.USE_FOURIER_BC2D = false; % Use Fourier for creating BC2D maps, otherwise use Julian Day Average
+% Use Fourier for creating BC2D maps, otherwise use Julian Day Average
+INI.USE_FOURIER_BC2D = false; 
 
 % Input directories and files:
 
@@ -21,8 +22,13 @@ INI.INPUT_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/'; % use these for unit
 INI.GIS        = [INI.INPUT_DIR 'Obs_Data_Processed/BC2D_GIS/']; % use these for unit testing
 INI.STAGE_DIR  = [INI.INPUT_DIR 'Obs_Data_Processed/STAGE_for_BC2D/']; % use these for unit testing
 
+% Create figures of just timeseries interpolation results? (0 = NO, 1 = YES)
+% (Currently works with Fourier method only)
+INI.CREATE_RESIDUALS_FIGURES = 0;
+
 % Output directory and file:
 INI.BC2D_DIR   = '../../ENP_TOOLS_Output/BC2D/out'; % use these for unit testing
+% Create output directory if it doesn't already exist
 if ~exist(INI.BC2D_DIR, 'dir')
    mkdir(INI.BC2D_DIR)
 end
@@ -53,12 +59,19 @@ else
     fprintf('\n\n ERROR:  SWITCH not recognized as OL or SZ - problems may arise...\n\n');
 end
 
+% Check if required input FOLDERS exist
+DirExist = exist(INI.DIR_DATA,'file') == 7;
+if(~DirExist)
+  fprintf('\nERROR: input directory was not found at %s.\n\n',char(INI.DIR_DATA));
+end
+
 INI.SHP_DOMAIN = [INI.GIS 'M06_DOMAIN_SF.shp'];              % input
 INI.SHPFILE1   = [INI.GIS 'ALL_STATIONS_SOUTH_FLORIDA.shp']; % input
 INI.SHPFILE2   = [INI.GIS 'ALL_STATIONS.shp'];               % input
 INI.SHPFILE3   = [INI.GIS 'ALL_STATIONS_061217.shp'];        % input
 
 INI.NSTEPS_FILE = [INI.BC2D_DIR 'NSTEPS.MATLAB'];
+
 % -------------------------------------------------------------------------
 % SETUP Location of ENPMS Scripts and Initialize
 % -------------------------------------------------------------------------
@@ -129,17 +142,6 @@ INI.cell = 1600;
 INI.nx = ceil((558000-INI.X0)/INI.cell);
 INI.ny = ceil((2867500-INI.Y0)/INI.cell);
 
-% mapshow(INI.SHPFILE1);
-% mapshow(INI.SHPFILE2);
-% mapshow(INI.SHP_DOMAIN);
-
-% 1   2   3   4   5   6  7  8  9  10 11  12  13 14 15
-%str str str str str %f %f str %f %f str str %d	%f str
-%'%s %s %s %s %s %f32 %f32 %s %f32 %f32 %s %s %d8 %f32 %s'
-
-%read station information in the current directory
-%FNDB = strcat('STATION_DATA','.MATLAB');
-
 INI.MAP_STATIONS = containers.Map();
 
 % Going to read from master excel file
@@ -155,14 +157,6 @@ if SAVE_IN_MATLAB
      M = INI.MAP_STATIONS;
      save(char(INI.H_STATIONS_MATLAB),'M','-v7.3');
      
-     %save points in excel to convert to a shape file
-     % Removing functionality
-     %BC2D_save_H_points(INI);
-     
-     %not needed
-     %INI = add_anchor_points (INI); % Commented out due to author comment
-     %on being unnecessary
- 
      % fill missing daily points using different methods
      INI = BC2D_fill_gaps_H_points(INI);
      M = INI.MAP_H_DATA;

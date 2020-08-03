@@ -45,25 +45,26 @@ numStations = length(ST_file_data{1});
 % create an empty structure to save station data
 STATION = struct(...
    'NAME',cell(1,numStations),...
+   'elev_ngvd29_ft',cell(1,numStations),...
    'LAT',cell(1,numStations),...
    'LONG',cell(1,numStations),...
-   'X',cell(1,numStations),...
-   'Y',cell(1,numStations),...
-   'DATUM',cell(1,numStations),...
-   'ELEVATION',cell(1,numStations),...
-   'CONV',cell(1,numStations));
+   'utmXmeters',cell(1,numStations),...
+   'utmYmeters',cell(1,numStations),...
+   'DFE_DATUM',cell(1,numStations),...
+   'DFE_DATUM_CONV_FT',cell(1,numStations));
+
+% create empty container to store station data
+MAP_STATIONS = containers.Map();
 
 % save data into STATION structure
 stnName = upper(ST_file_data{1}); % convert all station names to UPPERCASE
-elev_ngvd29_ft = ST_file_data{5};
+elev_ft = ST_file_data{5};
 lat = ST_file_data{6};
 long = ST_file_data{7};
-datum = ST_file_data{8};
-NGVD_conversion = ST_file_data{14};
+dfe_datum = ST_file_data{8};
+NGVD_conversion_ft = ST_file_data{14};
 
-% Empty cell check
-emptyCONV=arrayfun(@isnan,NGVD_conversion);
-
+% Process lat-long coordinates - derive UTM coordinates from lat-long
 % convert NAD83 Lat and Long value to UTM, Zone 17
 utm_input = [lat, long];
 [utmXmeters, utmYmeters,utmZone] = ll2utm(utm_input); %converts LAT,LON (in degrees) to UTM X and Y (in meters). Datum is hardcoded to NAD83
@@ -73,8 +74,9 @@ if utmZone ~= 17
    fprintf('\n *** Error with UTM calculation - lat lon not found or UTM Zone is not 17 for station %s*** \n', stnName);
 end
 
-% create empty container to store station data
-MAP_STATIONS = containers.Map();
+% Create array which flags stations with no datum conversion values (Empty
+% cell check)
+emptyCONV=arrayfun(@isnan,NGVD_conversion_ft);
 
 % iterate through the ST_file_data station data array,
 % put station data in a structure called STATION,
@@ -83,11 +85,11 @@ for i = 1:numStations
    
    % convert NAVD88 ground surface elevation to NGVD29
    % if no elevation or no datum is found, set elevation to nan
-   if strcmpi(datum(i), 'NGVD29')
-      % No changes required to elevation data
-   elseif strcmpi(datum(i), 'NAVD88') && emptyCONV(i)==0
-      datum{i} = 'NGVD29';
-      elev_ngvd29_ft(i) = elev_ngvd29_ft(i) + NGVD_conversion(i);
+   if strcmpi(dfe_datum(i), 'NGVD29')
+      elev_ngvd29_ft(i) = elev_ft(i);
+   elseif strcmpi(dfe_datum(i), 'NAVD88') && emptyCONV(i)==0 && NGVD_conversion_ft(i)~=0.0
+      %dfe_datum{i} = 'NGVD29';
+      elev_ngvd29_ft(i) = elev_ft(i) + NGVD_conversion_ft(i);
    else
       elev_ngvd29_ft(i) = nan;
    end
@@ -98,9 +100,9 @@ for i = 1:numStations
    STATION(i).LONG = long(i);
    STATION(i).utmXmeters = utmXmeters(i);
    STATION(i).utmYmeters = utmYmeters(i);
-   % STATION(i).DATUM = datum(i);                  % (not used) NGVD29 or Empty
-   STATION(i).ELEV_NGVD29_FT = elev_ngvd29_ft(i);  % ground surface elevation in NGVD29
-   % STATION(i).CONV = NGVD_conversion(i);         % (not used) conversion factor to NGVD29 from NAVD88. NGVD29 = NAVD88 + CONVERSION(negative values)
+   STATION(i).elev_ngvd29_ft = elev_ngvd29_ft(i);        % ground surface elevation in NGVD29
+   STATION(i).DFE_DATUM = dfe_datum(i);                  % Datum listed for station
+   STATION(i).DFE_DATUM_CONV_FT = NGVD_conversion_ft(i); % conversion factor to NGVD29 from NAVD88. NGVD29 = NAVD88 + CONVERSION(negative values)
    
    % add STATION structure to MAP_STATIONS container (with name as key)
    MAP_STATIONS(char(stnName(i))) = STATION(i);

@@ -50,7 +50,7 @@ if ~isempty(DATA.MEASUREMENTS)
     
     utmXmeters = MAP_STATIONS(station_name).utmXmeters;
     utmYmeters = MAP_STATIONS(station_name).utmYmeters;
-    elev_ngvd29_ft = MAP_STATIONS(station_name).ELEV_NGVD29_FT;
+    elev_ngvd29_ft = MAP_STATIONS(station_name).elev_ngvd29_ft;
 %     X = MAP_STATIONS(S{1}).X;
 %     Y = MAP_STATIONS(S{1}).Y;
 %     Z = MAP_STATIONS(S{1}).ELEVATION;    

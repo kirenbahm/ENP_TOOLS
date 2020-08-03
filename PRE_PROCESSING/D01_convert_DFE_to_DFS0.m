@@ -86,7 +86,6 @@ MAP_STATIONS = S00_load_DFE_STNLOC(DFE_STATION_DATA_FILE);
 
 % iterate over input file datatype directories with DFE *.dat files:
 for DType_Flag = {'Water Level','Discharge'} % Water Level must be in feet, Discharge must be in cfs (hardcoded in D05_publish_DFS0.m)
-%for DType_Flag = {'Discharge','Water Level'}
     if strcmpi(DType_Flag,'Discharge')
         FILE_FILTER = [INI.OBS_FLOW_DFE_DIR INI.OBS_DFE_FILETYPE];                            % list only files with extension *.dat
         LISTING  = dir(char(FILE_FILTER));

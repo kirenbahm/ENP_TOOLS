@@ -149,7 +149,7 @@ INI.MAP_STATIONS = containers.Map();
 BC2D_read_shape(INI); % (function input: INI.SHPFILE1,2,3,  output: INI.MAP_STATIONS)
 
 if SAVE_IN_MATLAB    
-     INI = BC2D_import_dfs0(INI);
+     INI = BC2D_process_dfs0file_list(INI);
  
      % save data in strucures to load
      M = INI.MAP_H_DATA;

@@ -1,5 +1,32 @@
 function INI = BC2D_process_dfs0file_list(INI)
 
+% Select Hourly or Daily dfs0 files
+if strcmpi(INI.OLorSZ,'OL') 
+    FILE_FILTER = 'DFS0HR/*.dfs0'; % list only files with extension .out
+elseif strcmpi(INI.OLorSZ,'SZ')
+    FILE_FILTER = 'DFS0DD/*.dfs0'; % list only files with extension .out
+end
+
+LIST_DFS0_F = [INI.STAGE_DIR FILE_FILTER];
+INI.LISTING = dir(char(LIST_DFS0_F));
+
+% open stations metadata file and print header info:
+fileNameForFileList = [INI.DFS2 '-station_list.txt'];
+fileListingID = fopen(fileNameForFileList,'w');
+fprintf(fileListingID,"Files used to create %s:\n", INI.DFS2);
+fprintf(fileListingID,"Current Date: %s\n", char(datetime));
+fprintf(fileListingID,"Time period: %s to %s\n", INI.DATE_I, INI.DATE_E);
+if strcmpi(INI.OLorSZ,'OL')
+    fprintf(fileListingID,"Increment: hourly\n");
+elseif strcmpi(INI.OLorSZ,'SZ')
+    fprintf(fileListingID,"Increment: daily\n");
+end
+if INI.USE_FOURIER_BC2D
+    fprintf(fileListingID,"Method: Fourier\n\n");
+else
+    fprintf(fileListingID,"Method: Julian Day\n\n");
+end
+
 INI.MAP_H_DATA = containers.Map();
 
 n = length(INI.LISTING);
@@ -63,13 +90,16 @@ for i = 1:n
         fprintf('%s:  EXCEPTION in: %d/%d: with n=%d observations\n', char(NAME), i, n, nn);
     end
 end
-    INI.H_POINTS.X = X;
-    INI.H_POINTS.Y = Y;
-    INI.H_POINTS.STATION = NAME_STATION;
-    INI.H_POINTS.N = N;
-    INI.H_POINTS.DATE_I = DATE_I;
-    INI.H_POINTS.DATE_E = DATE_F;
-    INI.H_POINTS.I = II;
-    INI.H_POINTS.J = JJ;
+
+fclose(fileListingID);
+
+INI.H_POINTS.X = X;
+INI.H_POINTS.Y = Y;
+INI.H_POINTS.STATION = NAME_STATION;
+INI.H_POINTS.N = N;
+INI.H_POINTS.DATE_I = DATE_I;
+INI.H_POINTS.DATE_E = DATE_F;
+INI.H_POINTS.I = II;
+INI.H_POINTS.J = JJ;
 
 end

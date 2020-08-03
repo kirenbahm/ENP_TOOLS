@@ -35,8 +35,7 @@ for k = K
     fprintf('... processing %d/%d: %s: with %d records...\n', i, n, char(STATION_NAME),N_OBS);
     
     % function to create new vectors with no gaps
-%%%%    ST = BC2D_fit_gaps_ave_day(ST,INI.CREATE_FIGURES);     
-    ST = BC2D_fit_gaps_ave_day(ST);     
+    ST = BC2D_fit_gaps_ave_julian(ST);
     
     % function to perform Fourier gap filling
     Min_fourier = 18;
@@ -44,7 +43,7 @@ for k = K
         FIG_DIR_RESIDUALS = [INI.BC2D_DIR 'FIGURES-residuals/'];
         ST = BC2D_fit_gaps_ave_fourier(INI,ST,FIG_DIR_RESIDUALS);
     else
-       fprintf('Station: %s has fewer than 18 valid measurements. Fourier gap fitting was not performed.\n', char(STATION_NAME));
+        fprintf('Station: %s has fewer than 18 valid measurements. Fourier gap fitting was not performed.\n', char(STATION_NAME));
     end
 
     % set the station in the map to the updated station

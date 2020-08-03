@@ -13,8 +13,10 @@ L{1,n} = [];
 for k = K
     i = i + 1;
     A = INI.MAP_H_DATA(char(k));
-    X(i) = A.X_UTM;
-    Y(i) = A.Y_UTM;
+    %X(i) = A.X_UTM;
+    %Y(i) = A.Y_UTM;
+    X(i) = A.utmXmeters;
+    Y(i) = A.utmYmeters;
     if INI.USE_FOURIER_BC2D
         H(i) = A.dHf(nTS);
     else

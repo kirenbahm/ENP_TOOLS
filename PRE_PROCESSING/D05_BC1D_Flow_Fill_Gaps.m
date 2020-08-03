@@ -1,17 +1,57 @@
 function D05_BC1D_Flow_Fill_Gaps()
 
+% This function adds daily flow values to a dfs0 flow file. The flow values added
+% are zero flow, and they are added to the beginning and end of periods
+% where there is an entire day of missing data in the file. The purpose is to insure MIKE
+% doesn't interpolate nonzero flow values over long periods with missing data.
+%
+% The function also adds zero values to the beginning and end of the 
+% requested time period, so that the model doesn't interpolate nonzero
+% values before and after the actual datasets.
+%
+% This function is used to process observed flow datasets for use as 1D boundary
+% condition files in the MIKE model. ie. S333 flow input as a boundary
+% condition
+%
+% Code written by Lago Consulting, directed and amended by Kiren Bahm
+% June 2020
+%
 % -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% BEGIN USER INPUT
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+
+% Input/Output Directories
+INI.OBS_FLOW_IN_DIR  = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/DFS0/';
+INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Data_BC1D/';
+
+% Model Simulation Period
+INI.START_DATE = '01/01/1999 00:00';
+INI.END_DATE   = '12/31/2019 00:00';
+
+% Add these to the output filenames
+INI.OUTFILE_PREFIX = '';
+INI.OUTFILE_SUFFIX = '-filled';
+
 % Location of ENPMS library
-% -------------------------------------------------------------------------
 INI.MATLAB_SCRIPTS = '../ENPMS/';
+
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% END USER INPUT
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+
+INI.OBS_FILETYPE = '*.dfs0';
+
+% Import Statements
 try
     addpath(genpath(INI.MATLAB_SCRIPTS));
 catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
-% -------------------------------------------------------------------------
-% Import Startements
-% -------------------------------------------------------------------------
+
 dmi = NET.addAssembly('DHI.Mike.Install');
 if (~isempty(dmi))
     DHI.Mike.Install.MikeImport.SetupLatest({DHI.Mike.Install.MikeProducts.MikeCore});
@@ -26,36 +66,16 @@ eval('import DHI.Generic.MikeZero.DFS.*');
 eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
 eval('import DHI.Generic.MikeZero.*');
 
-% -------------------------------------------------------------------------
-% -------------------------------------------------------------------------
-% BEGIN USER INPUT
-% -------------------------------------------------------------------------
-% -------------------------------------------------------------------------
-
-% Input Output Directories
-INI.OBS_FLOW_IN_DIR = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/DFS0/';
-INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Data_BC1D/';
-
-INI.OBS_FILETYPE = '*.dfs0';
-
-% Model Simulation Period
-INI.START_DATE = '01/01/1999 00:00';
-INI.END_DATE   = '12/31/2030 00:00';
-
-% -------------------------------------------------------------------------
-% -------------------------------------------------------------------------
-% END USER INPUT
-% -------------------------------------------------------------------------
-% -------------------------------------------------------------------------
-
+% process dates
 INI.START_DATE_NUM = datenum(datetime(INI.START_DATE,'Inputformat','MM/dd/yyyy HH:mm'));
-INI.END_DATE_NUM = datenum(datetime(INI.END_DATE,'Inputformat','MM/dd/yyyy HH:mm'));
+INI.END_DATE_NUM   = datenum(datetime(INI.END_DATE,  'Inputformat','MM/dd/yyyy HH:mm'));
 
-% If input directory doesn't exist end
+% If input directory doesn't exist, end
 if ~exist(INI.OBS_FLOW_IN_DIR, 'dir')
-    fprintf('No directory found');
+    fprintf('\n\nERROR - Directory not found: %s\n\n',INI.OBS_FLOW_IN_DIR);
     return
 end
+
 FILE_FILTER = [INI.OBS_FLOW_IN_DIR INI.OBS_FILETYPE]; % list only files with extension *.dfs0
 LISTING  = dir(char(FILE_FILTER));
 
@@ -64,11 +84,13 @@ for i = 1:n
     try
         % iterate through each item in LISTING struc array (created by 'dir' matlab function)
         s = LISTING(i);
+        myFILE = [s.folder '/' s.name];
         NAME = s.name; % get filename
-        fprintf('\n... processing %s - %d/%d: ', NAME, i, n);
-        FOLDER = s.folder; % get folder name
-        FILE_NAME = [FOLDER '\' NAME];
-        myFILE = char(FILE_NAME);
+        fprintf('\n... %d/%d:  reading %s ...', i, n, NAME);
+        [myfilepath,myname,myext] = fileparts(myFILE);
+        
+        dfs0FileName = strcat(INI.OBS_FLOW_OUT_DIR, INI.OUTFILE_PREFIX, myname, INI.OUTFILE_SUFFIX, myext);
+
         % Open dfs0 file and copy metadata for new file
         dfs0File  = DfsFileFactory.DfsGenericOpen(myFILE);
         FileTitle = dfs0File.FileInfo.FileTitle;
@@ -81,8 +103,10 @@ for i = 1:n
         utmXmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateX;
         utmYmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateY;
         elev_ngvd29_ft = dfs0File.ItemInfo.Item(0).ReferenceCoordinateZ;
+        
         % Read Time Series flow values
         dd = double(Dfs0Util.ReadDfs0DataDouble(dfs0File));
+        
         % Read Start datetime
         yy = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Year);
         mo = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Month);
@@ -90,6 +114,7 @@ for i = 1:n
         hh = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Hour);
         mi = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Minute);
         se = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Second);
+        
         % Create array of time step values 
         START_TIME = datenum(yy,mo,da,hh,mi,se);
         DFS0.T = datenum(dd(:,1))/86400 + START_TIME;
@@ -103,6 +128,7 @@ for i = 1:n
         
         % remove all delete values - first remove the timevector elements
         DFS0.T(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
+        
         % second remove the data vector elements
         DFS0.V(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
         
@@ -113,6 +139,7 @@ for i = 1:n
         time_vector = zeros(size(DFS0.V, 1), 1);
         DFSi = 1;
         newi = 1;
+        
         % Loop through dfs0 data. 
         while DFSi <= size(DFS0.V, 1)
             if DFSi > 1
@@ -175,9 +202,12 @@ for i = 1:n
             measurements(newi, 1) = 0;
             time_vector(newi, 1) = INI.END_DATE_NUM;
         end
-        % create output dfs0
+        
+        fprintf('writing %s ...', dfs0FileName);
+       % create output dfs0
         factory = DfsFactory();
         builder = DfsBuilder.Create(char(FileTitle),'Matlab DFS',0);
+        
         %save projection and file metadata 
         T = datevec(time_vector(1));
         builder.SetDataType(0);
@@ -198,7 +228,6 @@ for i = 1:n
         item1.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
         builder.AddDynamicItem(item1.GetDynamicItemInfo());
         
-        dfs0FileName = strcat(INI.OBS_FLOW_OUT_DIR, NAME);
         if exist(dfs0FileName,'file')
             delete(dfs0FileName)
         end
@@ -206,13 +235,15 @@ for i = 1:n
         
         dfs = builder.GetFile();
         % Add data in the file
-        tic
+
         % Write to file using the MatlabDfsUtil
         MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((time_vector-time_vector(1))*86400), ...
             NET.convertArray(measurements, 'System.Double', size(measurements,1), size(measurements,2)))
-        %toc
+
         
         dfs.Close();
+        fprintf(' done');
+        
     catch ME
         fprintf('... failed, DFSi = %d, newi =  %d', DFSi, newi);
         rethrow(ME)

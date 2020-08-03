@@ -18,10 +18,6 @@ function D06_generateObservedMatlab()
 % -------------------------------------------------------------------------
 
 % Input directory and names of subdirectories containing dfs0 files
-% use these for unit testing
-%INI.INPUT_DIR = '../../ENP_TOOLS_Sample_Input/Obs_Data_Processed/generateObserved_input/';
-
-% use these for sequential testing
 INI.INPUT_DIR = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/';
 
 

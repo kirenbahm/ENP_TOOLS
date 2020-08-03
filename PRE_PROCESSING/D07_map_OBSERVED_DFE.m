@@ -23,20 +23,13 @@ function D07_map_OBSERVED_DFE()
 INI.MATLAB_SCRIPTS = '../ENPMS/';
 
 % -------------------------------------------------------------------------
-% Location of station metadata file (this is the DFE station table)
+% Location of input station metadata file (this is the DFE station table)
 % -------------------------------------------------------------------------
 DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
 
 % -------------------------------------------------------------------------
 %LOAD directory locations and list PNG directory options
 % -------------------------------------------------------------------------
-% use these for unit testing
-%INI.DIR_FLOW_DFS0 = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/';
-%INI.DIR_STAGE_DFS0 = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/STAGE/';
-%INI.DIR_FLOW_DFS0_OUT = '../../ENP_TOOLS_Output/D07_map_OBSERVED_DFE_output/Obs_Data_Processed/FLOW/';
-%INI.DIR_STAGE_DFS0_OUT = '../../ENP_TOOLS_Output/D07_map_OBSERVED_DFE_output/Obs_Data_Processed/STAGE/';
-
-% use these for sequential testing
 INI.DIR_FLOW_DFS0 = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/FLOW/';
 INI.DIR_STAGE_DFS0 = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/STAGE/';
 INI.DIR_FLOW_DFS0_OUT = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/FLOW/';

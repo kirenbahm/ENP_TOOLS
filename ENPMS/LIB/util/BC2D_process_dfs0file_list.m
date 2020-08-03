@@ -46,13 +46,9 @@ for i = 1:n
         
         % determine the file coordinates and make a structure
         C = strsplit(NAME,'.');
-        % mapping is by site name
-        try
-            STATION = INI.MAP_STATIONS(char(C{1}));
-        catch
-            fprintf('%s:  EXCEPTION in: %d/%d: Not in Domain\n', char(NAME), i, n);
-            continue;
-        end
+        STATION.NAME    = char(NAME);
+        STATION.STATION = char(NAME);
+        
         STATION.V_OBS = DFS0.V;
         STATION.V     = DFS0.V;
         

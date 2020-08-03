@@ -29,7 +29,7 @@ for k = K
     ST.dHd = dH; % vector for Julian Day fit
     ST.dHf = dH; % vector for Fourier fit
 
-    STATION_NAME = ST.STATION;
+    STATION_NAME = ST.NAME;
     N_OBS = length(ST.V);
     
     fprintf('... processing %d/%d: %s: with %d records...\n', i, n, char(STATION_NAME),N_OBS);

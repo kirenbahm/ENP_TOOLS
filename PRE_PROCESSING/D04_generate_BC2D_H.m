@@ -48,10 +48,6 @@ SAVE_IN_MATLAB = 1;                                 % to save the H data and the
 % Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
 INI.DELETE_EXISTING_DFS0 = 1;
 
-
-INI.INPUT_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/'; % use these for unit testing
-INI.GIS        = [INI.INPUT_DIR 'Obs_Data_Processed/BC2D_GIS/']; % use these for unit testing
-
 % Create figures of just timeseries interpolation results? (0 = NO, 1 = YES)
 % (Currently works with Fourier method only)
 INI.CREATE_RESIDUALS_FIGURES = 0;
@@ -123,11 +119,6 @@ if(~DirExist)
   fprintf('\nERROR: input directory was not found at %s.\n\n',char(INI.DIR_DATA));
 end
 
-INI.SHP_DOMAIN = [INI.GIS 'M06_DOMAIN_SF.shp'];              % input
-INI.SHPFILE1   = [INI.GIS 'ALL_STATIONS_SOUTH_FLORIDA.shp']; % input
-INI.SHPFILE2   = [INI.GIS 'ALL_STATIONS.shp'];               % input
-INI.SHPFILE3   = [INI.GIS 'ALL_STATIONS_061217.shp'];        % input
-
 INI.NSTEPS_FILE = [INI.BC2D_DIR 'NSTEPS.MATLAB'];
 
 % -------------------------------------------------------------------------
@@ -144,9 +135,6 @@ INI = initializeLIB(INI);
 
 
 INI.MAP_STATIONS = containers.Map();
-
-% Going to read from master excel file
-BC2D_read_shape(INI); % (function input: INI.SHPFILE1,2,3,  output: INI.MAP_STATIONS)
 
 if SAVE_IN_MATLAB    
      INI = BC2D_process_dfs0file_list(INI);

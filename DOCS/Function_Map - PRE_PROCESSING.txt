@@ -95,17 +95,13 @@ D02_analysis_DFS0_Q                 | D03_analysis_DFS0_H
   ->      latex_print_end
 
 ------------------
-D04_generate_BC2D_H_OL  (DELT=3600, INI.nx=?)
+D04_generate_BC2D_H_OL
    initializeLIB
-   BC2D_read_shape (reads 3 shapefiles, coordinates used from here. last file has precedence
-      shaperead
-   BC2D_import_dfs0 (formerly read_dfs0_H? reads dfs0 list)
-      BC2D_process_dfs0file_list  (reads dfs0 data and assigns stations to grid cells)
+   BC2D_process_dfs0file_list
          read_file_DFS0_delete_nulls
-   BC2D_save_H_points (write station data to excel sheet)
    BC2D_fill_gaps_H_points
-      BC2D_fit_gaps_ave_day (also plots)
-      BC2D_fit_gaps_ave_fourier (also plots)
+      BC2D_fit_gaps_ave_julian
+      BC2D_fit_gaps_ave_fourier (plots residuals)
    BC2D_create_DFS2 (creates BC2D interpolated file using scatteredInterpolant)
       BC2D_write_DFS2_header
       BC2D_get_H_TS (gets data)

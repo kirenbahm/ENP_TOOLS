@@ -9,44 +9,47 @@ for K = KEYS
     clf;
     fprintf('... plotting: %s \n', char(K));
     STATION = M(char(K));
-    T = datestr(STATION.T);
-    V = STATION.V;
+      
+    NN(1) = {'Spatially Interpolated Grid value'};
+    T = datestr(STATION.dT);
+    V = STATION.DINTERP;
     TTS1 = timeseries(V,T);
     TTS1.TimeInfo.Format = 'mmm-yyyy';
-    plot(TTS1,'Linestyle', 'none', 'Color', 'red', 'Marker','o', 'MarkerSize',3);
+    plot(TTS1,'Linestyle', '-', 'Color', [0.5,0.5,0.5], 'Marker','none');
     
     hold on;
-      
+    
     if ~INI.USE_FOURIER_BC2D
+        NN(2) = {'Temporal interpolation - Julian Day'};
         T = datestr(STATION.dT);
         V = STATION.dHd;
         TTS2 = timeseries(V,T);
         TTS2.TimeInfo.Format = 'mmm-yyyy';
-        plot(TTS2,'Linestyle', '-', 'Color', 'g', 'Marker','none');
-        Ncell = {'TS interpolation - Julian Day'};
+        plot(TTS2,'Linestyle', 'none', 'Color', 'r', 'Marker','.', 'MarkerSize',2);
     else
+        NN(2) = {'Temporal interpolation - Fourier'};
         T = datestr(STATION.dT);
         V = STATION.dHf;
         TTS2 = timeseries(V,T);
         TTS2.TimeInfo.Format = 'mmm-yyyy';
-        plot(TTS2,'Linestyle', '-', 'Color', 'b', 'Marker','none');
-        Ncell = {'TS interpolation - Fourier'};
+        plot(TTS2,'Linestyle', 'none', 'Color', 'r', 'Marker','.', 'MarkerSize',2);
     end
     
-    V = STATION.DINTERP;
+    NN(3) = {'Raw Observed Data'};
+    T = datestr(STATION.T);
+    % V = STATION.V_OBS; % in original datum
+    V = STATION.V;
     TTS3 = timeseries(V,T);
     TTS3.TimeInfo.Format = 'mmm-yyyy';
-    plot(TTS3,'Linestyle', '-', 'Color', 'k', 'Marker','none');
+    plot(TTS3,'Linestyle', 'none', 'Color', 'b', 'Marker','.', 'MarkerSize',2);
+
     
     tstart = datetime(INI.DATE_I, 'InputFormat', 'MM/dd/yyyy');
     tend = datetime(INI.DATE_E, 'InputFormat', 'MM/dd/yyyy');
     ax = gca;
     ax.XLim = [tstart tend];
     
-    NN(1) = {'Observed'};
-    NN(2) = Ncell;
-    NN(3) = {'Grid value'};  
-    legend(NN,'Location','SouthEast'); 
+    legend(NN,'Location','best'); 
     title(char(K),'FontSize',10,'FontName','Times New Roman');
     
     FIGURE_DIR = [INI.BC2D_DIR 'FIGURES/'];

@@ -55,10 +55,10 @@ for i = 1:n
         STATION.T = DFS0.T;
         STATION.UNIT = DFS0.UNIT;
         
-        STATION.utmXmeters = DFS0.X_UTM_METERS;
-        STATION.utmYmeters = DFS0.Y_UTM_METERS;
-        X(i)               = DFS0.X_UTM_METERS;
-        Y(i)               = DFS0.Y_UTM_METERS;
+        STATION.utmXmeters = DFS0.utmXmeters;
+        STATION.utmYmeters = DFS0.utmYmeters;
+        X(i)               = DFS0.utmXmeters;
+        Y(i)               = DFS0.utmYmeters;
         
         INI.MAP_H_DATA(char(C(1))) = STATION;
         

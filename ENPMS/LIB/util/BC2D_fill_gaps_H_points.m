@@ -35,13 +35,13 @@ for k = K
     fprintf('... processing %d/%d: %s: with %d records...\n', i, n, char(STATION_NAME),N_OBS);
     
     % function to create new vectors with no gaps
-    ST = BC2D_fit_gaps_ave_julian(ST);
+    ST = BC2D_fit_gaps_julian(ST);
     
     % function to perform Fourier gap filling
     Min_fourier = 18;
     if Min_fourier <= length(~isnan(ST.V))
         FIG_DIR_RESIDUALS = [INI.BC2D_DIR 'FIGURES-residuals/'];
-        ST = BC2D_fit_gaps_ave_fourier(INI,ST,FIG_DIR_RESIDUALS);
+        ST = BC2D_fit_gaps_fourier(INI,ST,FIG_DIR_RESIDUALS);
     else
         fprintf('Station: %s has fewer than 18 valid measurements. Fourier gap fitting was not performed.\n', char(STATION_NAME));
     end

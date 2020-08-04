@@ -1,4 +1,4 @@
-function ST = BC2D_fit_gaps_ave_fourier(INI,ST,FIG_DIR_RESIDUALS)
+function ST = BC2D_fit_gaps_fourier(INI,ST,FIG_DIR_RESIDUALS)
 
 oT = ST.T; % observed time vector
 xData = ST.T;

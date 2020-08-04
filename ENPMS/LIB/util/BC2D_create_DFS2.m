@@ -25,7 +25,7 @@ Y = [INI.Y0:INI.cell:INI.Y0+(INI.ny-1)*INI.cell];
 
 NSTEPS = INI.NSTEPS;
 
-% %for i = ntime_start:ntime_end
+%for i = ntime_start:ntime_end
 for i = 1:NSTEPS
     %print mark on each 100 step
     if (~mod(i,100))
@@ -37,7 +37,7 @@ for i = 1:NSTEPS
         t = datestr(datetime(INI.DATE_I,'InputFormat','dd/MM/yyyy') + dt);
         fprintf(' ... Step: %s: %d/%d \n', char(t), i,NSTEPS);
     end
-     
+    
     [HD, XD, YD,L] = BC2D_get_H_TS(INI,i);
     
     N = find(~isnan(HD));
@@ -54,28 +54,26 @@ for i = 1:NSTEPS
     
     F = scatteredInterpolant(XD,YD,HD,'natural');
     HI = F(XI_UTM,YI_UTM);
-        
+    
     N = find(isnan(HI));
     HI(N) = -1e-030;
     
     HH =HI';
     
-    file_dfs2.WriteItemTimeStepNext(0, NET.convertArray(single(HH(:)))); 
+    file_dfs2.WriteItemTimeStepNext(0, NET.convertArray(single(HH(:))));
     
     
     DATA_2D(:,:,i) = HH;
-%     NP202 = DATA_2D(45,39,i);
-%     BICYA11 = DATA_2D(20,47);
     
     k = k + 1;
-%     contourf(XI_UTM,YI_UTM,DOMAIN);
-   
+    %contourf(XI_UTM,YI_UTM,DOMAIN);
+    
     h = HD;
     x = XD;
     y = YD;
-
-if ~PLOT continue; end
-%start plotting
+    
+    if ~PLOT continue; end
+    %start plotting
     plot(XD,YD,'d','MarkerSize',4,'MarkerFaceColor','red','MarkerEdgeColor','w');
     hold on
     [C,h] = contourf(XI_UTM,YI_UTM,HI); %[C,h] = contourf(XI_UTM,YI_UTM,HI);
@@ -84,23 +82,22 @@ if ~PLOT continue; end
     TH = text(x,y,L,'FontSize',7,'FontName','times');
     clabel(C,h);
     %title(sprintf('%s',ds));
-%     colorbar('location','westoutside');
+    %colorbar('location','westoutside');
     plot(XD,YD,'d','MarkerSize',4,'MarkerFaceColor','red','MarkerEdgeColor','w');
-
-%     axis equal;
-%     M(i) = getframe(gcf);
-%     pause(0.1);
+    
+    %axis equal;
+    %M(i) = getframe(gcf);
+    %pause(0.1);
     mapshow(INI.SHP_DOMAIN);
-%     [XDOMAIN, YDOMAIN] = get_XYDOMAIN();
-%     plot(XDOMAIN,YDOMAIN);
+    %[XDOMAIN, YDOMAIN] = get_XYDOMAIN();
+    %plot(XDOMAIN,YDOMAIN);
     axis equal;
     %ds_FN = [PREFIX '_BMP/', ds_FN];
     %saveas(gcf,char(ds_FN),'bmp')
-%     saveas(gcf,char(ds_FN),'bmp')
-
+    
     hold off
-%     pause(0.001);
-%end plotting
+    %pause(0.001);
+    %end plotting
 end
 
 file_dfs2.Close();

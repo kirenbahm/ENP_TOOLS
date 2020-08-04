@@ -1,4 +1,4 @@
-function ST = BC2D_fit_gaps_ave_julian(ST)
+function ST = BC2D_fit_gaps_julian(ST)
 
 % temporary vectors for data and time o is for observed
 oH = ST.V;

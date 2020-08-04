@@ -29,15 +29,15 @@ end
 
 INI.MAP_H_DATA = containers.Map();
 
-n = length(INI.LISTING);
-for i = 1:n
+num_stations = length(INI.LISTING);
+for i = 1:num_stations
     try
         s = INI.LISTING(i);
         NAME = s.name;
         FOLDER = s.folder;
         FILE_NAME = [FOLDER '/' NAME];
         
-        fprintf('... reading: %d/%d: %s...', i, n, char(FILE_NAME));
+        fprintf('... %d/%d ', i, num_stations);
         
         % read database file
         DFS0 = read_file_DFS0_delete_nulls(FILE_NAME);
@@ -83,7 +83,7 @@ for i = 1:n
 
         fprintf('  done\n' );
     catch
-        fprintf('%s:  EXCEPTION in: %d/%d: with n=%d observations\n', char(NAME), i, n, nn);
+        fprintf('%s:  EXCEPTION in: %d/%d: with n=%d observations\n', char(NAME), i, num_stations, nn);
     end
 end
 

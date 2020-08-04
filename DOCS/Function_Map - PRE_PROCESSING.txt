@@ -2,11 +2,20 @@ This is the function map for the Preprocessing scripts
 
 The scripts should be executed in the order shown below.
 
-Subfunctions are listed, however there is a lot of repetition in the D02 and D03 scripts, so I have listed them side-by-side to reveal their parralel structure, and attempted to summarize them where you see the asterisks (*).
+Subfunctions are listed, however there is a lot of repetition in the D02 and D03 scripts, so I have listed them side-by-side to reveal their parallel structure, and attempted to summarize them where you see the asterisks (*).
+
+The expected directory structure for these scripts is as follows:
+  Obs_Data_Raw
+  Obs_Data_QC
+  Obs_Data_Final
+  Obs_Data_Final_DFS0
+  Obs_Processed_BC1D
+  Obs_Processed_BC2D
+  Obs_Processed_MATLAB
 
 ---------------------------------------------------------------------
+---------------------------------------------------------------------
 DFEdata_requestMIKE.sh (DFE data request script to be run on UNIX)
-
 
 ------------------
 D00_dfe_STATION_DATA (nonworking script that we probably don't need anymore)
@@ -98,10 +107,10 @@ D02_analysis_DFS0_Q                 | D03_analysis_DFS0_H
 D04_generate_BC2D_H_OL
    initializeLIB
    BC2D_process_dfs0file_list
-         read_file_DFS0_delete_nulls
+      read_file_DFS0_delete_nulls
    BC2D_fill_gaps_H_points
-      BC2D_fit_gaps_ave_julian
-      BC2D_fit_gaps_ave_fourier (plots residuals)
+      BC2D_fit_gaps_julian
+      BC2D_fit_gaps_fourier (also plots residuals)
    BC2D_create_DFS2 (creates BC2D interpolated file using scatteredInterpolant)
       BC2D_write_DFS2_header
       BC2D_get_H_TS (gets data)

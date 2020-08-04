@@ -1,15 +1,11 @@
 function D06_generateObservedMatlab()
 
 % This function creates MATLAB data file with observed data
-%   This function reads sheet MODEL_DATA_ITEMS/M06_MODEL_COMP and the
-%   corresponding dfs0 files in 3 folders H_DD and Q_DD
 %   and creates a database of all observed based on the sheet
 %   M06_MODEL_COMP. The function does not include files which are not in
 %   the sheet and does not include stations without data. The idea is to
 %   generate observed data which is within the domain and will be used for
 %   comparison
-%
-% (formerly named A00_generateObservedMatlab_07212018.m)
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------

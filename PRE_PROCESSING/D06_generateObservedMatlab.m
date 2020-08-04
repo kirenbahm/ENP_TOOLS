@@ -18,11 +18,9 @@ function D06_generateObservedMatlab()
 % -------------------------------------------------------------------------
 
 % Input directory and names of subdirectories containing dfs0 files
-INI.INPUT_DIR = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/';
+INI.DIR_H_DFS0_FILES = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_MATLAB/in/Stage/';
+INI.DIR_Q_DFS0_FILES = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_MATLAB/in/Flow/';
 
-
-Q_DD_DIR = 'Flow/DFS0DD';   % (do not put '/' in this name)
-H_DD_DIR = 'Stage/DFS0DD';  % (do not put '/' in this name)
 FILE_FILTER = '*.dfs0';   % File extension filter for input files
 
 % Model number (don't change this - currently only M06 has been tested)
@@ -32,8 +30,11 @@ INI.MODEL = 'M06';  % options: 'M01' or 'M06'
 INI.XLSX_STATIONS = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/MODEL_DATA_ITEMS_20200609-beta.xlsx';
 INI.SHEET_OBS = [INI.MODEL '_' 'MODEL_COMP'];  % station data is READ to this sheet
 
+% Location of database file to be created
+DATABASE_OBS_FOLDER = '../../ENP_TOOLS_Output/Obs_Processed_MATLAB/out/';
+
 % Name of database file to be created
-DATABASE_OBS = '../../ENP_TOOLS_Output_Sequential/SAMPLE_OBS_DATA_20200000.MATLAB';
+DATABASE_OBS_FILE = 'SAMPLE_OBS_DATA_20200000.MATLAB';
 
 % Location of ENPMS Scripts and Initialize
 INI.MATLAB_SCRIPTS = '../ENPMS/';
@@ -58,25 +59,28 @@ end
 %Initialize .NET libraries
 INI = initializeLIB(INI);
 
-% read all stations from the excel file, stations are within M3ENP_SF
-% list and read all hourly files in H_M11HR
-INI.DIR_DFS0_FILES = [INI.INPUT_DIR H_DD_DIR '\'];
-LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
-LISTING_H_M11  = dir(char(LIST_DFS0_F));
+% read all stations 
+LIST_DFS0 = [INI.DIR_H_DFS0_FILES FILE_FILTER];
+LISTING_H  = dir(char(LIST_DFS0));
 
-% list and read all hourly files Q_M11HR
-INI.DIR_DFS0_FILES = [INI.INPUT_DIR Q_DD_DIR '\'];
-LIST_DFS0_F = [INI.DIR_DFS0_FILES FILE_FILTER];
-LISTING_Q_M11  = dir(char(LIST_DFS0_F));
+LIST_DFS0 = [INI.DIR_Q_DFS0_FILES FILE_FILTER];
+LISTING_Q  = dir(char(LIST_DFS0));
 
-LISTINGS = [LISTING_H_M11; LISTING_Q_M11];
-MAP_OBS = OM00_read_xlsx_all_stations(INI, LISTINGS);
 % concatenate all structures and save into DATA variable
+LISTINGS = [LISTING_H; LISTING_Q];
+MAP_OBS = OM00_read_xlsx_all_stations(INI, LISTINGS);
+
+% Create output directory if it doesn't already exist
+if ~exist(DATABASE_OBS_FOLDER, 'dir')
+   mkdir(DATABASE_OBS_FOLDER)
+end
 
 % Save MAP_OBS variable into a .MATLAB file
+DATABASE_OBS = [DATABASE_OBS_FOLDER DATABASE_OBS_FILE];
+
 save(char(DATABASE_OBS),'MAP_OBS','-v7.3');
 
-fprintf('DONE');
+fprintf('DONE\n\n');
 
 end
 

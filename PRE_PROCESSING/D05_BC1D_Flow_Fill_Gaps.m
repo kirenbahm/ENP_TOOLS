@@ -23,8 +23,8 @@ function D05_BC1D_Flow_Fill_Gaps()
 % -------------------------------------------------------------------------
 
 % Input/Output Directories
-INI.OBS_FLOW_IN_DIR  = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/DFS0/';
-INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Data_BC1D/';
+INI.OBS_FLOW_IN_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_BC1D/in/';
+INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Processed_BC1D/out/';
 
 % Model Simulation Period
 INI.START_DATE = '01/01/1999 00:00';

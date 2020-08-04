@@ -8,9 +8,8 @@ function [ mapAllStations ] = OM00_read_xlsx_all_stations( INI, LISTINGS)
 
 mapAllStations = containers.Map;
 
-[status,sheets,xlFormat] = xlsfinfo(INI.XLSX_STATIONS);
-[NUM,TXT,RAW] = xlsread(INI.XLSX_STATIONS,INI.SHEET_OBS);
-DATATYPE = 'M11';
+[~,~,RAW] = xlsread(INI.XLSX_STATIONS,INI.SHEET_OBS);
+%DATATYPE = 'M11';
 DELIM = '.';
 n = size(LISTINGS, 1);
 % find columns with 'MODEL_*;
@@ -68,26 +67,26 @@ for i = 1:n
         % DFS0 data
         DFS0 = read_file_DFS0(FILEPATH);
         
-        % convert NAVD88 to NGVD29
-        if strcmp(DFS0.UNIT,'ft')
-            if isfield(STATION,'DATUM')
-                if strcmp(STATION.DATUM,'NAVD88')
-                    if isnumeric(STATION.NAVD_CONV)
-                        DFS0.V = DFS0.V - STATION.NAVD_CONV;
-                    else
-                        fprintf('... WARNING: NO CONVERSION to NAVD88 %d/%d: %s \n', i, n, char(NAME));
-                    end
-                end
-            end
-        end
-        
+%         % convert NAVD88 to NGVD29
+%         if strcmp(DFS0.UNIT,'ft')
+%             if isfield(STATION,'DATUM')
+%                 if strcmp(STATION.DATUM,'NAVD88')
+%                     if isnumeric(STATION.NAVD_CONV)
+%                         DFS0.V = DFS0.V - STATION.NAVD_CONV;
+%                     else
+%                         fprintf('... WARNING: NO CONVERSION to NAVD88 %d/%d: %s \n', i, n, char(NAME));
+%                     end
+%                 end
+%             end
+%         end
+%         
         STATION.TIMEVECTOR = DFS0.T;
         STATION.DOBSERVED = DFS0.V;
         STATION.DFSTYPE = DFS0.TYPE;
         STATION.UNIT = DFS0.UNIT;
         STATION.STARTDATE = DFS0.T(1);
         STATION.ENDDATE = DFS0.T(end);
-        STATION.DATATYPE = DATATYPE;
+%        STATION.DATATYPE = DATATYPE;
         mapAllStations(char(RAW(k,1))) = STATION;
     else
         fprintf('\n... %s.%s not in domain: %d/%d\n', STR_TEMP{1}, STR_TEMP{2}, i, n);

@@ -17,19 +17,19 @@ function D04_generate_BC2D_H()
 % -------------------------------------------------------------------------
  
 % This 'SWITCH' is used to identify the time increment used on the imported DFS0 files either SZ (daily) or OL (hourly)
-INI.OLorSZ = 'SZ';
-%INI.OLorSZ = 'OL';
+%INI.OLorSZ = 'SZ';
+INI.OLorSZ = 'OL';
 
 % Input directory:
-INI.STAGE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_BC2D/';
+INI.STAGE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_BC2D/in/';
 
 
 % Use Fourier for creating BC2D maps, otherwise use Julian Day Average
 INI.USE_FOURIER_BC2D = false; 
 
 % Output directory:
-INI.BC2D_DIR   = '../../ENP_TOOLS_Output/BC2D-Julian/'; 
-%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/BC2D-Fourier/'; 
+INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Julian/'; 
+%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Fourier/'; 
 
 
 % Location of ENPMS Scripts

@@ -45,7 +45,7 @@ for k = K
     else
         fprintf('Station: %s has fewer than 18 valid measurements. Fourier gap fitting was not performed.\n', char(STATION_NAME));
     end
-
+    
     % set the station in the map to the updated station
     INI.MAP_H_DATA(char(k)) = ST;
 end

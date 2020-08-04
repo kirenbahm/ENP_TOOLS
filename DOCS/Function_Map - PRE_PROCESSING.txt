@@ -114,7 +114,7 @@ D05_BC1D_Flow_Fill_Gaps
 ------------------
 D06_generateObservedMatlab
    initializeLIB
-   OM00_read_xlsx_all_stations
+   read_all_obs_stations
       read_file_DFS0
 
 ------------------

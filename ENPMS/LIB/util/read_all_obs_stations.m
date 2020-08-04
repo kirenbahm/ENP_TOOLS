@@ -1,4 +1,4 @@
-function [ mapAllStations ] = OM00_read_xlsx_all_stations( INI, LISTINGS)
+function [ mapAllStations ] = read_all_obs_stations( INI, LISTINGS)
 
 %   The function reads ALL_STATION_DATA sheet and creates a map, it also
 %   reads the subdirectories with hourly data and compares if the dfs0

@@ -64,7 +64,7 @@ LISTING_Q  = dir(char(LIST_DFS0));
 
 % concatenate all structures and save into DATA variable
 LISTINGS = [LISTING_H; LISTING_Q];
-MAP_OBS = OM00_read_xlsx_all_stations(INI, LISTINGS);
+MAP_OBS = read_all_obs_stations(INI, LISTINGS);
 
 % Create output directory if it doesn't already exist
 if ~exist(DATABASE_OBS_FOLDER, 'dir')

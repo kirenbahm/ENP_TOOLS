@@ -41,17 +41,11 @@ if ~isempty(DATA.V)
    DT = DFS0.TYPE;
    TS = DATA.TIME;
    D = DATA.V;
-   create1DFS0_G(INI,S,F,DT,TS,D,dfsDT);
+   X = DFS0.utmXmeters;
+   Y = DFS0.utmYmeters;
+   Z = DFS0.elev_ngvd29_ft;
+   %create1DFS0_G(INI,S,F,DT,TS,D,dfsDT);
+   preproc_publish_DFS0(X,Y,Z,S,TS,D,F,dfsDT,DT)
 end
-% if ~isempty(H.H_V)
-%     S = strcat(S,'_H');
-%     F = ['./',char(S),'.dfs0'];
-%     if (exist(F,'file') & INI.DELETE_EXISTING_DFS0), delete(F), end;
-%     T = 'Water Level';
-%     U = 'ft';
-%     TS = H.H_TIME;
-%     D = H.H_V;
-%     create1DFS0_H(INI,S, TS, D, F, dfsDT);
-% end
 
 end

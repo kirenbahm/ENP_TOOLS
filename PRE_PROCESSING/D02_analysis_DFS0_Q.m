@@ -11,13 +11,9 @@ function D02_analysis_DFS0_Q()
 % -------------------------------------------------------------------------
 % Location of dfs0 FLOW files 
 % -------------------------------------------------------------------------
-% use these for unit testing
-INI.DIR_INFILES         = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Data_Processed/FLOW/';
-INI.DIR_OUTFILES        = '../../ENP_TOOLS_Output/D02_analysis_DFS0_Q_output/Obs_Data_Processed/FLOW/';
 
-% use these for sequential testing
-%INI.DIR_INFILES         = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/FLOW/';
-%INI.DIR_OUTFILES        = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/FLOW/';
+INI.DIR_INFILES         = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/';
+INI.DIR_OUTFILES        = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/';
 
 % -------------------------------------------------------------------------
 % Set up directory structure (this shouldn't need changing)
@@ -49,7 +45,6 @@ INI.MATLAB_SCRIPTS = '../ENPMS/';
 % Other options (0 = NO, 1 = YES)
 % -------------------------------------------------------------------------
 INI.DELETE_EXISTING_DFS0 = 1; 
-
 % -------------------------------------------------------------------------
 % Location of blank figure
 % -------------------------------------------------------------------------

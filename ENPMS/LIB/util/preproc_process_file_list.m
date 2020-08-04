@@ -1,5 +1,14 @@
 function preproc_process_file_list(INI,MAP_STATIONS,LISTING,DType_Flag)
-
+% This script takes data that was read and flagged from DFE .dat files 
+% and prepares to write to a dfs0 file. 
+%
+% Inputs:
+% INI stores global parameters like directories and flag checks.
+%
+% MAP_STATIONS holds data on all stations in database.
+%
+% LISTING array of file information for dat files
+%
 % DType_Flag is used to determine which DHI specific variables and settings
 % are to be used in the creation of the DFS0 files. If additional datatypes
 % are added (i.e. salinity, PET, ET, and/or etc...) accompanying elseif
@@ -20,6 +29,7 @@ for i = 1:n
         
         % read DFE data file into DATA structure
         fprintf('reading %s... ', char(NAME));
+        
         [DATA] = preproc_read_DFE_file(myFILE);
 
         % extract filename parts, convert station part of name to upper case

@@ -27,30 +27,24 @@ function D01_convert_DFE_to_DFS0()
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 
-% -------------------------------------------------------------------------
-% Location of input files
-% -------------------------------------------------------------------------
+% Location of input station metadata file (this is the DFE station table)
+DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table_20200715.txt';
 
-% Location of raw DFE measurement files (flow and stage in separate folders, one station per file)
-INI.OBS_FLOW_DFE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Flow/';
-INI.OBS_STAGE_DFE_DIR = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Raw_DFE_Data/Stage/';
+% -------------------------------------------------------------------------
+% Location of input QC'd DFE measurement files (flow and stage in separate folders, one station per file)
+% -------------------------------------------------------------------------
+INI.OBS_FLOW_DFE_DIR  = '../../ENP_TOOLS_Output/Obs_Data_Final/Flow/';
+INI.OBS_STAGE_DFE_DIR = '../../ENP_TOOLS_Output/Obs_Data_Final/Stage/';
 
-% Suffix of raw DFE data files (used to generate a list of files to process)
+% Suffix of QC'd DFE measurement files (used to generate a list of files to process)
 INI.OBS_DFE_FILETYPE = '*.dat';
-
-% Location of station metadata file (this is the DFE station table)
-DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table.txt';
 
 % -------------------------------------------------------------------------
 % Location of dfs0 output files (each datatype needs a separate folder)
 % -------------------------------------------------------------------------
-% use these for unit testing
-INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/FLOW/DFS0/';
-INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output/D01_convert_DFE_to_DFS0_output/Obs_Data_Processed/STAGE/DFS0/';
 
-% use these for sequential testing
-%INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/FLOW/DFS0/';
-%INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output_Sequential/Obs_Data_Processed/STAGE/DFS0/';
+INI.DIR_FLOW_DFS0     = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/DFS0/';
+INI.DIR_STAGE_DFS0    = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Stage/DFS0/';
 
 % -------------------------------------------------------------------------
 % Location of ENPMS library
@@ -69,6 +63,12 @@ INI.DELETE_EXISTING_DFS0 = 1;  % Delete existing DFS0 files? Has this option bee
 % END USER INPUT
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
+if ~exist(INI.DIR_FLOW_DFS0, 'dir')
+   mkdir(INI.DIR_FLOW_DFS0)
+end
+if ~exist(INI.DIR_STAGE_DFS0, 'dir')
+   mkdir(INI.DIR_STAGE_DFS0)
+end
 
 % currently inactive options (not tested):
 %INI.SAVE_IN_MATLAB = 1;  % Save in MATLAB format? 
@@ -86,7 +86,6 @@ MAP_STATIONS = S00_load_DFE_STNLOC(DFE_STATION_DATA_FILE);
 
 % iterate over input file datatype directories with DFE *.dat files:
 for DType_Flag = {'Water Level','Discharge'} % Water Level must be in feet, Discharge must be in cfs (hardcoded in D05_publish_DFS0.m)
-%for DType_Flag = {'Discharge','Water Elevation'}
     if strcmpi(DType_Flag,'Discharge')
         FILE_FILTER = [INI.OBS_FLOW_DFE_DIR INI.OBS_DFE_FILETYPE];                            % list only files with extension *.dat
         LISTING  = dir(char(FILE_FILTER));

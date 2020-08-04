@@ -1,5 +1,7 @@
 function DFS0 = read_file_DFS0_delete_nulls(FILE_NAME)
 
+fprintf('--- Reading data file: %s',char(FILE_NAME));
+
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
 import DHI.Generic.MikeZero.DFS.dfs0.*;
@@ -16,17 +18,20 @@ se = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Second);
 START_TIME = datenum(yy,mo,da,hh,mi,se);
 
 DFS0.T = datenum(dd(:,1))/86400 + START_TIME;
-%DFS0.TSTR = datestr(DFS0.T); not needed, slow
 DFS0.V = dd(:,2:end);
 
 for i = 0:dfs0File.ItemInfo.Count - 1
-    DFS0.TYPE(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.ItemDescription)};
-    DFS0.UNIT(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.UnitAbbreviation)};
-    DFS0.NAME(i+1) = {char(dfs0File.ItemInfo.Item(i).Name)};
+    DFS0.NAME(i+1)           = {char(dfs0File.ItemInfo.Item(i).Name)};
+    DFS0.TYPE(i+1)           = {char(dfs0File.ItemInfo.Item(i).Quantity.ItemDescription)};
+    DFS0.UNIT(i+1)           = {char(dfs0File.ItemInfo.Item(i).Quantity.UnitAbbreviation)};
+    DFS0.utmXmeters(i+1)     = dfs0File.ItemInfo.Item(i).ReferenceCoordinateX;
+    DFS0.utmYmeters(i+1)     = dfs0File.ItemInfo.Item(i).ReferenceCoordinateY;
+    DFS0.elev_ngvd29_ft(i+1) = dfs0File.ItemInfo.Item(i).ReferenceCoordinateZ;
 end
 
 % remove all delete values - first remove the timevector elements
 DFS0.T(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
+
 % second remove the data vector elements
 DFS0.V(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
 
@@ -35,7 +40,6 @@ DFS0.V(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
 % plot(A,DFS0.V);
 
 dfs0File.Close();
+%fprintf('      done\n' );
 
 end
-
-

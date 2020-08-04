@@ -1,4 +1,4 @@
-function preproc_publish_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,time_vector,measurements,dfs0FileName,dfsDoubleOrFloat,DType_Flag)
+function preproc_publish_Flag_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,time_vector,measurements,raw,flags,dfs0FileName,dfsDoubleOrFloat,DType_Flag)
 % Takes data and file parameters for a dfs0 file and writes it.
 % Inputs:
 %     utmXmeters: X location
@@ -7,6 +7,8 @@ function preproc_publish_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,
 %     station_name: for naming items in dfs0
 %     time_vector: time series Date Time values
 %     measurements: time series flagged data
+%     raw: time series unflagged data
+%     flags: time series numeric flags
 %     dfs0FileName: full file path of dfs0 file to write
 %     dfsDoubleOrFloat: flag of whether using floats or doubles
 %     DType_Flag: flag of whether Flow or Stage
@@ -41,11 +43,11 @@ item1 = builder.CreateDynamicItemBuilder();
 % appropriate DHI required inputs for DFS0 creation. This will ned to be
 % expanded upon as new datatypes and DType_Flags are added.
 if strcmpi(DType_Flag,'Discharge')
-   myStationName = char([station_name '_Q']);
+   myStationName = char([station_name '_Q_Raw']);
     item1.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
         (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDoubleOrFloat);
 elseif strcmpi(DType_Flag,'Water Level')
-   myStationName = char([station_name]);
+   myStationName = char([station_name '_Raw']);
     item1.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
         (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDoubleOrFloat);
 end
@@ -54,14 +56,52 @@ item1.SetAxis(factory.CreateAxisEqD0());
 item1.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
 builder.AddDynamicItem(item1.GetDynamicItemInfo());
 
+% Add an Item
+item2 = builder.CreateDynamicItemBuilder();
+
+% if statement that translates the Data Type Flag 'DType_Flag' into the
+% appropriate DHI required inputs for DFS0 creation. This will ned to be
+% expanded upon as new datatypes and DType_Flags are added.
+myStationName = char([station_name '_Flags']);
+item2.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
+    (eumItem.eumINonDimFactor,eumUnit.eumUOnePerOne), dfsDoubleOrFloat);
+item2.SetValueType(DataValueType.Instantaneous);
+item2.SetAxis(factory.CreateAxisEqD0());
+item2.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
+builder.AddDynamicItem(item2.GetDynamicItemInfo());
+
+% Add an Item
+item3 = builder.CreateDynamicItemBuilder();
+
+% if statement that translates the Data Type Flag 'DType_Flag' into the
+% appropriate DHI required inputs for DFS0 creation. This will ned to be
+% expanded upon as new datatypes and DType_Flags are added.
+if strcmpi(DType_Flag,'Discharge')
+   myStationName = char([station_name '_Q']);
+    item3.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
+        (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDoubleOrFloat);
+elseif strcmpi(DType_Flag,'Water Level')
+   myStationName = char([station_name]);
+    item3.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
+        (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDoubleOrFloat);
+end
+item3.SetValueType(DataValueType.Instantaneous);
+item3.SetAxis(factory.CreateAxisEqD0());
+item3.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
+builder.AddDynamicItem(item3.GetDynamicItemInfo());
+
 builder.CreateFile(dfs0FileName);
 
 dfs = builder.GetFile();
 % Add  data in the file
 tic
 % Write to file using the MatlabDfsUtil
+writeData = ones(size(measurements, 1), 3);
+writeData(:, 1) = raw;
+writeData(:, 2) = flags;
+writeData(:, 3) = measurements;
 MatlabDfsUtil.DfsUtil.WriteDfs0DataDouble(dfs, NET.convertArray((time_vector-time_vector(1))*86400), ...
-    NET.convertArray(measurements, 'System.Double', size(measurements,1), size(measurements,2)))
+    NET.convertArray(writeData, 'System.Double', size(writeData,1), size(writeData,2)))
 %toc
 
 dfs.Close();

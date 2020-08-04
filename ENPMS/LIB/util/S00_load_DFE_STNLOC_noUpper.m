@@ -1,4 +1,4 @@
-function [MAP_STATIONS] = S00_load_DFE_STNLOC(DFE_STATION_DATA_FILE)
+function [MAP_STATIONS] = S00_load_DFE_STNLOC_noUpper(DFE_STATION_DATA_FILE)
 % This script creates a container (MAP_STATIONS) with the structure
 % (STATIONS); takes the station name (NAME), longitude (X), latitude (Y)
 % from the input file
@@ -57,7 +57,7 @@ STATION = struct(...
 MAP_STATIONS = containers.Map();
 
 % save data into STATION structure
-stnName = upper(ST_file_data{1}); % convert all station names to UPPERCASE
+stnName = ST_file_data{1}; % convert all station names NOT CONVERTED to UPPERCASE
 elev_ft = ST_file_data{5};
 lat = ST_file_data{6};
 long = ST_file_data{7};
@@ -95,7 +95,7 @@ for i = 1:numStations
    end
    
    % save data to STATION structure
-   STATION(i).NAME = stnName(i); %(converted to upper case)
+   STATION(i).NAME = stnName(i); %(NOT converted to upper case)
    STATION(i).LAT = lat(i);
    STATION(i).LONG = long(i);
    STATION(i).utmXmeters = utmXmeters(i);

@@ -1,4 +1,4 @@
-function preproc_create_DFS0(INI,MAP_STATIONS,DATA,DFS0name,DType_Flag)
+function preproc_create_Flag_DFS0(INI,MAP_STATIONS,DATA,DFS0name,DType_Flag)
 % This script takes data that was read and flagged from DFE .dat files 
 % and prepares to write to a dfs0 file. 
 %
@@ -59,7 +59,7 @@ if ~isempty(DATA.MEASUREMENTS)
 %     if isnan(Y), Y=0;end
 %     if isnan(Z), Z=0;end
     
-    preproc_publish_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,DATA.TIME,DATA.MEASUREMENTS,dfs0FileName,dfsDoubleOrFloat,DType_Flag);
+    preproc_publish_Flag_DFS0(utmXmeters,utmYmeters,elev_ngvd29_ft,station_name,DATA.TIME,DATA.MEASUREMENTS,DATA.RAW,DATA.FLAG,dfs0FileName,dfsDoubleOrFloat,DType_Flag);
     
 end
 

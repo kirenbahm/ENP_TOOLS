@@ -32,6 +32,8 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     
     INI.fileOL            = [INI.simRESULT INI.simMODEL, '_overland.dfs2'];
     INI.fileSZ            = [INI.simRESULT INI.simMODEL, '_3DSZ.dfs3'];
+    INI.filePhreatic      = [INI.simRESULT INI.simMODEL, '_2DSZ.dfs2'];
+    INI.fileBottomLevels  = [INI.simRESULT INI.simMODEL, '_PreProcessed_3DSZ.dfs3'];
     INI.fileM11Dfs0       = [INI.simRESULT 'MSHE_WM.dfs0'];
     INI.fileM11Res11      = [INI.simRESULT 'MSHE_WM.res11'];
     %INI.fileM11HDAddRes11 = [INI.simRESULT 'MSHE_WMHDAdd.res11']; % not used yet
@@ -40,6 +42,34 @@ for i = 1:nn % This loop iterates over each simulation to extract data
 	
     dfs0Exists  = exist(INI.fileM11Dfs0,'file');
     res11Exists = exist(INI.fileM11Res11, 'file');
+    
+    % If '_2DSZ.dfs2' does not exist, then generate the depth values based
+    % on head values, topography and, if file exists, the bottom elevations.
+    phreaticExists = exist(INI.filePhreatic, 'file');
+    if ~phreaticExists
+        ComputeDepthOfPhreaticSurface(INI);
+    end
+    if phreaticExists
+        %Compute Monthly Stage
+        INI.fileMonthlyStats = [INI.simRESULT INI.simMODEL, '_MonthlyStats.dfs2'];
+        ComputeMonthlyStatistics(INI);
+	if exist(INI.fileMonthlyStats, 'file')
+            %Compute Wet/Dry Season
+            INI.fileWetDrySeasonStats = [INI.simRESULT INI.simMODEL, '_WetDryStats.dfs2'];
+            ComputeWetDrySeasonStatistics(INI);
+	end
+        %Compute Calendar Years
+        INI.fileCalendarYearStats = [INI.simRESULT INI.simMODEL, '_CalYearStats.dfs2'];
+        ComputeCalendarYearStatistics(INI);
+        %Computer Water Years
+        INI.fileWaterYearStats = [INI.simRESULT INI.simMODEL, '_WaterYearStats.dfs2'];
+        ComputeWaterYearStatistics(INI);
+        %Compute Total Period
+        INI.fileTotalPeriodStats = [INI.simRESULT INI.simMODEL, '_TotalPeriodStats.dfs2'];
+        ComputeTotalPeriodStatistics(INI);
+    else
+        fprintf('ERROR %s Not found. Cannot generate Statistics.\n', INI.filePhreatic);
+    end
     
     % Determine which column to read chainages from.
     %   Col 24 is for reading res11 files, q points are reported at q-point locations

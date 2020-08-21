@@ -73,6 +73,7 @@ INI.ANALYSIS_TAG = 'M01-M06_test';
 % use this for unit testing
 INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Model_Output_Processed\';
 INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
+INI.DATA_STATISTICS = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\';
 
 % use this for sequential testing
 %INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
@@ -81,6 +82,7 @@ INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALY
 %---------------------------------------------------------------------
 % 5. Choose simulations to be analyzed (must be present in INI.DATA_COMPUTED
 %---------------------------------------------------------------------
+INI.BASE = 1; % Index of Base Model for A10 comparison
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test', 'M01'};
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'};
 %i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test_short', 'M01'};
@@ -115,6 +117,7 @@ INI.A5    = 1; % A5_create_summary_stat
 %INI.A7    = 0; % A7_SEEPAGE_MAP
 %INI.A8    = 0; % A8_SEEPAGE_EXCEL % not implemented yet
 INI.A9    = 1; % A9_make_latex_report % 
+INI.A10   = 1; %A10 Makes difference map of statistics generated in generateComputedMatlab
 
 %---------------------------------------------------------------------
 % 9 Additional settings, DEFAULT can be modified for additional functionality 

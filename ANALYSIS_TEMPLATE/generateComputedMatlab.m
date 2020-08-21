@@ -120,6 +120,11 @@ INI.PLOT_COMPUTED = 0; %  (DEFAULT) The user plots computed data
 INI.DEBUG = 0; % 0 = no debug output
 INI.DEBUG = 1; % 1 = generate extra output for debugging
 
+INI.HYDROPERIOD_THRESHOLD = 0; % threshhold for depth statistics
+INI.SZ_HEADS_DRY_CELL_THRESHOLD = 0.01; % Threshold for converting SZ Heads to Phreatic Depth
+% if SZHead - bottom < 0.01 m the heads from the next bottom layer are used to compute phreatic depth
+% MIKE SHE uses 0.01 m to generate the phreatic depth, but it can be changed to 0 for example
+
 %---------------------------------------------------------------------
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------

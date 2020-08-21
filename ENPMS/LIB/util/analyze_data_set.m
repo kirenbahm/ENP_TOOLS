@@ -41,6 +41,7 @@ if INI.A5 ; INI = A5_create_summary_stat(INI); end
 % if INI.A6; INI = A6_GW_MAP_COMPARE(INI); end
 %if INI.A7; INI = A7_MDR_SEEPAGE(INI); end
 if INI.A9; INI = A9_make_latex_report(INI); end
+if INI.A10; INI = A10_make_alternatives_difference_maps(INI); end
 
 fclose('all');
 

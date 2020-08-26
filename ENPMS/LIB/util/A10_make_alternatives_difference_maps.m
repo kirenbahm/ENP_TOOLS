@@ -30,35 +30,43 @@ nD = length(INI.MODEL_ALL_RUNS);
 % Base Model Data and Files
 BaseNameParts = INI.MODEL_SIMULATION_SET{INI.BASE}; % Parse Base model Name
 BaseFolder = [INI.DATA_STATISTICS  BaseNameParts{2} '.she - Result Files\']; % Base Model results folder 
-fileMonthly_Base      = [BaseFolder BaseNameParts{2} '_MonthlyStats.dfs2']; % Base model Monthly Stats
-fileWetDry_Base      = [BaseFolder BaseNameParts{2} '_WetDryStats.dfs2']; % Base Model WetDry Stats
-fileCalendarYear_Base      = [BaseFolder BaseNameParts{2} '_CalYearStats.dfs2']; % Base Model Calendar Year Stats
-fileWaterYear_Base      = [BaseFolder BaseNameParts{2} '_WaterYearStats.dfs2']; % Base Model Water Year Stats
-fileTotalPeriod_Base      = [BaseFolder BaseNameParts{2}, '_TotalPeriodStats.dfs2']; % Base Model Total Period Stats
-CompareMonthly_Base = exist(fileMonthly_Base,'file') == 2; % Check if Monthly Stats exist
-CompareWetDry_Base = exist(fileWetDry_Base,'file') == 2; % Check if Wet Dry Season Stats exist
-CompareCalYear_Base = exist(fileCalendarYear_Base,'file') == 2; % Check if Calendar Stats exist
-CompareWaterYear_Base = exist(fileWaterYear_Base,'file') == 2; % Check if Water Year Stats exist
-CompareTotalPeriod_Base = exist(fileTotalPeriod_Base,'file') == 2; % Check if Total Period Stats exist
+
+fileMonthly_Base        = [BaseFolder BaseNameParts{2} '_MonthlyStats.dfs2'];      % Base model Monthly Stats
+fileWetDry_Base         = [BaseFolder BaseNameParts{2} '_WetDryStats.dfs2'];       % Base Model WetDry Stats
+fileCalendarYear_Base   = [BaseFolder BaseNameParts{2} '_CalYearStats.dfs2'];      % Base Model Calendar Year Stats
+fileWaterYear_Base      = [BaseFolder BaseNameParts{2} '_WaterYearStats.dfs2'];    % Base Model Water Year Stats
+fileTotalPeriod_Base    = [BaseFolder BaseNameParts{2}, '_TotalPeriodStats.dfs2']; % Base Model Total Period Stats
+
+CompareMonthly_Base     = exist(fileMonthly_Base,'file') == 2;      % Check if Monthly Stats exist
+CompareWetDry_Base      = exist(fileWetDry_Base,'file') == 2;       % Check if Wet Dry Season Stats exist
+CompareCalYear_Base     = exist(fileCalendarYear_Base,'file') == 2; % Check if Calendar Stats exist
+CompareWaterYear_Base   = exist(fileWaterYear_Base,'file') == 2;    % Check if Water Year Stats exist
+CompareTotalPeriod_Base = exist(fileTotalPeriod_Base,'file') == 2;  % Check if Total Period Stats exist
+
 alt = 0;
 for i=1:nD
     if i ~= INI.BASE % If model isn't base
         alt = alt + 1;
         BaseNameParts = INI.MODEL_SIMULATION_SET{i}; % Parse Alternative model Name
         AltNumStr = num2str(alt,'%i');  % String of Alternative number
-        BaseFolder = [INI.DATA_STATISTICS  BaseNameParts{2} '.she - Result Files\'];% Alternative Model results folder 
-        fileMonthly_Alt      = [BaseFolder BaseNameParts{2} '_MonthlyStats.dfs2']; % Alternative model Monthly Stats
-        fileWetDry_Alt      = [BaseFolder BaseNameParts{2} '_WetDryStats.dfs2']; % Alternative Model WetDry Stats
-        fileCalendarYear_Alt      = [BaseFolder BaseNameParts{2} '_CalYearStats.dfs2']; % Alternative Model Calendar Year Stats
-        fileWaterYear_Alt      = [BaseFolder BaseNameParts{2} '_WaterYearStats.dfs2'];  % Alternative Model Water Year Stats
-        fileTotalPeriod_Alt      = [BaseFolder BaseNameParts{2}, '_TotalPeriodStats.dfs2'];  % Alternative Model Total Period Stats
-        CompareMonthly = CompareMonthly_Base && exist(fileMonthly_Alt,'file') == 2; % Check if Monthly Stats compare is possible
-        CompareWetDry = CompareWetDry_Base && exist(fileWetDry_Alt,'file') == 2; % Check if Wet/Dry Season Stats compare is possible
-        CompareCalYear = CompareCalYear_Base && exist(fileCalendarYear_Alt,'file') == 2; % Check if Calendar Year Stats compare is possible
-        CompareWaterYear = CompareWaterYear_Base && exist(fileWaterYear_Alt,'file') == 2; % Check if Water Year Stats compare is possible
-        CompareTotalPeriod = CompareTotalPeriod_Base && exist(fileTotalPeriod_Alt,'file') == 2; % Check if Total Period Stats compare is possible
+        BaseFolder = [INI.DATA_STATISTICS  BaseNameParts{2} '.she - Result Files\']; % Alternative Model results folder
+        
+        fileMonthly_Alt      = [BaseFolder BaseNameParts{2} '_MonthlyStats.dfs2'];      % Alternative Model Monthly       Stats
+        fileWetDry_Alt       = [BaseFolder BaseNameParts{2} '_WetDryStats.dfs2'];       % Alternative Model WetDry        Stats
+        fileCalendarYear_Alt = [BaseFolder BaseNameParts{2} '_CalYearStats.dfs2'];      % Alternative Model Calendar Year Stats
+        fileWaterYear_Alt    = [BaseFolder BaseNameParts{2} '_WaterYearStats.dfs2'];    % Alternative Model Water Year    Stats
+        fileTotalPeriod_Alt  = [BaseFolder BaseNameParts{2}, '_TotalPeriodStats.dfs2']; % Alternative Model Total Period  Stats
+        
+        CompareMonthly     = CompareMonthly_Base     && exist(fileMonthly_Alt,'file')      == 2; % Check if Monthly        Stats compare is possible
+        CompareWetDry      = CompareWetDry_Base      && exist(fileWetDry_Alt,'file')       == 2; % Check if Wet/Dry Season Stats compare is possible
+        CompareCalYear     = CompareCalYear_Base     && exist(fileCalendarYear_Alt,'file') == 2; % Check if Calendar Year  Stats compare is possible
+        CompareWaterYear   = CompareWaterYear_Base   && exist(fileWaterYear_Alt,'file')    == 2; % Check if Water Year     Stats compare is possible
+        CompareTotalPeriod = CompareTotalPeriod_Base && exist(fileTotalPeriod_Alt,'file')  == 2; % Check if Total Period   Stats compare is possible
+        
         for fi=1:5 % For each Stat type
-            if fi == 1 % First iteration compares monthly
+            
+            % First iteration compares monthly
+            if fi == 1 
                 if CompareMonthly % if both models had stats
                     File0 = fileMonthly_Alt;
                     File1 = fileMonthly_Base;
@@ -68,7 +76,9 @@ for i=1:nD
                     fprintf('\n      One or Both models do not have Monthly Stats....skipping');
                     continue;
                 end
-            elseif fi == 2% Second iteration compares Wet/Dry Seasons
+                
+            % Second iteration compares Wet/Dry Seasons
+            elseif fi == 2
                 if CompareWetDry% if both models had stats
                     File0 = fileWetDry_Alt;
                     File1 = fileWetDry_Base;
@@ -78,7 +88,9 @@ for i=1:nD
                     fprintf('\n      One or Both models do not have WetDry season Stats....skipping');
                     continue;
                 end
-            elseif fi == 3% Second iteration compares Calendar Year
+                
+            % Third iteration compares Calendar Year
+            elseif fi == 3
                 if CompareCalYear% if both models had stats
                     File0 = fileCalendarYear_Alt;
                     File1 = fileCalendarYear_Base;
@@ -88,7 +100,9 @@ for i=1:nD
                     fprintf('\n      One or Both models do not have Calendar Year Stats....skipping');
                     continue;
                 end
-            elseif fi == 4% Second iteration compares Water Year
+                
+            % Fourth iteration compares Water Year
+            elseif fi == 4
                 if CompareWaterYear% if both models had stats
                     File0 = fileWaterYear_Alt;
                     File1 = fileWaterYear_Base;
@@ -98,7 +112,9 @@ for i=1:nD
                     fprintf('\n      One or Both models do not have Water Year Stats....skipping');
                     continue;
                 end
-            elseif fi == 5% Second iteration compares Total Period
+                
+            % Fifth iteration compares Total Period
+            elseif fi == 5
                 if CompareTotalPeriod% if both models had stats
                     File0 = fileTotalPeriod_Alt;
                     File1 = fileTotalPeriod_Base;
@@ -117,11 +133,11 @@ for i=1:nD
             dfs2File0  = Dfs2File(DfsFileFactory.DfsGenericOpen(File0));
             
             % Open Base Model's Stat file and save metadata
-            dfs2File1 = Dfs2File(DfsFileFactory.DfsGenericOpen(File1));
+            dfs2File1   = Dfs2File(DfsFileFactory.DfsGenericOpen(File1));
             ProjWktString = dfs2File1.FileInfo.Projection.WKTString;
-            ProjLong = dfs2File1.FileInfo.Projection.Longitude;
-            ProjLat = dfs2File1.FileInfo.Projection.Latitude;
-            ProjOri = dfs2File1.FileInfo.Projection.Orientation;
+            ProjLong      = dfs2File1.FileInfo.Projection.Longitude;
+            ProjLat       = dfs2File1.FileInfo.Projection.Latitude;
+            ProjOri       = dfs2File1.FileInfo.Projection.Orientation;
             
             % Create output file
             % set file metadata
@@ -178,9 +194,11 @@ for i=1:nD
                         dfs2Out.WriteItemTimeStepNext(WriteTime, NET.convertArray(single(FileOut(:)))); % write timestep to file
                     end
                 end
+                
                 dfs2Out.Close();
                 dfs2File1.Close();
                 dfs2File0.Close();
+                
             catch ME
                 fprintf('ERROR generating Statistic Differences for model Alt%i and Base for %s period.\n', i, FileType);
                 fprintf('-- %s.\n', ME.message);

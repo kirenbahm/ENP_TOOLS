@@ -45,11 +45,10 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     
     % If '_2DSZ.dfs2' does not exist, then generate the depth values based
     % on head values, topography and, if file exists, the bottom elevations.
-    phreaticExists = exist(INI.filePhreatic, 'file');
-    if ~phreaticExists
+    if ~exist(INI.filePhreatic, 'file')
         ComputeDepthOfPhreaticSurface(INI);
     end
-    if phreaticExists
+    if exist(INI.filePhreatic, 'file')
         %Compute Monthly Stage
         INI.fileMonthlyStats = [INI.simRESULT INI.simMODEL, '_MonthlyStats.dfs2'];
         ComputeMonthlyStatistics(INI);

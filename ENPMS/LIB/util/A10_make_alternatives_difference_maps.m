@@ -120,7 +120,7 @@ for i=1:nD
                     File1 = fileTotalPeriod_Base;
                     FileType = 'TotalAnalysisPeriod';
                     fprintf('\n      comparing Total Period Stats');
-                    CompareTotalPeriodStatistics(INI, BaseFolder, BaseNameParts{2}, AltFolder, AltNameParts{2});
+                    ComputeTotalAnalysisPeriodStatistics(INI, BaseFolder, BaseNameParts{2}, AltFolder, AltNameParts{2});
                 else % else skip to next iteration
                     fprintf('\n      One or Both models do not have Total Period Stats....skipping');
                     continue;

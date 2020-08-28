@@ -66,7 +66,7 @@ for i = 1:nn % This loop iterates over each simulation to extract data
         INI.fileWaterYearStats = [INI.simRESULT INI.simMODEL, '_WaterYearStats.dfs2'];
         ComputeWaterYearStatistics(INI);
         %Compute Total Period
-        INI.fileTotalPeriodStats = [INI.simRESULT INI.simMODEL, '_TotalPeriodStats.dfs2'];
+        INI.fileTotalPeriodStats = [INI.simRESULT INI.simMODEL, '_TotalSimulationPeriodStats.dfs2'];
         ComputeTotalPeriodStatistics(INI);
     else
         fprintf('ERROR %s Not found. Cannot generate Statistics.\n', INI.filePhreatic);

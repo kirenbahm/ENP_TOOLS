@@ -35,7 +35,7 @@ fileMonthly_Base        = [BaseFolder BaseNameParts{2} '_MonthlyStats.dfs2'];   
 fileWetDry_Base         = [BaseFolder BaseNameParts{2} '_WetDryStats.dfs2'];       % Base Model WetDry Stats
 fileCalendarYear_Base   = [BaseFolder BaseNameParts{2} '_CalYearStats.dfs2'];      % Base Model Calendar Year Stats
 fileWaterYear_Base      = [BaseFolder BaseNameParts{2} '_WaterYearStats.dfs2'];    % Base Model Water Year Stats
-fileTotalPeriod_Base    = [BaseFolder BaseNameParts{2}, '_TotalPeriodStats.dfs2']; % Base Model Total Period Stats
+fileTotalPeriod_Base    = [BaseFolder BaseNameParts{2}, '_TotalAnalysisPeriodStats.dfs2']; % Base Model Total Period Stats
 
 CompareMonthly_Base     = exist(fileMonthly_Base,'file') == 2;      % Check if Monthly Stats exist
 CompareWetDry_Base      = exist(fileWetDry_Base,'file') == 2;       % Check if Wet Dry Season Stats exist
@@ -47,15 +47,15 @@ alt = 0;
 for i=1:nD
     if i ~= INI.BASE % If model isn't base
         alt = alt + 1;
-        BaseNameParts = INI.MODEL_SIMULATION_SET{i}; % Parse Alternative model Name
+        AltNameParts = INI.MODEL_SIMULATION_SET{i}; % Parse Alternative model Name
         AltNumStr = num2str(alt,'%i');  % String of Alternative number
-        BaseFolder = [INI.DATA_STATISTICS  BaseNameParts{2} '.she - Result Files\']; % Alternative Model results folder
+        AltFolder = [INI.DATA_STATISTICS  AltNameParts{2} '.she - Result Files\']; % Alternative Model results folder
         
-        fileMonthly_Alt      = [BaseFolder BaseNameParts{2} '_MonthlyStats.dfs2'];      % Alternative Model Monthly       Stats
-        fileWetDry_Alt       = [BaseFolder BaseNameParts{2} '_WetDryStats.dfs2'];       % Alternative Model WetDry        Stats
-        fileCalendarYear_Alt = [BaseFolder BaseNameParts{2} '_CalYearStats.dfs2'];      % Alternative Model Calendar Year Stats
-        fileWaterYear_Alt    = [BaseFolder BaseNameParts{2} '_WaterYearStats.dfs2'];    % Alternative Model Water Year    Stats
-        fileTotalPeriod_Alt  = [BaseFolder BaseNameParts{2}, '_TotalPeriodStats.dfs2']; % Alternative Model Total Period  Stats
+        fileMonthly_Alt      = [AltFolder AltNameParts{2} '_MonthlyStats.dfs2'];      % Alternative Model Monthly       Stats
+        fileWetDry_Alt       = [AltFolder AltNameParts{2} '_WetDryStats.dfs2'];       % Alternative Model WetDry        Stats
+        fileCalendarYear_Alt = [AltFolder AltNameParts{2} '_CalYearStats.dfs2'];      % Alternative Model Calendar Year Stats
+        fileWaterYear_Alt    = [AltFolder AltNameParts{2} '_WaterYearStats.dfs2'];    % Alternative Model Water Year    Stats
+        fileTotalPeriod_Alt  = [AltFolder AltNameParts{2}, '_TotalAnalysisPeriodStats.dfs2']; % Alternative Model Total Period  Stats
         
         CompareMonthly     = CompareMonthly_Base     && exist(fileMonthly_Alt,'file')      == 2; % Check if Monthly        Stats compare is possible
         CompareWetDry      = CompareWetDry_Base      && exist(fileWetDry_Alt,'file')       == 2; % Check if Wet/Dry Season Stats compare is possible
@@ -118,8 +118,9 @@ for i=1:nD
                 if CompareTotalPeriod% if both models had stats
                     File0 = fileTotalPeriod_Alt;
                     File1 = fileTotalPeriod_Base;
-                    FileType = 'TotalPeriod';
+                    FileType = 'TotalAnalysisPeriod';
                     fprintf('\n      comparing Total Period Stats');
+                    CompareTotalPeriodStatistics(INI, BaseFolder, BaseNameParts{2}, AltFolder, AltNameParts{2});
                 else % else skip to next iteration
                     fprintf('\n      One or Both models do not have Total Period Stats....skipping');
                     continue;
@@ -127,7 +128,7 @@ for i=1:nD
             end
             
             % Create Output file name
-            FileNameOut = [INI.POST_PROC_DIR '\DifferenceMaps\' BaseNameParts{2} '_Alt' AltNumStr '_Base_' FileType '_Diff.dfs2'];
+            FileNameOut = [INI.POST_PROC_DIR '\DifferenceMaps\' AltNameParts{3} '-' BaseNameParts{3} '_' FileType '_Diff.dfs2'];
             
             % Open Alternative Model's Stat file
             dfs2File0  = Dfs2File(DfsFileFactory.DfsGenericOpen(File0));

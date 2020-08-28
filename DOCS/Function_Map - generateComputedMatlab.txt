@@ -1,6 +1,12 @@
 generateComputedMatlab
   initializeLIB
   extractComputedData
+    ComputeDepthofPhreaticSurface
+    ComputeMonthlyStatistics
+    ComputeWetDryStatistics
+    ComputeCalendarYearStatistics
+    ComputeWaterYearStatistics
+    ComputeTotalSimulationPeriodStatistics
     readFileCompCoord
     readDomainGridCodes
     readM11_WM

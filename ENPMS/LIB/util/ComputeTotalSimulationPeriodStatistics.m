@@ -1,4 +1,4 @@
-function ComputeTotalPeriodStatistics(INI)
+function ComputeTotalSimulationPeriodStatistics(INI)
 % Reads the _2DSZ.dfs2 and _3DSZ.dfs3 to read depth and stage statistics, respectively. 
 % Iterates through data to find Statistics for the whole period of record,excluding data from incomplete calendar years.
 % For example, for a period between 1/1/2000 to 6/1/2005 
@@ -117,7 +117,7 @@ builder.AddDynamicItem(System.String('mean water depth during hydroperiod2 (avg.
     DepthMetaData.Quantity, ...
     DepthMetaData.DataType, DepthMetaData.ValueType);
 
-builder.CreateFile(INI.fileTotalPeriodStats);
+builder.CreateFile(INI.fileTotalSimulationPeriodStats);
 dfs2Out = Dfs2File(builder.GetFile());
 clear ProjWktString ProjLong ProjLat ProjOri HeadMetaData;
 
@@ -269,7 +269,7 @@ catch ME
     dfs2Out.Close();
     dfs2DepthFile.Close();
     dfs3HeadFile.Close();
-    delete(INI.fileTotalPeriodStats); % Delete Partially Written File If there is an error
+    delete(INI.fileTotalSimulationPeriodStats); % Delete Partially Written File If there is an error
 end
 clear AverageStage AverageDepth DisConHydroPeriod DisConHydroPeriodMeanDepth WriteToGrid;
 clear MaxConHydroPeriod MaxConHydroPeriodMeanDepth CurrentConHydroPeriod CurrentConHydroPeriodMeanDepth;

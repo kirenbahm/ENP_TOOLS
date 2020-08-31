@@ -80,3 +80,6 @@ ANALYSIS_COMPARE
           head_figure
           tail_figure
         generate_latex_tail
+
+    A10_make_alternatives_difference_maps
+      ComputeTotalAnalysisPeriodStatistics

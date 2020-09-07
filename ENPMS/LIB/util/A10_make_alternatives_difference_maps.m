@@ -20,6 +20,11 @@ eval('import DHI.Generic.MikeZero.DFS.*');
 eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
 eval('import DHI.Generic.MikeZero.*');
 
+% Setup output directory
+if ~exist([INI.POST_PROC_DIR '\DifferenceMaps\'], 'dir')
+   mkdir([INI.POST_PROC_DIR '\DifferenceMaps\'])
+end
+
 % Analysis Period
 StartDateTime = datetime(INI.ANALYZE_DATE_I);
 EndDateTime = datetime(INI.ANALYZE_DATE_F);

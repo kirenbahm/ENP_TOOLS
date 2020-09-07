@@ -19,6 +19,10 @@ fprintf('\nBeginning ComputeCalendarYearStatistics    (%s)',datestr(now));
 fprintf('\n------------------------------------');
 format compact
 
+% Open _PreProcessed.DFS2 file and read topography and metadata
+[topoData,~] = readModelTopo(INI);
+topoArray = double(topoData.Data); % topo
+
 % Open _2DSZ.dfs2 file and save metadata
 dfs2DepthFile  = DfsFileFactory.DfsGenericOpen(INI.filePhreatic);%Dfs2File();
 search = '';
@@ -30,8 +34,7 @@ while ~strcmp(char(search), char(field))  && itemDepth < dfs2DepthFile.ItemInfo.
     search = dfs2DepthFile.ItemInfo.Item(itemDepth).Name;
 end
 
-%Open _3DSZ.dfs3 file and save metadata
-dfs3HeadFile = Dfs3File(DfsFileFactory.DfsGenericOpen(INI.fileSZ));
+% Save _2DSZ.dfs2 metadata
 ProjWktString = dfs2DepthFile.FileInfo.Projection.WKTString;
 ProjLong = dfs2DepthFile.FileInfo.Projection.Longitude;
 ProjLat = dfs2DepthFile.FileInfo.Projection.Latitude;
@@ -165,7 +168,7 @@ try
                 % Set Max Continuous Hydroperiod Mean Depth at indexes = 0
                 MaxConHydroPeriodMeanDepth(WriteToGrid) = 0;
                 % Find indexes outside domain where noData values are
-                WriteToGrid = HeadTop == noData;
+                WriteToGrid = DepthArray == noData;
                 % Set values at indexes to noData Values
                 AverageStage(WriteToGrid) = noData;
                 WriteToGrid = DepthArray == noData;
@@ -205,10 +208,8 @@ try
         end
         DepthData2D = dfs2DepthFile.ReadItemTimeStep(itemDepth + 1, ts); % 2D array with Depths
         DepthArray = double(DepthData2D.Data); % convert to 1D array
-        StageData3D = dfs3HeadFile.ReadItemTimeStep(1, ts); % 3D array with Stages
-        HeadArray = double(StageData3D.Data); % convert to 1D array
-        HeadTop = HeadArray(end - nG + 1: end);% Find top layer of head values
-        AverageStage = AverageStage + HeadTop; % Add top layer head values to average stage
+        AverageStage = AverageStage + DepthArray + topoArray; % Add depth and topography values to average stage
+        DepthArray(DepthArray < 0 & DepthArray ~= noData) = 0; % Depth values below ground are 0
         AverageDepth = AverageDepth + DepthArray;% Add Depth values to average depth
         nts = nts + 1; % Increment time step counter
         WriteToGrid = DepthArray > INI.HYDROPERIOD_THRESHOLD;% Find indexes where current depth is above hydroperiod threshhold.
@@ -236,14 +237,12 @@ try
     end
     dfs2Out.Close();
     dfs2DepthFile.Close();
-    dfs3HeadFile.Close();
     fprintf('\n      Calendar Year Statistics Successfully Generated.\n');
 catch ME
     fprintf('ERROR generating Calendar Year Stats.\n');
     fprintf('-- %s.\n', ME.message);
     dfs2Out.Close();
     dfs2DepthFile.Close();
-    dfs3HeadFile.Close();
     delete(INI.fileCalendarYearStats);% Delete Partially Written File If there is an error
 end
 clear AverageStage AverageDepth DisConHydroPeriod DisConHydroPeriodMeanDepth WriteToGrid;

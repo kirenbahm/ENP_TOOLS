@@ -147,6 +147,7 @@ try
         DeptheData2D = dfs2DepthFile.ReadItemTimeStep(itemDepth + 1, kt); % 3d array with depths
         DepthArray = double(DeptheData2D.Data); % convert to 1D array
         AverageStage = AverageStage + DepthArray + topoArray; % Add Depth and Topography values to average stage
+        DepthArray(DepthArray < 0 & DepthArray ~= noData) = 0; % Depth values below ground are 0
         AverageDepth = AverageDepth + DepthArray; % Add Depth values to average depth
         nts = nts + 1; % increment number of timesteps
     end

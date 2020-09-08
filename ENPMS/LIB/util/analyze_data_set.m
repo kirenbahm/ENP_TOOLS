@@ -42,7 +42,7 @@ if INI.A5 ; INI = A5_create_summary_stat(INI); end
 %if INI.A7; INI = A7_MDR_SEEPAGE(INI); end
 if INI.A9; INI = A9_make_latex_report(INI); end
 if INI.A10; INI = A10_make_alternatives_difference_maps(INI); end
-
+if INI.A11; INI = A11_Generate_Statistic_Graphics(INI); end
 fclose('all');
 
 end

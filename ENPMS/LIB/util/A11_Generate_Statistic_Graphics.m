@@ -102,7 +102,7 @@ grid = shaperead(INI.GRID_CELLS);
 
 % Loop through models
 nM = size(INI.MODEL_SIMULATION_SET, 2);
-for ii=2%nM + 1 % Extra loop iteration is for the DifferenceMaps 1:
+for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
     % Find list of files to read
     if ii <= nM % If one of the input models, find filenames of dfs2 user selected for figures
         ModelNameParts = INI.MODEL_SIMULATION_SET{ii}; % Parse Base model Name

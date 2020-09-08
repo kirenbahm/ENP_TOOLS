@@ -57,7 +57,7 @@ end
 INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/'; 
 
 INI.FILE_OBSERVED = [INI.DATA_COMMON '/SAMPLE_OBS_DATA_20200305.MATLAB'];
-
+INI.GRID_CELLS = [INI.DATA_COMMON '/M06_grid_cells.shp']; % Used in A11 to generate maps
 %---------------------------------------------------------------------
 % 3. Set a tag for this analysis
 %     (This tag will be used to name the output directory, combined 
@@ -118,6 +118,7 @@ INI.A5    = 1; % A5_create_summary_stat
 %INI.A8    = 0; % A8_SEEPAGE_EXCEL % not implemented yet
 INI.A9    = 1; % A9_make_latex_report % 
 INI.A10   = 1; %A10 Makes difference map of statistics generated in generateComputedMatlab
+INI.A11   = 1; %A11 Makes Figures with statistics created by generateComputedMatlab and A10
 
 %---------------------------------------------------------------------
 % 9 Additional settings, DEFAULT can be modified for additional functionality 

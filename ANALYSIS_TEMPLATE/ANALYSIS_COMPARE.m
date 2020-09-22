@@ -131,6 +131,14 @@ INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 
 INI.DEBUG                 = 1; % Set this to 1 to generate extra output for debugging
 
+% Seetings for A 11 script to decide which figures to create
+INI.MONTHLY_FIGS        = 0;
+INI.CALENDAR_YEAR_FIGS  = 1;
+INI.WATER_YEAR_FIGS     = 1;
+INI.WET_DRY_SEASON_FIGS = 1;
+INI.TOTAL_PERIOD_FIGS   = 1;
+INI.DIFFERENCE_MAP_FIGS = 1;
+
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------
 %  END USER DEFINITIONS

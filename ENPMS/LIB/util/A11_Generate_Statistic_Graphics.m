@@ -149,6 +149,10 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
     for FI = 1:size(LISTING, 2)
         [~, fn, ext] = fileparts(LISTING(FI).name); % Find current file name and extension
         fprintf('\n....Finding active grid cells in file %s', strcat(fn, ext));
+        if ~exist(LISTING(FI).name, 'file')
+            fprintf('\n....%s file not found. skipping %s', strcat(fn, ext));
+            continue;
+        end
         dfs2File = Dfs2File(DfsFileFactory.DfsGenericOpen(LISTING(FI).name)); % Open dfs2file
         % save file metadata
         noData = dfs2File.FileInfo.DeleteValueFloat;

@@ -28,6 +28,8 @@ end
 % Analysis Period
 StartDateTime = datetime(INI.ANALYZE_DATE_I);
 EndDateTime = datetime(INI.ANALYZE_DATE_F);
+Period = strcat(num2str(INI.ANALYZE_DATE_I(2)), '_', num2str(INI.ANALYZE_DATE_I(1)), '_',...
+                num2str(INI.ANALYZE_DATE_F(2)), '_', num2str(INI.ANALYZE_DATE_F(1)));
 
 % Number Of Models
 nD = length(INI.MODEL_ALL_RUNS);
@@ -40,13 +42,12 @@ fileMonthly_Base        = [BaseFolder BaseNameParts{2} '_MonthlyStats.dfs2'];   
 fileWetDry_Base         = [BaseFolder BaseNameParts{2} '_WetDryStats.dfs2'];       % Base Model WetDry Stats
 fileCalendarYear_Base   = [BaseFolder BaseNameParts{2} '_CalYearStats.dfs2'];      % Base Model Calendar Year Stats
 fileWaterYear_Base      = [BaseFolder BaseNameParts{2} '_WaterYearStats.dfs2'];    % Base Model Water Year Stats
-fileTotalPeriod_Base    = [BaseFolder BaseNameParts{2}, '_TotalAnalysisPeriodStats.dfs2']; % Base Model Total Period Stats
+fileTotalPeriod_Base    = [BaseFolder BaseNameParts{2}, '_TotalAnalysisPeriodStats(' Period ').dfs2']; % Base Model Total Period Stats
 
 CompareMonthly_Base     = exist(fileMonthly_Base,'file') == 2;      % Check if Monthly Stats exist
 CompareWetDry_Base      = exist(fileWetDry_Base,'file') == 2;       % Check if Wet Dry Season Stats exist
 CompareCalYear_Base     = exist(fileCalendarYear_Base,'file') == 2; % Check if Calendar Stats exist
 CompareWaterYear_Base   = exist(fileWaterYear_Base,'file') == 2;    % Check if Water Year Stats exist
-CompareTotalPeriod_Base = exist(fileTotalPeriod_Base,'file') == 2;  % Check if Total Period Stats exist
 
 alt = 0;
 for i=1:nD
@@ -60,13 +61,12 @@ for i=1:nD
         fileWetDry_Alt       = [AltFolder AltNameParts{2} '_WetDryStats.dfs2'];       % Alternative Model WetDry        Stats
         fileCalendarYear_Alt = [AltFolder AltNameParts{2} '_CalYearStats.dfs2'];      % Alternative Model Calendar Year Stats
         fileWaterYear_Alt    = [AltFolder AltNameParts{2} '_WaterYearStats.dfs2'];    % Alternative Model Water Year    Stats
-        fileTotalPeriod_Alt  = [AltFolder AltNameParts{2}, '_TotalAnalysisPeriodStats.dfs2']; % Alternative Model Total Period  Stats
+        fileTotalPeriod_Alt  = [AltFolder AltNameParts{2}, '_TotalAnalysisPeriodStats(' Period ').dfs2']; % Alternative Model Total Period  Stats
         
         CompareMonthly     = CompareMonthly_Base     && exist(fileMonthly_Alt,'file')      == 2; % Check if Monthly        Stats compare is possible
         CompareWetDry      = CompareWetDry_Base      && exist(fileWetDry_Alt,'file')       == 2; % Check if Wet/Dry Season Stats compare is possible
         CompareCalYear     = CompareCalYear_Base     && exist(fileCalendarYear_Alt,'file') == 2; % Check if Calendar Year  Stats compare is possible
         CompareWaterYear   = CompareWaterYear_Base   && exist(fileWaterYear_Alt,'file')    == 2; % Check if Water Year     Stats compare is possible
-        CompareTotalPeriod = CompareTotalPeriod_Base && exist(fileTotalPeriod_Alt,'file')  == 2; % Check if Total Period   Stats compare is possible
         
         for fi=1:5 % For each Stat type
             
@@ -120,12 +120,16 @@ for i=1:nD
                 
             % Fifth iteration compares Total Period
             elseif fi == 5
-                if CompareTotalPeriod% if both models had stats
+                if CompareMonthly % if both models had Monthly stats
+                    fprintf('\n     Creating individual Total Analysis Period dfs2 files')
+                    ComputeTotalAnalysisPeriodStatistics(INI, BaseFolder, BaseNameParts{2}, AltFolder, AltNameParts{2});
+                    CompareTotalPeriod = exist(fileTotalPeriod_Base,'file') == 2 && exist(fileTotalPeriod_Alt,'file')  == 2;
+                end
+                if CompareTotalPeriod
                     File0 = fileTotalPeriod_Alt;
                     File1 = fileTotalPeriod_Base;
                     FileType = 'TotalAnalysisPeriod';
                     fprintf('\n      comparing Total Period Stats');
-                    ComputeTotalAnalysisPeriodStatistics(INI, BaseFolder, BaseNameParts{2}, AltFolder, AltNameParts{2});
                 else % else skip to next iteration
                     fprintf('\n      One or Both models do not have Total Period Stats....skipping');
                     continue;

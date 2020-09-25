@@ -100,6 +100,9 @@ end
 fprintf('Reading in Grid Cell Shape Data: %s\n', 'M06_grid_cells.shp');
 grid = shaperead(INI.GRID_CELLS);
 
+StartDateTime = datetime(INI.ANALYZE_DATE_I);
+EndDateTime = datetime(INI.ANALYZE_DATE_F);
+
 % Loop through models
 nM = size(INI.MODEL_SIMULATION_SET, 2);
 for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
@@ -193,7 +196,7 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
             end
         end
         fprintf('\n....Creating figures for file %s\n', LISTING(FI).name);
-        createStatisticFigure(LISTING(FI).name, WorkingGrid, LegendData, OutDir); % Send dfs2 to script for writing figures
+        createStatisticFigure(LISTING(FI).name, WorkingGrid, LegendData, OutDir, StartDateTime, EndDateTime); % Send dfs2 to script for writing figures
         clear WorkingGrid % Clear memory for Working Grid when file is done
     end
 end

@@ -1,4 +1,4 @@
-function createStatisticFigure(FileName, GridCells, LegendData, OutputDir)
+function createStatisticFigure(FileName, GridCells, LegendData, OutputDir, StartDateTime, EndDateTime)
 %------------------Import Statement------------------
 dmi = NET.addAssembly('DHI.Mike.Install');
 if (~isempty(dmi))
@@ -124,11 +124,16 @@ for nI = 1:dfs2File.ItemInfo.Count
         ConversionFactor = 1/0.3048; % convert to feet
     end
     for ti = 0:TimeAxis.NumberOfTimeSteps - 1 % For each timestep in file
+        ItemData2D = dfs2File.ReadItemTimeStep(nI, ti); % Read dfs2 for item at time step
+        currentDateTime = D0 + (ItemData2D.Time / 86400); % Find DateTime of current time step
+        if currentDateTime < StartDateTime
+            continue;
+        elseif currentDateTime > EndDateTime
+            break;
+        end
         fprintf('........Creating Figures for Timestep %i / %i\n', ti + 1, TimeAxis.NumberOfTimeSteps);
         % For legend
-        Cat0I = -1;Cat1I = -1;Cat2I = -1;Cat3I = -1;Cat4I = -1;Cat5I = -1;Cat6I = -1;Cat7I = -1;Cat8I = -1;
-        ItemData2D = dfs2File.ReadItemTimeStep(nI, ti); % Read dfs2 for item at time step
-        currentDateTime = D0 + (ItemData2D.Time / 86400); % Find DateTime of Data
+        Cat0I = -1;Cat1I = -1;Cat2I = -1;Cat3I = -1;Cat4I = -1;Cat5I = -1;Cat6I = -1;Cat7I = -1;Cat8I = -1;Data
         TitleText = ''; % Initialize final variable for title text
         YearStr = num2str(currentDateTime.Year); % turn year to string
         if IsWetDry % If Wet/Dry Seasons

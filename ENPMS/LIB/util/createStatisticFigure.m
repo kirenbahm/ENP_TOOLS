@@ -133,7 +133,7 @@ for nI = 1:dfs2File.ItemInfo.Count
         end
         fprintf('........Creating Figures for Timestep %i / %i\n', ti + 1, TimeAxis.NumberOfTimeSteps);
         % For legend
-        Cat0I = -1;Cat1I = -1;Cat2I = -1;Cat3I = -1;Cat4I = -1;Cat5I = -1;Cat6I = -1;Cat7I = -1;Cat8I = -1;Data
+        Cat0I = -1;Cat1I = -1;Cat2I = -1;Cat3I = -1;Cat4I = -1;Cat5I = -1;Cat6I = -1;Cat7I = -1;Cat8I = -1;
         TitleText = ''; % Initialize final variable for title text
         YearStr = num2str(currentDateTime.Year); % turn year to string
         if IsWetDry % If Wet/Dry Seasons

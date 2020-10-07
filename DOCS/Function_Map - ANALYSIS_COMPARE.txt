@@ -83,3 +83,6 @@ ANALYSIS_COMPARE
 
     A10_make_alternatives_difference_maps
       ComputeTotalAnalysisPeriodStatistics
+
+    A11_Generation_Statistic_Graphics
+      createStatisticFigure

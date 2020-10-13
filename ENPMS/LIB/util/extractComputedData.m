@@ -42,7 +42,10 @@ for i = 1:nn % This loop iterates over each simulation to extract data
 	
     dfs0Exists  = exist(INI.fileM11Dfs0,'file');
     res11Exists = exist(INI.fileM11Res11, 'file');
-    
+    INI.MODEL_STATS = [INI.STAT_OUTPUTS INI.simMODEL];
+    if ~exist(INI.MODEL_STATS, 'dir')
+        mkdir(INI.MODEL_STATS)
+    end
     % If '_2DSZ.dfs2' does not exist, then generate the depth values based
     % on head values, topography and, if file exists, the bottom elevations.
     if ~exist(INI.filePhreatic, 'file')
@@ -50,21 +53,21 @@ for i = 1:nn % This loop iterates over each simulation to extract data
     end
     if exist(INI.filePhreatic, 'file')
         %Compute Monthly Stage
-        INI.fileMonthlyStats = [INI.simRESULT INI.simMODEL, '_MonthlyStats.dfs2'];
+        INI.fileMonthlyStats = [INI.MODEL_STATS, '\' INI.simMODEL '_MonthlyStats.dfs2'];
         ComputeMonthlyStatistics(INI);
-	if exist(INI.fileMonthlyStats, 'file')
+        if exist(INI.fileMonthlyStats, 'file')
             %Compute Wet/Dry Season
-            INI.fileWetDrySeasonStats = [INI.simRESULT INI.simMODEL, '_WetDryStats.dfs2'];
+            INI.fileWetDrySeasonStats = [INI.MODEL_STATS,'\' INI.simMODEL '_WetDryStats.dfs2'];
             ComputeWetDrySeasonStatistics(INI);
-	end
+        end
         %Compute Calendar Years
-        INI.fileCalendarYearStats = [INI.simRESULT INI.simMODEL, '_CalYearStats.dfs2'];
+        INI.fileCalendarYearStats = [INI.MODEL_STATS,'\' INI.simMODEL '_CalYearStats.dfs2'];
         ComputeCalendarYearStatistics(INI);
         %Computer Water Years
-        INI.fileWaterYearStats = [INI.simRESULT INI.simMODEL, '_WaterYearStats.dfs2'];
+        INI.fileWaterYearStats = [INI.MODEL_STATS,'\' INI.simMODEL '_WaterYearStats.dfs2'];
         ComputeWaterYearStatistics(INI);
         %Compute Total Period
-        INI.fileTotalSimulationPeriodStats = [INI.simRESULT INI.simMODEL, '_TotalSimulationPeriodStats.dfs2'];
+        INI.fileTotalSimulationPeriodStats = [INI.MODEL_STATS, '\' INI.simMODEL '_TotalSimulationPeriodStats.dfs2'];
         ComputeTotalSimulationPeriodStatistics(INI);
     else
         fprintf('ERROR %s Not found. Cannot generate Statistics.\n', INI.filePhreatic);

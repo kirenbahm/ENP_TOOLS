@@ -55,6 +55,8 @@ INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common\';
 %---------------------------------------------------------------------
 % use this for unit testing
 INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_Output_Processed\';
+INI.DATA_OUTPUT = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\';
+INI.STAT_OUTPUTS = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\StatisticCalculations\';
 
 % use this for sequential testing
 %INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';

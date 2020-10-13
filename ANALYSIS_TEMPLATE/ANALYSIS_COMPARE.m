@@ -57,7 +57,6 @@ end
 INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/'; 
 
 INI.FILE_OBSERVED = [INI.DATA_COMMON '/SAMPLE_OBS_DATA_20200305.MATLAB'];
-INI.GRID_CELLS = [INI.DATA_COMMON '/M06_grid_cells.shp']; % Used in A11 to generate maps
 %---------------------------------------------------------------------
 % 3. Set a tag for this analysis
 %     (This tag will be used to name the output directory, combined 
@@ -74,6 +73,7 @@ INI.ANALYSIS_TAG = 'M01-M06_test';
 INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Model_Output_Processed\';
 INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
 INI.DATA_STATISTICS = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\';
+INI.GIS_DIR = '..\..\ENP_FILES\INPUTFILES\GIS\';
 
 % use this for sequential testing
 %INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
@@ -131,7 +131,7 @@ INI.INCLUDE_COMPUTED      = 1; % Include computed in the output figs and tables.
 INI.LATEX_REPORT_BY_AREA  = 1; % The latex report lists stations by area 
 INI.DEBUG                 = 1; % Set this to 1 to generate extra output for debugging
 
-% Seetings for A 11 script to decide which figures to create
+% Settings for A 11 script to decide which figures to create
 INI.MONTHLY_FIGS        = 0;
 INI.CALENDAR_YEAR_FIGS  = 1;
 INI.WATER_YEAR_FIGS     = 1;

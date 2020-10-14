@@ -72,8 +72,8 @@ INI.ANALYSIS_TAG = 'M01-M06_test';
 % use this for unit testing
 INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Model_Output_Processed\';
 INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
-INI.DATA_STATISTICS = '..\..\ENP_FILES\ENP_TOOLS_Output\generateComputedMatlab_output\StatisticCalculations\';
-INI.GIS_DIR = '..\..\ENP_FILES\INPUTFILES\GIS\';
+INI.DATA_STATISTICS = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\StatisticCalculations\';
+INI.GIS_DIR = '..\..\ENP_MODELS\INPUTFILES\GIS\';
 
 % use this for sequential testing
 %INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';

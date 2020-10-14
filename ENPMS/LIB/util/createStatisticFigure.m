@@ -17,8 +17,8 @@ eval('import DHI.Generic.MikeZero.*');
 
 % Shape file layers for maps
 DomainShp = [GISDir 'M06_DOMAIN.shp'];
-RoadShp = [GISDir 'roads.shp'];
-CanalShp = [GISDir 'sfwmd_canals.shp'];
+RoadShp = [GISDir 'roads_Clipped.shp'];
+CanalShp = [GISDir 'sfwmd_canals_Clipped.shp'];
 
 % Dfs2 file information
 dfs2File = Dfs2File(DfsFileFactory.DfsGenericOpen(FileName)); % Open dfs2 file
@@ -32,20 +32,20 @@ IsMonthly = false; % Flagged for more specific title
 
 % Used to create Figure Titles and Figure *.png filename
 if contains(FileName, 'CalYear') % For Calendar Year
-    PrefixTitle = 'Annual';
+    PrefixTitle = [namesplit{1} ' Annual'];
     PrefixFileName = PrefixTitle;
 elseif contains(FileName, 'Monthly') % For Monthly
-    PrefixTitle = 'Monthly';
+    PrefixTitle = [namesplit{1} ' Monthly'];
     PrefixFileName = PrefixTitle;
     IsMonthly = true; % Uses generic prefix but more specific time, and is flagged for later
 elseif contains(FileName, 'WaterYear') % For Water Year
-    PrefixTitle = 'Water Year';
-    PrefixFileName = 'Water-Year';
+    PrefixTitle = [namesplit{1} ' Water Year'];
+    PrefixFileName = [namesplit{1} ' Water-Year'];
 elseif contains(FileName, 'WetDry') % For WetDry Season
     IsWetDry = true; % Uses less generic prefix, thus is flagged for creating prefix later
 elseif contains(FileName, 'TotalAnalysisPeriod') % For Total Analysis Period
-    PrefixTitle = 'Analysis Period';
-    PrefixFileName = 'Analysis-Period';
+    PrefixTitle = [namesplit{1} ' Analysis Period'];
+    PrefixFileName = [namesplit{1} ' Analysis-Period'];
 end
 
 HydroPeriodLatexFile = '';
@@ -108,34 +108,34 @@ for nI = 1:dfs2File.ItemInfo.Count
         LegendValues = LegendData.StageValues; % Save Symbol Colormap
         LegendColorMap = LegendData.StageColorMap;
         SymbolLabels = LegendData.StageLabels; % Save Legend Labels
-        TitleFront = strcat(PrefixTitle, ' Average Stage (ft) -  '); % add prefix and item to title
+        TitleFront = strcat(PrefixTitle, ' Average Stage (ft NGVD29)'); % add prefix and item to title
         PlotName = strcat(PrefixFileName, '-Stage'); % add prefix and item to filename
         ActiveLatex = StageLatexFile;
-        LegendTitle = 'Stage (ft)';
+        LegendTitle = 'Stage (ft NGVD29)';
     elseif contains(ItemName, 'water level') && IsDifference % mean water level and a DifferenceMap
         LegendValues = LegendData.ElevDiffValues; % Save Symbol Colormap
         LegendColorMap = LegendData.ElevDiffColorMap;
         SymbolLabels = LegendData.ElevDiffLabels; % Save Legend Labels
-        TitleFront = strcat(PrefixTitle, ' Average Stage Difference (ft) -  ');% add prefix and item to title
+        TitleFront = strcat(PrefixTitle, ' Average Stage Difference (ft NGVD29)');% add prefix and item to title
         PlotName = strcat(PrefixFileName, '-StageDiff'); % add prefix and item to filename
         ActiveLatex = StageLatexFile;
-        LegendTitle = 'Stage (ft)';
+        LegendTitle = 'Stage (ft NGVD29)';
     elseif contains(ItemName, 'water depth') && ~IsDifference % mean water depth, but not a DifferenceMap
         LegendValues = LegendData.DepthValues; % Save Symbol Colormap
         LegendColorMap = LegendData.DepthColorMap;
         SymbolLabels = LegendData.DepthLabels; % Save Legend Labels
         if contains(ItemName, 'discontinuous') % mean water depth during discontinuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth (ft) -  '); % add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth (ft)'); % add prefix and item to title
             PlotName = strcat(PrefixFileName, '-PondingDepth'); % add prefix and item to filename
             ActiveLatex = PondingDepthLatexFile;
             LegendTitle = 'Ponding Depth (ft)';
         elseif contains(ItemName, 'max continuous')% mean water depth during max continuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth (ft) during Max Continuous Hydroperiod -  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth (ft) during Max Continuous Hydroperiod');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-PondingDepthMaxHydroperiod'); % add prefix and item to filename
             ActiveLatex = PondingDepthLatexFile;
             LegendTitle = 'Ponding Depth (ft)';
         else % mean water depth
-            TitleFront = strcat(PrefixTitle, ' Average Water Depth (ft) -  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Average Water Depth (ft)');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-Depth'); % add prefix and item to filename
             ActiveLatex = DepthLatexFile;
             LegendTitle = 'Water Depth (ft)';
@@ -146,15 +146,15 @@ for nI = 1:dfs2File.ItemInfo.Count
         SymbolLabels = LegendData.ElevDiffLabels; % Save Legend Labels
         ActiveLatex = StageLatexFile;
         if contains(ItemName, 'discontinuous') % mean water depth during discontinuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth Difference (ft)-  '); % add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth Difference (ft)'); % add prefix and item to title
             PlotName = strcat(PrefixFileName, '-PondingDepthDiff'); % add prefix and item to filename
             LegendTitle = 'Ponding Depth (ft)';
         elseif contains(ItemName, 'max continuous')% mean water depth during max continuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth During Max Continuous Hydroperiod Difference (ft)-  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Average Ponding Depth During Max Continuous Hydroperiod Difference (ft)');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-PondingDepthMaxHydroperiodDiff'); % add prefix and item to filename
             LegendTitle = 'Ponding Depth (ft)';
         else % mean water depth
-            TitleFront = strcat(PrefixTitle, ' Average Water Depth Difference (ft)-  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Average Water Depth Difference (ft)');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-DepthDiff'); % add prefix and item to filename
             LegendTitle = 'Water Depth (ft)';
         end
@@ -164,11 +164,11 @@ for nI = 1:dfs2File.ItemInfo.Count
         SymbolLabels = LegendData.HPLabels; % Save Legend Labels
         ActiveLatex = HydroPeriodLatexFile;
         if contains(ItemName, 'hydroperiod1') % If discontinuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Hydroperiod Distribution (days)-  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Hydroperiod Distribution (days)');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-DisconHydroperiod');% add prefix and item to filename
             LegendTitle = 'Hydroperiod Class';
         else % else max continuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Max Continuous Hydroperiod Distribution (days)-  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Max Continuous Hydroperiod Distribution (days)');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-MaxConHydroperiod');% add prefix and item to filename
             LegendTitle = 'Hydroperiod Class';
         end
@@ -178,11 +178,11 @@ for nI = 1:dfs2File.ItemInfo.Count
         SymbolLabels = LegendData.HPDiffLabels; % Save Legend Labels
         ActiveLatex = HydroPeriodLatexFile;
         if contains(ItemName, 'hydroperiod1') % If discontinuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Hydroperiod Difference Distribution (days)-  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Hydroperiod Difference Distribution (days)');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-DisconHydroperiodDiff-');% add prefix and item to filename
             LegendTitle = 'Hydroperiod Class';
         else % else max continuous hydroperiod
-            TitleFront = strcat(PrefixTitle, ' Max Continuous Hydroperiod Difference Distribution (days)-  ');% add prefix and item to title
+            TitleFront = strcat(PrefixTitle, ' Max Continuous Hydroperiod Difference Distribution (days)');% add prefix and item to title
             PlotName = strcat(PrefixFileName, '-MaxConHydroperiodDiff-');% add prefix and item to filename
             LegendTitle = 'Hydroperiod Class';
         end
@@ -195,9 +195,9 @@ for nI = 1:dfs2File.ItemInfo.Count
     
     % Writes a Section start to the respective Latex File
     if IsWetDry 
-        generate_latex_blocks_maps(ActiveLatex, 2, 'Wet/Dry Season');
+        generate_latex_blocks_maps(ActiveLatex, 2, strcat(namesplit{1}, ' Wet/Dry Season ', TitleFront));
     else
-        generate_latex_blocks_maps(ActiveLatex, 2, PrefixTitle);
+        generate_latex_blocks_maps(ActiveLatex, 2, TitleFront);
     end
     for ti = 0:TimeAxis.NumberOfTimeSteps - 1 % For each timestep in file
         ItemData2D = dfs2File.ReadItemTimeStep(nI, ti); % Read dfs2 for item at time step
@@ -213,21 +213,21 @@ for nI = 1:dfs2File.ItemInfo.Count
         YearStr = num2str(currentDateTime.Year); % turn year to string
         if IsWetDry % If Wet/Dry Seasons
             if currentDateTime.Month == 6 % If timestep is June, Wet Season
-                TitleText = strcat('Wet Season ', TitleFront, '  ', YearStr); % final title
-                plotfilename = strcat('Wet', PlotName, '-', YearStr); % final filename
+                TitleText = strcat(namesplit{1}, ' Wet Season ', TitleFront, ' - ', YearStr); % final title
+                plotfilename = strcat(namesplit{1}, ' Wet', PlotName, '-', YearStr); % final filename
             else % else, Dry Season
-                TitleText = strcat('Dry Season ', TitleFront, '  ', YearStr);  % final title
-                plotfilename = strcat('Dry', PlotName, '-', YearStr); % final filename
+                TitleText = strcat(namesplit{1}, ' Dry Season ', TitleFront, ' - ', YearStr);  % final title
+                plotfilename = strcat(namesplit{1}, ' Dry', PlotName, '-', YearStr); % final filename
             end
         elseif IsMonthly % If monthly use Month and Year in title and filename
-            TitleText = strcat(TitleFront, '  ', num2str(currentDateTime.Month), '/', YearStr); % final title
+            TitleText = strcat(TitleFront, ' - ', num2str(currentDateTime.Month), '/', YearStr); % final title
             plotfilename = strcat(PlotName, '-',  YearStr, '-',num2str(currentDateTime.Month, '%02i'));  % final filename
         else
-            TitleText = strcat(TitleFront, '  ', YearStr); % final title
+            TitleText = strcat(TitleFront, ' - ', YearStr); % final title
             plotfilename = strcat(PlotName, '-', YearStr);  % final filename
         end
         ItemData = double(ItemData2D.Data); % Convert from 2D array to 1D array
-        clf % Clear Figure
+        clf('reset') % Clear Figure
         gca = axesm ('utm', 'Frame', 'off', 'Grid', 'off'); % Create a UTM map, turn the Frame on, and Grid On
         zone = utmzone(ProjLat, ProjLong); % Find the UTM zone, from dfs2 Projection Latitude and Longitude
         setm(gca, 'zone', zone) % set UTM map to specified zone
@@ -235,15 +235,22 @@ for nI = 1:dfs2File.ItemInfo.Count
         % Uses the dfs2 X and Y Limits to limit map to model area
         % Limits are extended to allow space for map elements without
         % covering raster
-        XLim = [XLimits(1) * (0.92) XLimits(2) * (1.02)];
+        XLim = [XLimits(1) * (0.97) XLimits(2) * (1.02)];
         YLim = [YLimits(1) * (0.995) YLimits(2) * (1.002)];
         set(gca, 'XLim', XLim, 'YLim', YLim);
-        
         % draws data from shape files to map
         mapshow(DomainShp,'FaceColor','none', 'EdgeColor', 'black');
         mapshow(RoadShp,'Color','black', 'LineWidth', 1);
         mapshow(CanalShp,'Color','blue', 'LineWidth', 1);
         
+        fig = gcf;
+        set(gcf, 'Position', [680   558   560   420]); %default
+        FigSize = fig.Position;
+        NewFigSize = [(FigSize(1) / 6) (FigSize(2) / 6) (FigSize(3) * 1.9) (FigSize(4) * 1.9)];
+        set(gcf, 'Position', NewFigSize);
+        FigSize = gca.Position;
+        NewFigSize = [(FigSize(1) / 8) (FigSize(2) / 4) (FigSize(3) * 1.3) (FigSize(4) * 1.1)];
+        set(gca, 'Position', NewFigSize);
         %-------------Creates Raster from Dfs2-------------%
         % reshape 1D array to 2D array
         Z = reshape(ItemData, SpatialAxis.XCount, SpatialAxis.YCount);
@@ -277,7 +284,7 @@ for nI = 1:dfs2File.ItemInfo.Count
         
         % Lower limit is Origin Lat long from dfs2 projection pushed out a bit
         % Map USA Coastline to figure, builtin shape file from Matlab Mapping Toolbox
-        hleg = legend(p, SymbolLabels, 'Location', 'west', 'AutoUpdate', 'off', 'FontSize', 6);
+        hleg = legend(p, SymbolLabels, 'Location', 'southwest', 'AutoUpdate', 'off', 'FontSize', 6);
         
         title(hleg, LegendTitle); % Title Legend
         title(TitleText);
@@ -302,14 +309,15 @@ for nI = 1:dfs2File.ItemInfo.Count
             'MajorTickLength', 1) % Set Major and Minor ticks
         % Saves figure, as png, with specified filename, at a specific resolution
         dateparse = split(datestr(now), ' ');
-        text(dfs2File.SpatialAxis.X0 - 12000, dfs2File.SpatialAxis.Y0 - 11000,...
+        text(dfs2File.SpatialAxis.X0 + 8000, dfs2File.SpatialAxis.Y0 - 11000,...
             strcat('Plot Date: ', dateparse(1)), 'FontSize', 9);
         
         % saves figure as png
-        print('-dpng',char(strcat(OutputDir, namesplit(1), '-', plotfilename)),'-r300')
+        print('-dpng',char(strcat(OutputDir, plotfilename)),'-r300')
         
         % writes figure to latex file
-        generate_latex_blocks_maps( ActiveLatex, 3, TitleText, strcat(namesplit{1}, '-', plotfilename, '.png') )
+        generate_latex_blocks_maps( ActiveLatex, 3, TitleText, strcat(plotfilename, '.png') )
+        clear gcf gca
     end
 end
 end

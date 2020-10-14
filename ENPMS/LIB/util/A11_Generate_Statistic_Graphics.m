@@ -251,6 +251,8 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
                 nonBase = nonBase + 1; % increment model name index by 1
             end
         end
+    else
+        continue; % If not doing Models or Difference Maps, skip the rest of iteration
     end
     % For each Latex File, write Head
     for li = 1:size(LATEX_FILES.FileNames,2)

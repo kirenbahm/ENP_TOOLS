@@ -142,6 +142,9 @@ copyfile([INI.SCRIPTDIR 'head.sty'], INI.LATEX_DIR );
 copyfile([INI.SCRIPTDIR 'tail.sty'], INI.LATEX_DIR );
 %-----------------------------------------------------------------------------------------------
 
+% Previous Figure window need to be closed to reset all properties to default
+close all;
+
 % Find Analysis Period Start and End Dates 
 StartDateTime = datetime(INI.ANALYZE_DATE_I);
 EndDateTime = datetime(INI.ANALYZE_DATE_F);

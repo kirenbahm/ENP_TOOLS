@@ -53,7 +53,7 @@ HeaderParse = split(tline, ":");
 if strcmp(strtrim(HeaderParse{2}), StationNameParse{1})
     fprintf(flagID, "%s\n", char(tline));
 else
-    fprintf(flagID, strcat(tline," Station name doesn't match filename\n"));
+    fprintf(flagID, strcat(tline," (Station name doesn't match filename)\n"));
     HeaderOK = false;
     fprintf(" BAD_StationName");
 end
@@ -69,7 +69,7 @@ if strcmpi(DType_Flag,'Water Level')
     if ~isnan(str2double(HeaderParse{2}))
         fprintf(flagID, "%s\n", char(tline));
     else
-        fprintf(flagID, strcat(tline," should be numeric value\n"));
+        fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
         HeaderOK = false;
         fprintf(" BAD_GSE");
     end
@@ -77,7 +77,7 @@ else
     if strcmpi(strtrim(HeaderParse{2}),'Missing')
         fprintf(flagID, "%s\n", char(tline));
     else
-        fprintf(flagID, strcat(tline," should be 'Missing'\n"));
+        fprintf(flagID, strcat(tline," (Should be 'Missing')\n"));
         fprintf(" BAD_GSE");
         HeaderOK = false;
     end
@@ -89,7 +89,7 @@ HeaderParse = split(tline, ":");
 if ~isnan(str2double(HeaderParse{2}))
     fprintf(flagID, "%s\n", char(tline));
 else
-    fprintf(flagID, strcat(tline," should be numeric value\n"));
+    fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
     HeaderOK = false;
     fprintf(" BAD_Lat");
 end
@@ -100,7 +100,7 @@ HeaderParse = split(tline, ":");
 if ~isnan(str2double(HeaderParse{2}))
     fprintf(flagID, "%s\n", char(tline));
 else
-    fprintf(flagID, strcat(tline," should be numeric value\n"));
+    fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
     HeaderOK = false;
     fprintf(" BAD_Lon");
 end
@@ -108,21 +108,37 @@ end
 % Header Line Six
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
+% Check for if values need to be converted from NAVD88 to NGVD29 for subsequent scripts
+if strcmp(strtrim(HeaderParse{2}),'NAVD88') %If Datum is NAVD88 conversion will occur
+    DatumConvert = true;
+else % Otherwise it will not
+    DatumConvert = false;
+end
 if strcmp(strtrim(HeaderParse{2}),'NAVD88') || strcmp(strtrim(HeaderParse{2}),'NGVD29')
-    fprintf(flagID, "%s\n", char(tline));
+    if DatumConvert
+        fprintf(flagID, "%s\n", strcat(char(tline), ' (Will Convert values to NGVD29 Datum)'));
+    else
+        fprintf(flagID, "%s\n", char(tline));
+    end
 else
     HeaderOK = false;
-    fprintf(flagID, strcat(tline," Improper Datum\n"));
+    fprintf(flagID, strcat(tline," (Improper Datum)\n"));
     fprintf(" BAD_Datum");
 end
 
 % Header Line Seven
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
-if ~isnan(str2double(HeaderParse{2}))
+ConversionVal = str2double(HeaderParse{2}); % Finds conversion value
+if ~isnan(ConversionVal)
     fprintf(flagID, "%s\n", char(tline));
+    if DatumConvert && ConversionVal ~= 0 % If Datum is NAVD88 and Conversion Value isn't 0
+        DatumOffset = str2double(HeaderParse{2});
+    else % Otherwise datu conversion value is 0.
+        DatumOffset = 0;
+    end
 else
-    fprintf(flagID, strcat(tline," should be numeric value\n"));
+    fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
     HeaderOK = false;
     fprintf(" BAD_Conversion");
 end
@@ -158,10 +174,11 @@ Station = fileData{1}; % Raw Data station Names
 Type = fileData{2}; % Raw Data Station Type (Flow or Stage)
 Time = fileData{3}; % Raw Data DateTimes
 DataText = fileData{4};
-Measurements = str2double(fileData{4}); % Raw Data Values
+Measurements = str2double(fileData{4}) - DatumOffset; % Raw Data Values
 Validation = fileData{5}; % Raw Data Validation date
 FIELD_MEASUREMENTS = str2double(DataText);
 isDataNaN =isnan(FIELD_MEASUREMENTS);
+FIELD_MEASUREMENTS = FIELD_MEASUREMENTS - DatumOffset;
 FIELD_MEASUREMENTS(isDataNaN) = -1e-35;
 
 if UseDfsFlags
@@ -429,7 +446,7 @@ for di = 1:dataSize(1)
         % If first line write to file
         if di == 1
             fprintf(flagID, "%s|%s|%s|%s|%s|%s\n", char(Station{di, 1}), char(Type{di, 1}),...
-                char(Time{di, 1}), DataText{di, 1}, char(Validation{di, 1}), FlagsText{di, 1});
+                char(Time{di, 1}), num2str(FIELD_MEASUREMENTS(di, 1), '%.4f'), char(Validation{di, 1}), FlagsText{di, 1});
             lastwrite = di + 1;
             % else if value doesn't match previous value, value is nan, or is
             % last line, then write all lines to file between lastwrite index
@@ -437,7 +454,7 @@ for di = 1:dataSize(1)
         elseif FIELD_MEASUREMENTS(di, 1) ~= FIELD_MEASUREMENTS(di - 1, 1) || di == dataSize(1)|| isnan(Measurements(di, 1))
             for wi = lastwrite:di
                 fprintf(flagID, "%s|%s|%s|%s|%s|%s\n", char(Station{wi, 1}), char(Type{wi, 1}),...
-                    char(Time{wi, 1}), DataText{wi, 1}, char(Validation{wi, 1}), FlagsText{wi, 1});
+                    char(Time{wi, 1}), num2str(FIELD_MEASUREMENTS(wi, 1), '%.4f'), char(Validation{wi, 1}), FlagsText{wi, 1});
             end
             lastwrite = di + 1;
         end

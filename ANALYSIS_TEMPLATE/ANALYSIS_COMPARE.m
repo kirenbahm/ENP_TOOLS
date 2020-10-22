@@ -119,6 +119,7 @@ INI.A5    = 1; % A5_create_summary_stat
 INI.A9    = 1; % A9_make_latex_report % 
 INI.A10   = 1; %A10 Makes difference map of statistics generated in generateComputedMatlab
 INI.A11   = 1; %A11 Makes Figures with statistics created by generateComputedMatlab and A10
+INI.A12   = 1; %A12 Makes a Flow Report in latex 
 
 %---------------------------------------------------------------------
 % 9 Additional settings, DEFAULT can be modified for additional functionality 

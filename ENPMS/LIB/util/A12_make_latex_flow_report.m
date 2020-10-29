@@ -9,7 +9,7 @@ FlowDataFile = [INI.POST_PROC_DIR 'DS_YEARLY_AVE.txt'];
 FlowDataExist = exist(FlowDataFile,'file') == 2;
 
 % Find Flow Report Format
-FormatFile = [INI.DATA_COMMON 'flows_report_defs.txt'];
+FormatFile = INI.FLOWS_REPORT_DEFS;
 FormatExist = exist(FormatFile,'file') == 2;
 
 % File name for output latex file

@@ -73,7 +73,7 @@ INI.ANALYSIS_TAG = 'M01-M06_test';
 INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Model_Output_Processed\';
 INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
 INI.DATA_STATISTICS = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\StatisticCalculations\';
-INI.GIS_DIR = '..\..\ENP_MODELS\INPUTFILES\GIS\';
+INI.GIS_DIR = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\GIS\';
 
 % use this for sequential testing
 %INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
@@ -102,7 +102,12 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-short.txt']; 
 
 %---------------------------------------------------------------------
-% 8. Select modules to run  (1=yes, 0=no)
+% 8. Define flow report items
+%---------------------------------------------------------------------
+INI.FLOWS_REPORT_DEFS = [INI.DATA_COMMON 'flows_report_defs2.txt'];
+
+%---------------------------------------------------------------------
+% 9. Select modules to run  (1=yes, 0=no)
 %---------------------------------------------------------------------
 
 INI.A1    = 1; % A1_load_computed_timeseries - this needs checking if all simulation set exsist
@@ -122,7 +127,7 @@ INI.A11   = 1; %A11 Makes Figures with statistics created by generateComputedMat
 INI.A12   = 1; %A12 Makes a Flow Report in latex 
 
 %---------------------------------------------------------------------
-% 9 Additional settings, DEFAULT can be modified for additional functionality 
+% 10. Additional settings, DEFAULT can be modified for additional functionality 
 % (1=yes, 0=no)
 %---------------------------------------------------------------------
 INI.USE_NEW_CODE          = 1; % use NEW method for analysis? (developed for M06) always 1

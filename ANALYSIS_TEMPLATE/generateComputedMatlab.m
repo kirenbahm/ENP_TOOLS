@@ -55,8 +55,8 @@ INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common\';
 %---------------------------------------------------------------------
 % use this for unit testing
 INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_Output_Processed\';
-INI.DATA_OUTPUT = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\';
-INI.STAT_OUTPUTS = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\StatisticCalculations\';
+INI.DATA_OUTPUT   = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\';
+INI.STAT_OUTPUTS  = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\StatisticCalculations\';
 
 % use this for sequential testing
 %INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output_Sequential\Model_Output_Processed\';
@@ -107,7 +107,7 @@ INI.TRANSECT_DEFS_SHEETNAMES_3DSZQ{ii} = 'SZ2RIV'; ii=ii+1;
 %---------------------------------------------------------------------
 % 6. Define file containing rules for aggregating flow data
 %---------------------------------------------------------------------
-INI.AGGREGATE_EQUATIONS = [ INI.DATA_COMMON 'aggregate_rules_file_20200604.txt'];
+INI.AGGREGATE_EQUATIONS = [ INI.DATA_COMMON 'aggregate_rules_file_20200610.txt'];
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality

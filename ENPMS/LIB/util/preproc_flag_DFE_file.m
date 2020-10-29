@@ -45,41 +45,44 @@ StationNameParse = split(fn, ".");
 %  BEGIN PARSE OF HEADER INFORMATION
 %
 
-HeaderOK = true;
+StationHeader = "";
+AgencyHeader = "";
+GroundElevHeader = "";
+LatitudeHeader = "";
+LongitudeHeader = "";
+DatumHeader = "";
+ConversionHeader = "";
 
 % Header Line One
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
 if strcmp(strtrim(HeaderParse{2}), StationNameParse{1})
-    fprintf(flagID, "%s\n", char(tline));
+    StationHeader = char(tline);
 else
-    fprintf(flagID, strcat(tline," (Station name doesn't match filename)\n"));
-    HeaderOK = false;
+    StationHeader = strcat(tline," (Station name doesn't match filename)");
     fprintf(" BAD_StationName");
 end
 
 % Header Line Two
 tline = fgetl(fileID);
-fprintf(flagID, "%s\n", char(tline));
+AgencyHeader = char(tline);
 
 % Header Line Three
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
 if strcmpi(DType_Flag,'Water Level')
     if ~isnan(str2double(HeaderParse{2}))
-        fprintf(flagID, "%s\n", char(tline));
+        GroundElevHeader = tline;
     else
-        fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
-        HeaderOK = false;
+        GroundElevHeader = strcat(tline," (Should be numeric value)");
         fprintf(" BAD_GSE");
     end
 else
     if strcmpi(strtrim(HeaderParse{2}),'Missing')
-        fprintf(flagID, "%s\n", char(tline));
+        GroundElevHeader = char(tline);
     else
-        fprintf(flagID, strcat(tline," (Should be 'Missing')\n"));
+        GroundElevHeader = strcat(tline," (Should be 'Missing')");
         fprintf(" BAD_GSE");
-        HeaderOK = false;
     end
 end
 
@@ -87,10 +90,9 @@ end
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
 if ~isnan(str2double(HeaderParse{2}))
-    fprintf(flagID, "%s\n", char(tline));
+    LatitudeHeader = char(tline);
 else
-    fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
-    HeaderOK = false;
+    LatitudeHeader = strcat(tline," (Should be numeric value)");
     fprintf(" BAD_Lat");
 end
 
@@ -116,13 +118,12 @@ else % Otherwise it will not
 end
 if strcmp(strtrim(HeaderParse{2}),'NAVD88') || strcmp(strtrim(HeaderParse{2}),'NGVD29')
     if DatumConvert
-        fprintf(flagID, "%s\n", strcat(char(tline), ' (Will Convert values to NGVD29 Datum)'));
+        DatumHeader = strcat(HeaderParse{1}, ": NGVD29");
     else
-        fprintf(flagID, "%s\n", char(tline));
+        DatumHeader = char(tline);
     end
 else
-    HeaderOK = false;
-    fprintf(flagID, strcat(tline," (Improper Datum)\n"));
+    DatumHeader = strcat(tline," (Improper Datum)");
     fprintf(" BAD_Datum");
 end
 
@@ -131,17 +132,28 @@ tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
 ConversionVal = str2double(HeaderParse{2}); % Finds conversion value
 if ~isnan(ConversionVal)
-    fprintf(flagID, "%s\n", char(tline));
+    ConversionHeader = char(tline);
     if DatumConvert && ConversionVal ~= 0 % If Datum is NAVD88 and Conversion Value isn't 0
         DatumOffset = str2double(HeaderParse{2});
-    else % Otherwise datu conversion value is 0.
+        GSE = split(GroundElevHeader, ":");
+        if ~isnan(str2double(strtrim(GSE{2})))
+            GroundElevHeader = strcat(GSE{1}, ": ", num2str(str2double(strtrim(GSE{2})) - DatumOffset));
+        end
+    else % Otherwise datum conversion value is 0.
         DatumOffset = 0;
     end
 else
-    fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
-    HeaderOK = false;
+    ConversionHeader = strcat(tline," (Should be numeric value)");
     fprintf(" BAD_Conversion");
 end
+
+fprintf(flagID, "%s\n", StationHeader);
+fprintf(flagID, "%s\n", AgencyHeader);
+fprintf(flagID, "%s\n", char(GroundElevHeader));
+fprintf(flagID, "%s\n", LatitudeHeader);
+fprintf(flagID, "%s\n", LongitudeHeader);
+fprintf(flagID, "%s\n", DatumHeader);
+fprintf(flagID, "%s\n", ConversionHeader);
 
 % Header Line Eight
 % Empty Line
@@ -154,9 +166,6 @@ fprintf(flagID,strcat(tline,"|Flag\n"));
 
 
 [~] = fclose( fileID );
-% if ~HeaderOK
-%     fprintf(" ***** header flagged...");
-% end
 fprintf(" ... ");
 
 %

@@ -100,10 +100,9 @@ end
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
 if ~isnan(str2double(HeaderParse{2}))
-    fprintf(flagID, "%s\n", char(tline));
+    LongitudeHeader = char(tline);
 else
-    fprintf(flagID, strcat(tline," (Should be numeric value)\n"));
-    HeaderOK = false;
+    LongitudeHeader = strcat(tline," (Should be numeric value)");
     fprintf(" BAD_Lon");
 end
 

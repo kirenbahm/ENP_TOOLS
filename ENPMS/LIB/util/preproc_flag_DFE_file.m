@@ -453,16 +453,26 @@ for di = 1:dataSize(1)
         end
         % If first line write to file
         if di == 1
+            if strcmp(DataText(di, 1), "")
+                val = "";
+            else
+                val = num2str(FIELD_MEASUREMENTS(di, 1), '%.4f');
+            end
             fprintf(flagID, "%s|%s|%s|%s|%s|%s\n", char(Station{di, 1}), char(Type{di, 1}),...
-                char(Time{di, 1}), num2str(FIELD_MEASUREMENTS(di, 1), '%.4f'), char(Validation{di, 1}), FlagsText{di, 1});
+                char(Time{di, 1}), val, char(Validation{di, 1}), FlagsText{di, 1});
             lastwrite = di + 1;
             % else if value doesn't match previous value, value is nan, or is
             % last line, then write all lines to file between lastwrite index
             % and current one, di.
         elseif FIELD_MEASUREMENTS(di, 1) ~= FIELD_MEASUREMENTS(di - 1, 1) || di == dataSize(1)|| isnan(Measurements(di, 1))
             for wi = lastwrite:di
+                if strcmp(DataText(wi, 1), "")
+                    val = "";
+                else
+                    val = num2str(FIELD_MEASUREMENTS(wi, 1), '%.4f');
+                end
                 fprintf(flagID, "%s|%s|%s|%s|%s|%s\n", char(Station{wi, 1}), char(Type{wi, 1}),...
-                    char(Time{wi, 1}), num2str(FIELD_MEASUREMENTS(wi, 1), '%.4f'), char(Validation{wi, 1}), FlagsText{wi, 1});
+                    char(Time{wi, 1}), val, char(Validation{wi, 1}), FlagsText{wi, 1});
             end
             lastwrite = di + 1;
         end

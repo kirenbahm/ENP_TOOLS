@@ -131,3 +131,6 @@ D07_map_OBSERVED_DFE
    initializeLIB
    S00_load_DFE_STNLOC
    S01_load_PREPROCESS_IMAGERY
+
+------------------
+D08_edit_dfs0_metadata

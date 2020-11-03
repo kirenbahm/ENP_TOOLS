@@ -1,12 +1,15 @@
 function ST = BC2D_fit_gaps_fourier(INI,ST,FIG_DIR_RESIDUALS)
 
-oT = ST.T; % observed time vector
-xData = ST.T;
-oH = ST.V;
-yData = ST.V;
+% create observed time vectors
+obsTimeVec    = ST.T; % this one will not be edited
+obsTimeVecNew = ST.T; % this one will be edited
+
+% create observed data vectors
+obsDataVec    = ST.V; % this one will not be edited
+obsDataVecNew = ST.V; % this one will be edited
 
 % Identify all valid measurement values ( i.e. non-NaN values).
-idxValid = ~isnan(yData);
+validIndecies = ~isnan(obsDataVec);
 
 % Set up fittype and options.
 ft = fittype( 'fourier8' );
@@ -15,19 +18,19 @@ opts.Display = 'Off';
 opts.StartPoint = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.00570107549362045];
 
 % Fit model to data.
-[fitresult, ~] = fit( xData(idxValid), yData(idxValid), ft, opts );
+[fitresult, ~] = fit( obsTimeVec(validIndecies), obsDataVec(validIndecies), ft, opts );
 
 % calculate the entire vector
 ST.dHf = fitresult(ST.dT);
 
 % eliminate H values before initial and after the final date
-oH = oH(oT>=ST.t_i & oT<=ST.t_e);
+obsDataVecNew = obsDataVecNew(obsTimeVecNew>=ST.t_i & obsTimeVecNew<=ST.t_e);
 
 % find observed values are in the same vectors : extrapolated and obs
-v = ismember(ST.dT,oT);
+v = ismember(ST.dT,obsTimeVecNew);
 
 %apply the observed data where avaialbe
-ST.dHf((v>0)) = oH;
+ST.dHf((v>0)) = obsDataVecNew;
 
 % If not plotting residuals, return to main script. Otherwise, continue
 % with plots
@@ -65,7 +68,7 @@ grid on
 
 % Plot residuals.
 subplot(2, 1, 2);
-plot(fitresult, xData, yData, 'residuals');
+plot(fitresult, obsTimeVec, obsDataVec, 'residuals');
 b = gca; legend(b,'off'); %suppress legend
 datetick('x','yyyy','keeplimits');
 

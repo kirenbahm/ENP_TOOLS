@@ -3,12 +3,12 @@ function INI = BC2D_plot_all(INI)
 fprintf('\n\n Beginning BC2D_plot_all.m \n\n');
 
 M = INI.MAP_H_DATA;
-KEYS = M.keys;
+allKeys = M.keys;
 
-for K = KEYS
+for currentKey = allKeys
     clf;
-    fprintf('... plotting: %s \n', char(K));
-    STATION = M(char(K));
+    fprintf('... plotting: %s \n', char(currentKey));
+    STATION = M(char(currentKey));
       
     NN(1) = {'Spatially Interpolated Grid value'};
     T = datestr(STATION.dT);
@@ -50,7 +50,7 @@ for K = KEYS
     ax.XLim = [tstart tend];
     
     legend(NN,'Location','best'); 
-    title(char(K),'FontSize',10,'FontName','Times New Roman');
+    title(char(currentKey),'FontSize',10,'FontName','Times New Roman');
     
     FIGURE_DIR = [INI.BC2D_DIR 'FIGURES/'];
     if ~exist(FIGURE_DIR, 'dir')
@@ -58,9 +58,9 @@ for K = KEYS
     end
     
     if strcmpi(INI.OLorSZ,'OL')
-        figurefile = [FIGURE_DIR char(K) '_HR.png'];
+        figurefile = [FIGURE_DIR char(currentKey) '_HR.png'];
     elseif strcmpi(INI.OLorSZ,'SZ')
-        figurefile = [FIGURE_DIR char(K) '_DD.png'];
+        figurefile = [FIGURE_DIR char(currentKey) '_DD.png'];
     end
     
     

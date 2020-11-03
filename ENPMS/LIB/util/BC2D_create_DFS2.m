@@ -49,8 +49,9 @@ for i = 1:NSTEPS
     HD = reshape(HD,n,1);
     XD = reshape(XD,n,1);
     YD = reshape(YD,n,1);
-    %TriScatteredInterp is not recommended
-    %F = TriScatteredInterp(XD,YD,HD,'natural');
+
+    % TriScatteredInterp is not recommended
+    % F = TriScatteredInterp(XD,YD,HD,'natural');
     
     F = scatteredInterpolant(XD,YD,HD,'natural');
     HI = F(XI_UTM,YI_UTM);

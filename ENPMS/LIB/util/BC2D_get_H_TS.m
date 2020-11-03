@@ -2,17 +2,17 @@ function [H,X,Y,L] = BC2D_get_H_TS(INI,nTS)
 
 i = 0;
 
-K = INI.MAP_H_DATA.keys;
-n = length(K);
+allKeys = INI.MAP_H_DATA.keys;
+numKeys = length(allKeys);
 
-X(1:n) = NaN;
-Y(1:n) = NaN;
-H(1:n) = NaN;
-L{1,n} = [];
+X(1:numKeys) = NaN;
+Y(1:numKeys) = NaN;
+H(1:numKeys) = NaN;
+L{1,numKeys} = [];
 
-for k = K
+for currentKey = allKeys
     i = i + 1;
-    A = INI.MAP_H_DATA(char(k));
+    A = INI.MAP_H_DATA(char(currentKey));
     %X(i) = A.X_UTM;
     %Y(i) = A.Y_UTM;
     X(i) = A.utmXmeters;
@@ -22,7 +22,7 @@ for k = K
     else
         H(i) = A.dHd(nTS);
     end
-    L{1,i} = k;
+    L{1,i} = currentKey;
 end
 
 end

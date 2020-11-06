@@ -99,12 +99,12 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 % 7. Select a list of stations to be analyzed
 %---------------------------------------------------------------------
 
-INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-short.txt']; 
+INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-20201030.txt']; 
 
 %---------------------------------------------------------------------
 % 8. Define flow report items
 %---------------------------------------------------------------------
-INI.FLOWS_REPORT_DEFS = [INI.DATA_COMMON 'flows_report_defs2.txt'];
+INI.FLOWS_REPORT_DEFS = [INI.DATA_COMMON 'flows_report_defs-20201030.txt'];
 
 %---------------------------------------------------------------------
 % 9. Select modules to run  (1=yes, 0=no)

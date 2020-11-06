@@ -107,7 +107,7 @@ INI.TRANSECT_DEFS_SHEETNAMES_3DSZQ{ii} = 'SZ2RIV'; ii=ii+1;
 %---------------------------------------------------------------------
 % 6. Define file containing rules for aggregating flow data
 %---------------------------------------------------------------------
-INI.AGGREGATE_EQUATIONS = [ INI.DATA_COMMON 'aggregate_rules_file_20200610.txt'];
+INI.AGGREGATE_EQUATIONS = [ INI.DATA_COMMON 'aggregate_rules_file_20201030.txt'];
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality

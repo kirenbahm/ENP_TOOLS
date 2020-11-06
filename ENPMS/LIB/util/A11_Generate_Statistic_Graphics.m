@@ -130,11 +130,12 @@ LegendData.DepthLabels = {'> 3.0', '2.0 - 3.0', '1.0 - 2.0',...
             '0.5 - 1.0', '0.0 - 0.5', '0.0'};
 
 %-----------------------------------------------------------------------------------------------
-% Setup output directory
+% Setup output directory and copy NPS logo png
 OutDir = [INI.POST_PROC_DIR '\figures\maps\'];
 if ~exist(OutDir, 'dir')
    mkdir(OutDir)
 end
+copyfile(INI.NPS_LOGO_FILE, OutDir);
 
 % Copy the head and tail files for Latex
 if ~exist(INI.LATEX_DIR,'file'),  mkdir(INI.LATEX_DIR), end

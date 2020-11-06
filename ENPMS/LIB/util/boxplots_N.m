@@ -70,7 +70,7 @@ x1=xlim; % this is the upper and lower limits of the timeseries
 xd = x1(2)-x1(1);% this is the difference between upper and lower limits of timeseries
 xt = get(gca,'xtick'); % this gets the label notation for vertical axis
 xh = xd*0.05; % this the spacing between legend entries
-xpos = x1(1) % the initial position is at the left hand side of the figure
+xpos = x1(1); % the initial position is at the left hand side of the figure
 
 ii = 0;
 

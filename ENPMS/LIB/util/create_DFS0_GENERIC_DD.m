@@ -43,9 +43,9 @@ if ~isempty(DATA.V)
    D = DATA.V;
    X = DFS0.utmXmeters;
    Y = DFS0.utmYmeters;
-   Z = DFS0.elev_ngvd29_ft
+   Z = DFS0.elev_ngvd29_ft;
    %create1DFS0_G(INI,S,F,DT,TS,D,dfsDT);
-   preproc_publish_DFS0(X,Y,Z,S,TS,D,F,dfsDT,DT)
+   preproc_publish_DFS0(X,Y,Z,S,TS,D,F,dfsDT,DT);
 
 end
 

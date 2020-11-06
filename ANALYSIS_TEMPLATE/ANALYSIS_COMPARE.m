@@ -145,6 +145,8 @@ INI.WET_DRY_SEASON_FIGS = 1;
 INI.TOTAL_PERIOD_FIGS   = 1;
 INI.DIFFERENCE_MAP_FIGS = 1;
 
+
+INI.NPS_LOGO_FILE = [INI.DATA_COMMON '/NPS.png'];
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------
 %  END USER DEFINITIONS

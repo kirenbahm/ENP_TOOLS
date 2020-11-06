@@ -84,5 +84,8 @@ ANALYSIS_COMPARE
     A10_make_alternatives_difference_maps
       ComputeTotalAnalysisPeriodStatistics
 
-    A11_Generation_Statistic_Graphics
+    A11_Generate_Statistic_Graphics
+      generate_latex_blocks_maps
       createStatisticFigure
+
+    A12_make_latex_flow_report

@@ -34,7 +34,7 @@ while ischar(tline)
     % If line isn't empty and doesn't contain a comment then parse equation
     if ~contains(tline,'#') && ~isempty(tline)
         fprintf('\n  Requested Equation: %s\n', tline);
-        parts = strsplit(tline, ' '); % split line based on spaces Ex. A = B + C => [{A} {=} {B} {+} {C}]
+        parts = strsplit(strtrim(tline), ' '); % split line based on spaces Ex. A = B + C => [{A} {=} {B} {+} {C}]
         sizeparts = size(parts); % get size of split
         pass = true;
         try

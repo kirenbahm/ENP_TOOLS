@@ -180,13 +180,14 @@ FlagsNum = ones(dataSize(1), dataSize(2)); % Stores Numeric Flag for .dfs0 files
 FlagsText = cell(dataSize(1), dataSize(2)); % Stores text flag for .dat files
 Station = fileData{1}; % Raw Data station Names
 Type = fileData{2}; % Raw Data Station Type (Flow or Stage)
+isTypeNgvd29 = ~strcmp(Type,'stage_ngvd29'); % Create array where value is zero if datatype='stage_ngvd29'. Later multiply datum offset by this to zero out offfset conversion of measurement datatype is already ngvd29
 Time = fileData{3}; % Raw Data DateTimes
 DataText = fileData{4};
-Measurements = str2double(fileData{4}) - DatumOffset; % Raw Data Values
+Measurements = str2double(fileData{4}) - (DatumOffset * isTypeNgvd29); % Raw Data Values
 Validation = fileData{5}; % Raw Data Validation date
 FIELD_MEASUREMENTS = str2double(DataText);
 isDataNaN =isnan(FIELD_MEASUREMENTS);
-FIELD_MEASUREMENTS = FIELD_MEASUREMENTS - DatumOffset;
+FIELD_MEASUREMENTS = FIELD_MEASUREMENTS - (DatumOffset * isTypeNgvd29);
 FIELD_MEASUREMENTS(isDataNaN) = -1e-35;
 
 if UseDfsFlags

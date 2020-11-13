@@ -70,7 +70,7 @@ INI.ANALYSIS_TAG = 'M01-M06_test';
 %    and parent directory to store postproc output
 %---------------------------------------------------------------------
 % use this for unit testing
-INI.DATA_COMPUTED = '..\..\ENP_FILES\ENP_TOOLS_Output\generateComputedMatlab_output\Model_Output_Processed\';
+INI.DATA_COMPUTED = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Model_Output_Processed\';
 INI.POST_PROC_DIR = ['..\..\ENP_TOOLS_Output\ANALYSIS_COMPARE_output\' INI.ANALYSIS_TAG '/'];
 INI.DATA_STATISTICS = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\StatisticCalculations\';
 INI.GIS_DIR = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\GIS\';

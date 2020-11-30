@@ -108,9 +108,10 @@ end
 
 % Header Line Six
 tline = fgetl(fileID);
+GSEadjust = false;
 HeaderParse = split(tline, ":");
 % Check for if values need to be converted from NAVD88 to NGVD29 for subsequent scripts
-if strcmp(strtrim(HeaderParse{2}),'NAVD88') %If Datum is NAVD88 conversion will occur
+if (strcmp(strtrim(HeaderParse{2}),'NAVD88')&& strcmp(StationNameParse{2}, 'stage')) || strcmp(StationNameParse{2}, 'stage_NAVD88') %If Datum is NAVD88 conversion will occur
     DatumConvert = true;
 else % Otherwise it will not
     DatumConvert = false;
@@ -119,7 +120,12 @@ if strcmp(strtrim(HeaderParse{2}),'NAVD88') || strcmp(strtrim(HeaderParse{2}),'N
     if DatumConvert
         DatumHeader = strcat(HeaderParse{1}, ": NGVD29");
     else
-        DatumHeader = char(tline);
+        if strcmp(StationNameParse{2}, 'stage_NGVD29')
+            DatumHeader = strcat(HeaderParse{1}, ": NGVD29");
+            GSEadjust = true;
+        else
+            DatumHeader = char(tline);
+        end
     end
 else
     DatumHeader = strcat(tline," (Improper Datum)");
@@ -132,11 +138,14 @@ HeaderParse = split(tline, ":");
 ConversionVal = str2double(HeaderParse{2}); % Finds conversion value
 if ~isnan(ConversionVal)
     ConversionHeader = char(tline);
-    if DatumConvert && ConversionVal ~= 0 % If Datum is NAVD88 and Conversion Value isn't 0
+    if (DatumConvert && ConversionVal ~= 0) ) || (GSEadjust && ConversionVal ~= 0) % If Datum is NAVD88 and Conversion Value isn't 0
         DatumOffset = str2double(HeaderParse{2});
         GSE = split(GroundElevHeader, ":");
         if ~isnan(str2double(strtrim(GSE{2})))
             GroundElevHeader = strcat(GSE{1}, ": ", num2str(str2double(strtrim(GSE{2})) - DatumOffset));
+        end
+        if GSEadjust
+            DatumOffset = 0;
         end
     else % Otherwise datum conversion value is 0.
         DatumOffset = 0;

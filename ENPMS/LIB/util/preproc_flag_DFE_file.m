@@ -138,7 +138,7 @@ HeaderParse = split(tline, ":");
 ConversionVal = str2double(HeaderParse{2}); % Finds conversion value
 if ~isnan(ConversionVal)
     ConversionHeader = char(tline);
-    if (DatumConvert && ConversionVal ~= 0) ) || (GSEadjust && ConversionVal ~= 0) % If Datum is NAVD88 and Conversion Value isn't 0
+    if (DatumConvert && ConversionVal ~= 0) || (GSEadjust && ConversionVal ~= 0) % If Datum is NAVD88 and Conversion Value isn't 0
         DatumOffset = str2double(HeaderParse{2});
         GSE = split(GroundElevHeader, ":");
         if ~isnan(str2double(strtrim(GSE{2})))

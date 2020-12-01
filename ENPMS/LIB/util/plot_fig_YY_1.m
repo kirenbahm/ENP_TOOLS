@@ -17,6 +17,13 @@ N(1) = strcat(NAME,{' '}, 'Observed:',{' '}, DFS0.TYPE,',', {' '}, DFS0.UNIT);
 
 [y,~,~] = datevec(DFS0.T);
 YY = unique(y);
+% Fills years where there is no data with NaN values
+for i = 2:size(y,1) 
+    if y(i) - y(i - 1) > 1 % detects if a year has no data entries
+        y = cat(1, y(1:i - 1), [y(i - 1) + 1], y(i:end)); % Inserts year
+        DFS0.V = cat(1, DFS0.V(1:i - 1), [NaN], DFS0.V(i:end)); % inserts NaN
+    end 
+end
 
 %set(gca,'yscale','log');
 

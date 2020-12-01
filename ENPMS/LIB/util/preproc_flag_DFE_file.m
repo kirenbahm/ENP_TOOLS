@@ -141,7 +141,8 @@ if ~isnan(ConversionVal)
     if (DatumConvert && ConversionVal ~= 0) || (GSEadjust && ConversionVal ~= 0) % If Datum is NAVD88 and Conversion Value isn't 0
         DatumOffset = str2double(HeaderParse{2});
         GSE = split(GroundElevHeader, ":");
-        if ~isnan(str2double(strtrim(GSE{2})))
+        DatumParse = split(DatumHeader, ":");
+        if ~isnan(str2double(strtrim(GSE{2}))) && ~(strcmp(StationNameParse{2}, 'stage_NAVD88') && strcmp(strtrim(DatumParse{2}),'NGVD29'))
             GroundElevHeader = strcat(GSE{1}, ": ", num2str(str2double(strtrim(GSE{2})) - DatumOffset));
         end
         if GSEadjust

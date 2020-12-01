@@ -13,6 +13,10 @@ function D05_BC1D_Flow_Fill_Gaps()
 % condition files in the MIKE model. ie. S333 flow input as a boundary
 % condition
 %
+% This function can take any temporal axis for an input file, but will
+% output a non equidistant temporal axis. The zero flow values are added at
+% daily increments over periods of missing data to save on memory.
+%
 % Code written by Lago Consulting, directed and amended by Kiren Bahm
 % June 2020
 %
@@ -87,15 +91,17 @@ for i = 1:n
         myFILE = [s.folder '/' s.name];
         NAME = s.name; % get filename
         fprintf('\n... %d/%d:  reading %s ...', i, n, NAME);
-        [myfilepath,myname,myext] = fileparts(myFILE);
+        [~,myname,myext] = fileparts(myFILE);
         
         dfs0FileName = strcat(INI.OBS_FLOW_OUT_DIR, INI.OUTFILE_PREFIX, myname, INI.OUTFILE_SUFFIX, myext);
 
         % Open dfs0 file and copy metadata for new file
         dfs0File  = DfsFileFactory.DfsGenericOpen(myFILE);
         FileTitle = dfs0File.FileInfo.FileTitle;
-        station_name = dfs0File.ItemInfo.Item(0).Name;
-        dfsDoubleOrFloat = dfs0File.ItemInfo.Item(0).DataType;
+        AppTitle = dfs0File.FileInfo.ApplicationTitle;
+        AppVersionNo = dfs0File.FileInfo.ApplicationVersion;
+        DataType = dfs0File.FileInfo.DataType;
+        NoData = dfs0File.FileInfo.DeleteValueDouble;
         ProjWktString = dfs0File.FileInfo.Projection.WKTString;
         ProjLong = dfs0File.FileInfo.Projection.Longitude;
         ProjLat = dfs0File.FileInfo.Projection.Latitude;
@@ -103,29 +109,23 @@ for i = 1:n
         utmXmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateX;
         utmYmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateY;
         elev_ngvd29_ft = dfs0File.ItemInfo.Item(0).ReferenceCoordinateZ;
-        
+        TimeAxis = dfs0File.FileInfo.TimeAxis;  
         % Read Time Series flow values
         dd = double(Dfs0Util.ReadDfs0DataDouble(dfs0File));
         
         % Read Start datetime
-        yy = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Year);
-        mo = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Month);
-        da = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Day);
-        hh = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Hour);
-        mi = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Minute);
-        se = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Second);
+        yy = double(TimeAxis.StartDateTime.Year);
+        mo = double(TimeAxis.StartDateTime.Month);
+        da = double(TimeAxis.StartDateTime.Day);
+        hh = double(TimeAxis.StartDateTime.Hour);
+        mi = double(TimeAxis.StartDateTime.Minute);
+        se = double(TimeAxis.StartDateTime.Second);
         
         % Create array of time step values 
         START_TIME = datenum(yy,mo,da,hh,mi,se);
         DFS0.T = datenum(dd(:,1))/86400 + START_TIME;
         DFS0.V = dd(:,2:end);
-        
-        for i = 0:dfs0File.ItemInfo.Count - 1
-            DFS0.TYPE(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.ItemDescription)};
-            DFS0.UNIT(i+1) = {char(dfs0File.ItemInfo.Item(i).Quantity.UnitAbbreviation)};
-            DFS0.NAME(i+1) = {char(dfs0File.ItemInfo.Item(i).Name)};
-        end
-        
+       
         % remove all delete values - first remove the timevector elements
         DFS0.T(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
         
@@ -206,27 +206,28 @@ for i = 1:n
         fprintf('writing %s ...', dfs0FileName);
        % create output dfs0
         factory = DfsFactory();
-        builder = DfsBuilder.Create(char(FileTitle),'Matlab DFS',0);
+        builder = DfsBuilder.Create(char(FileTitle), char(AppTitle), AppVersionNo);
         
         %save projection and file metadata 
         T = datevec(time_vector(1));
-        builder.SetDataType(0);
-        builder.DeleteValueDouble = -1e-35;
+        builder.SetDataType(DataType);
+        builder.DeleteValueDouble = NoData;
         builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin(ProjWktString,ProjLong,ProjLat,ProjOri));
         builder.SetTemporalAxis(factory.CreateTemporalNonEqCalendarAxis...
-            (eumUnit.eumUsec,System.DateTime(T(1),T(2),T(3),T(4),T(5),T(6))));
+            (TimeAxis.TimeUnit,System.DateTime(T(1),T(2),T(3),T(4),T(5),T(6))));
         
-        % Add an Item
-        item1 = builder.CreateDynamicItemBuilder();
-        
-        %save item metadata
-        myStationName = char([station_name]);
-        item1.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
-            (eumItem.eumIDischarge,eumUnit.eumUft3PerSec), dfsDoubleOrFloat);
-        item1.SetValueType(DataValueType.Instantaneous);
-        item1.SetAxis(factory.CreateAxisEqD0());
-        item1.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
-        builder.AddDynamicItem(item1.GetDynamicItemInfo());
+        for i = 0:dfs0File.ItemInfo.Count - 1
+            % Add an Item
+            item1 = builder.CreateDynamicItemBuilder();
+            Dfs0Item = dfs0File.ItemInfo.Item(i);
+            %save item metadata
+            myStationName = char(Dfs0Item.Name);
+            item1.Set(myStationName, Dfs0Item.Quantity, Dfs0Item.DataType);
+            item1.SetValueType(Dfs0Item.ValueType);
+            item1.SetAxis(Dfs0Item.SpatialAxis);
+            item1.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
+            builder.AddDynamicItem(item1.GetDynamicItemInfo());
+        end
         
         if exist(dfs0FileName,'file')
             delete(dfs0FileName)

@@ -40,8 +40,25 @@ for i = 1:nn % This loop iterates over each simulation to extract data
 
     INI.filePP = char(strcat(INI.simRESULT, INI.simMODEL, '_PreProcessed.DFS2'));
 	
-    dfs0Exists  = exist(INI.fileM11Dfs0,'file');
-    res11Exists = exist(INI.fileM11Res11, 'file');
+    if exist(INI.fileM11Dfs0,'file') % If the dfs0 file exists
+        if dir(INI.fileM11Dfs0).bytes ~= 0 % If the dfs0 file isn't size 0, then read it
+            dfs0Exists  = true;
+        else % dfs0 file is size 0, don't read
+            dfs0Exists  =  false;
+        end
+    else % dfs0 file doesn't exist, don't read
+        dfs0Exists  = false;
+    end
+    if exist(INI.fileM11Res11, 'file')% If the res11 file exists
+        if dir(INI.fileM11Res11).bytes ~= 0 % If the res11 file isn't size 0, then read it
+            res11Exists =  true;
+        else % dfs0 file is size 0, don't read
+            res11Exists =  false;
+        end
+    else % dfs0 file doesn't exist, don't read
+        res11Exists =  false;
+    end
+    
     INI.MODEL_STATS = [INI.STAT_OUTPUTS INI.simMODEL];
     if ~exist(INI.MODEL_STATS, 'dir')
         mkdir(INI.MODEL_STATS)
@@ -95,17 +112,17 @@ for i = 1:nn % This loop iterates over each simulation to extract data
         % Read M11 data from dfs0 and/or res11 files
         try
             INI = readM11_WM(INI,res11Exists,dfs0Exists);
-        catch INI
+        catch ME
             fprintf('\nException in readM11_WM(INI), i=%d\n', i);
-            msgException = getReport(INI,'extended','hyperlinks','on')
+            msgException = getReport(ME,'extended','hyperlinks','on')
         end
 
         % Read MSHE data from dfs3 file
         try
             INI = readMSHE_WM(INI);
-        catch INI
+        catch ME
             fprintf('\nException in readMSHE_WM(INI), i=%d\n', i);
-            msgException = getReport(INI,'extended','hyperlinks','on')
+            msgException = getReport(ME,'extended','hyperlinks','on')
         end
 
         % Read TRANSECTS data from dfs2 and dfs3 files
@@ -114,9 +131,9 @@ for i = 1:nn % This loop iterates over each simulation to extract data
                 INI.MAPXLS = INI.TRANSECT_DEFS_FILE;
                 % how to save
                 INI = extractTRANSECTS_MLAB(INI);
-            catch INI
+            catch ME
                 fprintf('\nException in extractTRANSECTS_MLAB(INI), i=%d\n', i);
-                msgException = getReport(INI,'extended','hyperlinks','on')
+                msgException = getReport(ME,'extended','hyperlinks','on')
             end
         end
 

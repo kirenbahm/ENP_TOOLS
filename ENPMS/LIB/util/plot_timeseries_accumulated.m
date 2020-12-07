@@ -51,6 +51,8 @@ fig = clf;
 clf;
 
 totQacc(1:n) = NaN;
+firstLabel = true;
+timemin = intmax;
 
 for i = m %
     rTS = TSk(:,i);
@@ -82,7 +84,48 @@ for i = m %
     LEGEND = [LEGEND strrep(SIM(i),'_','\_')];
     F = plot(TSp,'LineWidth',LW(i), 'Linestyle', char(LS(i)), 'Color',cell2mat(CO(i)), 'Marker',char(M(i)), 'MarkerSize',MSZ(i),'LineWidth',LW(i));
     totQacc(i) = Qacc(end);
+    timemin = min(timemin, TSp.Time(end));
+    cumulativeLabels(i) = text(TSp.Time(end), TSp.Data(end), num2str(int32(totQacc(i))), 'Color', cell2mat(CO(i)));
     hold on;
+end
+
+AX = gca;
+YLIM = AX.YLim;
+XLIM = AX.XLim;
+labelmargin = (YLIM(2) - YLIM(1)) * 0.05;
+
+for i = m %
+    if ~isnan(totQacc(i))
+        cumulativeLabels(i).Position(1) = timemin;
+        for j = m
+            if i ~= j && ~isnan(totQacc(j))
+                if abs(cumulativeLabels(i).Position(2) - cumulativeLabels(j).Position(2)) < labelmargin
+                    if totQacc(i) < totQacc(j) 
+                        cumulativeLabels(i).Position(2) = cumulativeLabels(j).Position(2) - labelmargin;
+                    else
+                        cumulativeLabels(j).Position(2) = cumulativeLabels(i).Position(2) - labelmargin;
+                    end
+                end
+            end
+        end
+    end
+end
+if sum(~isnan(totQacc)) > 2
+    for i = m %
+        if ~isnan(totQacc(i))
+            for j = m
+                if i ~= j && ~isnan(totQacc(j))
+                    if abs(cumulativeLabels(i).Position(2) - cumulativeLabels(j).Position(2)) < labelmargin
+                        if totQacc(i) < totQacc(j)
+                            cumulativeLabels(i).Position(2) = cumulativeLabels(j).Position(2) - labelmargin;
+                        else
+                            cumulativeLabels(j).Position(2) = cumulativeLabels(i).Position(2) - labelmargin;
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 if ~exist('F') 
@@ -116,9 +159,6 @@ set(gcf, 'Color', 'w');
 % set(gca, 'xtick', datenum(YR(1)-1:YR(end)+1, 1, 1));
 datetick('x', 'yyyy', 'keeplimits', 'keepticks');
 
-AX = gca;
-YLIM = AX.YLim;
-XLIM = AX.XLim;
 xT = XLIM(1) + 0.02*(XLIM(2) - XLIM(1));
 yT = YLIM(1) + 0.85*(YLIM(2) - YLIM(1));
 text(xT,yT, str_T);

@@ -101,7 +101,7 @@ for i = 1:numStations
    STATION(i).utmXmeters = utmXmeters(i);
    STATION(i).utmYmeters = utmYmeters(i);
    STATION(i).elev_ngvd29_ft = elev_ngvd29_ft(i);        % ground surface elevation in NGVD29
-   STATION(i).DFE_DATUM = dfe_datum(i);                  % Datum listed for station
+   %KB-this is misleading- remove:(hopefully not used later)% STATION(i).DFE_DATUM = dfe_datum(i);                  % Datum listed for station
    STATION(i).DFE_DATUM_CONV_FT = NGVD_conversion_ft(i); % conversion factor to NGVD29 from NAVD88. NGVD29 = NAVD88 + CONVERSION(negative values)
    
    % add STATION structure to MAP_STATIONS container (with name as key)

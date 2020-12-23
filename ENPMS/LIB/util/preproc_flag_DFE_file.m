@@ -1,6 +1,6 @@
 function [DATA] = preproc_flag_DFE_file(myFILE, myFLAG, DFS0name, UseDfsFlags, DType_Flag, lowerRange, upperRange, constantPeriodLimit)
 % This function reads a dat file, and optionally a dfs0 file.
-% The funcions takes this information and writes a copy of the dat file
+% The  funcions takes this information and writes a copy of the dat file
 % with data flags as well as outputs the values and flags to be written to
 % a 3-column dfs0 files.
 % Input:
@@ -26,6 +26,9 @@ function [DATA] = preproc_flag_DFE_file(myFILE, myFLAG, DFS0name, UseDfsFlags, D
 % 3A28|stage|2019-02-09 00:00|9.3700|
 % C111W15|stage_realtime|2015-05-29 07:45|1.9600|2015-05-29
 % S332BW|tail_water|2000-04-08 null||
+
+% edited by Kiren Bahm and Lago Consulting
+
 NET.addAssembly('DHI.Generic.MikeZero.EUM');
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 H = NETaddDfsUtil();
@@ -33,17 +36,8 @@ eval('import DHI.Generic.MikeZero.DFS.*');
 eval('import DHI.Generic.MikeZero.DFS.dfs123.*');
 eval('import DHI.Generic.MikeZero.*');
 
-% read file
-
-fileID = fopen( myFILE );
-flagID = fopen(myFLAG,'W');
-[~, fn, ~] = fileparts(myFILE);
-
-StationNameParse = split(fn, ".");
-
-%
-%  BEGIN PARSE OF HEADER INFORMATION
-%
+%----------------------------------
+% initialize variables
 
 StationHeader = "";
 AgencyHeader = "";
@@ -53,9 +47,36 @@ LongitudeHeader = "";
 DatumHeader = "";
 ConversionHeader = "";
 
-% Header Line One
+ConversionVal = 0.0;
+
+validStageStationElevation = false;
+validConversionValue       = false;
+%validStationDatum          = false;
+stageStationElevInNGVD29        = false;
+stageStationElevInNAVD88        = false;
+
+%----------------------------------
+% Open file:
+
+fileID = fopen( myFILE );
+flagID = fopen(myFLAG,'W');
+[~, fn, ~] = fileparts(myFILE);
+
+StationNameParse = split(fn, ".");
+
+%===================================================================
+%  PARSE HEADER INFORMATION - set flags and print warnings
+%===================================================================
+
+%----------------------------------
+% STATION NAME  (Header Line One)
+%----------------------------------
+% example: "#station: ESC"
+
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
+
+% check if station name matches filename - print warning if not
 if strcmp(strtrim(HeaderParse{2}), StationNameParse{1})
     StationHeader = char(tline);
 else
@@ -63,30 +84,56 @@ else
     fprintf(" BAD_StationName");
 end
 
-% Header Line Two
+%----------------------------------
+% AGENCY  (Header Line Two)
+%----------------------------------
+% example: "#agency: USGS"
+
 tline = fgetl(fileID);
 AgencyHeader = char(tline);
 
-% Header Line Three
+%----------------------------------
+% STATION GROUND SURFACE ELEVATION  (Header Line Three)
+%----------------------------------
+% example: "#ground surface elevation ft: 4.3"
+% example: "#ground surface elevation ft: Missing"
+
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
+
+% if this file is stage data (not flow data),
+% print a warning if station elevation is not a valid number
 if strcmpi(DType_Flag,'Water Level')
+    % if value is a valid number, copy to outfile
     if ~isnan(str2double(HeaderParse{2}))
         GroundElevHeader = tline;
+        validStageStationElevation = true;
+    % else copy to outfile and add warning
     else
         GroundElevHeader = strcat(tline," (Should be numeric value)");
         fprintf(" BAD_GSE");
     end
+
+% if this file is NOT stage data (ie. is flow data),
+% DON'T print a warning if station elevation is not a valid number
+% (but DO print a warning if value is not properly labeled as 'Missing')
 else
-    if strcmpi(strtrim(HeaderParse{2}),'Missing')
+    % if elev is a number, print as-is
+    if ~isnan(str2double(HeaderParse{2}))
+        GroundElevHeader = tline;
+    % if elev is properly labeled as mission, print as-is
+    elseif strcmpi(strtrim(HeaderParse{2}),'Missing')
         GroundElevHeader = char(tline);
+    % else print as-is but add warning
     else
         GroundElevHeader = strcat(tline," (Should be 'Missing')");
         fprintf(" BAD_GSE");
     end
 end
 
-% Header Line Four
+%----------------------------------
+% LATITUDE  (Header Line Four)
+%----------------------------------
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
 if ~isnan(str2double(HeaderParse{2}))
@@ -96,7 +143,9 @@ else
     fprintf(" BAD_Lat");
 end
 
-% Header Line Five
+%----------------------------------
+% LONGITUDE  (Header Line Five)
+%----------------------------------
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
 if ~isnan(str2double(HeaderParse{2}))
@@ -106,56 +155,94 @@ else
     fprintf(" BAD_Lon");
 end
 
-% Header Line Six
+%----------------------------------
+% STATION VERTICAL DATUM  (Header Line Six)
+%----------------------------------
+% example: "#vertical datum:"
+% example: "#vertical datum: NGVD29"
+% example: "#vertical datum: NAVD88"
+% example: "#vertical datum: LOCAL"
+
 tline = fgetl(fileID);
-GSEadjust = false;
 HeaderParse = split(tline, ":");
-% Check for if values need to be converted from NAVD88 to NGVD29 for subsequent scripts
-if (strcmp(strtrim(HeaderParse{2}),'NAVD88')&& strcmp(StationNameParse{2}, 'stage')) || strcmp(StationNameParse{2}, 'stage_NAVD88') %If Datum is NAVD88 conversion will occur
-    DatumConvert = true;
-else % Otherwise it will not
-    DatumConvert = false;
-end
-if strcmp(strtrim(HeaderParse{2}),'NAVD88') || strcmp(strtrim(HeaderParse{2}),'NGVD29')
-    if DatumConvert
-        DatumHeader = strcat(HeaderParse{1}, ": NGVD29");
-    else
-        if strcmp(StationNameParse{2}, 'stage_NGVD29')
-            DatumHeader = strcat(HeaderParse{1}, ": NGVD29");
-            GSEadjust = true;
-        else
-            DatumHeader = char(tline);
-        end
-    end
+
+% Check for values that need to be converted from NAVD88 to NGVD29 for subsequent scripts
+% If Datum is NAVD88 conversion will occur later in script
+
+if strcmp(strtrim(HeaderParse{2}),'NGVD29')
+%    validStationDatum = true;
+    DatumHeader = char(tline);
+    stageStationElevInNGVD29 = true;
+elseif (strcmp(strtrim(HeaderParse{2}),'NAVD88'))
+%    validStationDatum = true;
+    DatumHeader = char(tline);
+    stageStationElevInNAVD88 = true;
 else
     DatumHeader = strcat(tline," (Improper Datum)");
     fprintf(" BAD_Datum");
 end
 
-% Header Line Seven
+%----------------------------------
+% DATUM CONVERSION VALUE  (Header Line Seven)
+%----------------------------------
+% example: "#conversion: -1.440"
+% example: "#conversion: 0.000"
+
 tline = fgetl(fileID);
 HeaderParse = split(tline, ":");
-ConversionVal = str2double(HeaderParse{2}); % Finds conversion value
+
+% Flag if conversion value is not a number, or is 0.0.
+% Otherwise, save header as is.
+% (Conversion value of 0.0 is not possible in Florida.)
+% Also save conversion value for later use.
+
+ConversionVal = str2double(HeaderParse{2});
 if ~isnan(ConversionVal)
-    ConversionHeader = char(tline);
-    if (DatumConvert && ConversionVal ~= 0) || (GSEadjust && ConversionVal ~= 0) % If Datum is NAVD88 and Conversion Value isn't 0
-        DatumOffset = str2double(HeaderParse{2});
-        GSE = split(GroundElevHeader, ":");
-        DatumParse = split(DatumHeader, ":");
-        if ~isnan(str2double(strtrim(GSE{2}))) && ~(strcmp(StationNameParse{2}, 'stage_NAVD88') && strcmp(strtrim(DatumParse{2}),'NGVD29'))
-            GroundElevHeader = strcat(GSE{1}, ": ", num2str(str2double(strtrim(GSE{2})) - DatumOffset));
-        end
-        if GSEadjust
-            DatumOffset = 0;
-        end
-    else % Otherwise datum conversion value is 0.
-        DatumOffset = 0;
+    if (ConversionVal == 0.0)
+        ConversionHeader = strcat(tline," (Datum conversion should not be 0.0)");
+        fprintf(" BAD_Conversion");
+        ConversionVal = NaN; % set any 0.0 values to NaN because they are incorrect
+    else % else conversion value is non NaN and is not 0.0 (it is good)
+        ConversionHeader = char(tline);
+        validConversionValue = true;
     end
-else
+else % else conversion value is NaN
     ConversionHeader = strcat(tline," (Should be numeric value)");
     fprintf(" BAD_Conversion");
 end
 
+%----------------------------------
+% EMPTY LINE  (Header Line Eight)
+%----------------------------------
+tline = fgetl(fileID);
+EmptyLineHeader = char(tline);
+
+%----------------------------------
+% DATA HEADER LINE  (Header Line Nine)
+%----------------------------------
+% example: "#stn|type|date time|value(feet)|validation_date"
+
+tline = fgetl(fileID);
+DataValuesHeader = strcat(tline,"|Flag");
+
+%----------------------------------
+% CONVERT ANY STAGE STATION ELEVATION IN NAVD88 to NGVD29
+% (and update Header info accordingly)
+%----------------------------------
+if (stageStationElevInNAVD88 && validStageStationElevation && validConversionValue)
+
+    % Convert station elevation to NGVD29 and update GroundElevHeader
+    HeaderParse = split(GroundElevHeader, ":");
+    newStationElevString = num2str(str2double(strtrim(HeaderParse{2})) - ConversionVal);
+    GroundElevHeader = strcat(HeaderParse{1}, ": ", newStationElevString);
+    
+    % Update Station Datum Header
+    DatumHeader = strrep(DatumHeader,"NAVD88","NGVD29");
+end 
+  
+%----------------------------------
+% PRINT NEW HEADER TO OUTFILE AND CLOSE
+%----------------------------------
 fprintf(flagID, "%s\n", StationHeader);
 fprintf(flagID, "%s\n", AgencyHeader);
 fprintf(flagID, "%s\n", char(GroundElevHeader));
@@ -163,43 +250,96 @@ fprintf(flagID, "%s\n", LatitudeHeader);
 fprintf(flagID, "%s\n", LongitudeHeader);
 fprintf(flagID, "%s\n", DatumHeader);
 fprintf(flagID, "%s\n", ConversionHeader);
-
-% Header Line Eight
-% Empty Line
-tline = fgetl(fileID);
-fprintf(flagID, "%s\n", char(tline));
-
-% Header Line Nine
-tline = fgetl(fileID);
-fprintf(flagID,strcat(tline,"|Flag\n"));
-
+fprintf(flagID, "%s\n", EmptyLineHeader);
+fprintf(flagID, "%s\n", DataValuesHeader);
 
 [~] = fclose( fileID );
 fprintf(" ... ");
 
-%
+%===================================================================
 %  BEGIN PARSE OF TIMESERIES DATA
-%
+%===================================================================
+
+%----------------------------------
+% Open file and scan measurement data (skip first 9 header lines)
+%-----------------------------------
 fileID = fopen( myFILE );
 formatString = '%s %s %s %s %s %s %*[^\n]';
 fileData = textscan(fileID,formatString,'HeaderLines',9,'Delimiter','|','EmptyValue',NaN);
 [~] = fclose( fileID );
 
-dataSize = size(fileData{4});
-FlagsNum = ones(dataSize(1), dataSize(2)); % Stores Numeric Flag for .dfs0 files
-FlagsText = cell(dataSize(1), dataSize(2)); % Stores text flag for .dat files
-Station = fileData{1}; % Raw Data station Names
-Type = fileData{2}; % Raw Data Station Type (Flow or Stage)
-isTypeNgvd29 = ~strcmp(Type,'stage_ngvd29'); % Create array where value is zero if datatype='stage_ngvd29'. Later multiply datum offset by this to zero out offfset conversion of measurement datatype is already ngvd29
-Time = fileData{3}; % Raw Data DateTimes
-DataText = fileData{4};
-Measurements = str2double(fileData{4}) - (DatumOffset * isTypeNgvd29); % Raw Data Values
+% Save data into arrays
+Station    = fileData{1}; % Raw Data station Names
+Type       = fileData{2}; % Raw Data Station Type (Flow or Stage)
+Time       = fileData{3}; % Raw Data DateTimes
+DataText   = fileData{4}; % Raw Data Measurements
+DataDouble = str2double(fileData{4}); %Raw Data Measurements converted to doubles
 Validation = fileData{5}; % Raw Data Validation date
-FIELD_MEASUREMENTS = str2double(DataText);
+
+%----------------------------------
+% Process measurements for datum conversion
+%  If datum is known and conversion is possible, convert to NAVD29
+%  If datum is unknown, change data to NaN
+%-----------------------------------
+
+% Create array where value is zero if datatype='stage_ngvd29'. 
+% Multiply datum offset by this to zero out offset conversion 
+% of measurement datatype is already ngvd29
+
+% if data are flow values, copy data without conversion
+if strcmpi(DType_Flag,'Discharge')
+    FIELD_MEASUREMENTS = DataDouble;
+    Measurements = DataDouble;
+
+% else if datatype is specified to be NGVD29, copy data without conversion
+elseif strcmp(Type(1),'stage_ngvd29')
+    FIELD_MEASUREMENTS = DataDouble;
+    Measurements = DataDouble;
+
+% else if datatype is specified to be NAVD88, and conversion is available,
+% convert to NGVD29, otherwise set to NaN
+elseif strcmp(Type(1),'stage_navd88')
+    if validConversionValue
+        FIELD_MEASUREMENTS = DataDouble - ConversionVal;
+        Measurements = DataDouble - ConversionVal;
+    else
+        FIELD_MEASUREMENTS = NaN; %*%*%*%*%*%*%*%*%*%
+        Measurements = NaN; %*%*%*%*%*%*%*%*%*%
+    end
+    
+% otherwise this is stage data that is either:
+%    1) in the same datum as the station, if the station has a datum
+%    2) not referenced to a datum, if the station has no datum
+else
+    % if station datum is NGVD29, copy data as-is
+    if  stageStationElevInNGVD29
+        FIELD_MEASUREMENTS = DataDouble;
+        Measurements = DataDouble;
+        
+    % if station datum is NAVD88 and conversion is valid, convert data
+    elseif  (stageStationElevInNAVD88 && validConversionValue)
+        FIELD_MEASUREMENTS = DataDouble - ConversionVal;
+        Measurements = DataDouble - ConversionVal;
+
+    % otherwise set data to NaN
+    else
+        FIELD_MEASUREMENTS = DataDouble * NaN; %*%*%*%*%*%*%*%*%*%
+        Measurements = DataDouble * NaN; %*%*%*%*%*%*%*%*%*%
+    end
+end
+
+
+%----------------------------------
+% Set all 'NaN' measurements to value '-1e-35'
+% in FIELD_MEASUREMENTS array
+%----------------------------------
 isDataNaN =isnan(FIELD_MEASUREMENTS);
-FIELD_MEASUREMENTS = FIELD_MEASUREMENTS - (DatumOffset * isTypeNgvd29);
 FIELD_MEASUREMENTS(isDataNaN) = -1e-35;
 
+%----------------------------------
+% Place revised data from manual QA/QC of dfs0 files
+%  into arrays dfsTime and dfsData  (if requested)
+%-----------------------------------
 if UseDfsFlags
     try
         dfs0FileName = [DFS0name '.dfs0'];
@@ -223,22 +363,20 @@ if UseDfsFlags
     end
 end
 
+%----------------------------------
+% Convert station name to uppercase
+%-----------------------------------
+% This is to avoid problems later in processing
+% because the code is not case-sensitive
 
-%-----------------------------------
-% FIELD 1:  STATION NAME
-%-----------------------------------
-%   Convert this to uppercase
 FIELD_STATION = upper(fileData{1});
 
 %-----------------------------------
-% FIELD 2:  DATATYPE
+% Process DATE-TIME arrays 
 %-----------------------------------
-%   Datatype is not used
-
-%-----------------------------------
-% FIELD 3:  DATE-TIME
-%-----------------------------------
-
+% (two different datetime formats are possible, 
+% and each file can have both intermixed. This code reads both types and
+% creates one new datetime array in our desired format)
 try
     try
         % the next two lines provide for two types of input formats.
@@ -265,15 +403,24 @@ catch
     fprintf(' couldnt parse date-time format. ');
 end
 
-% next we convert any NaN values to zeros so the arrays can be added
+% next we convert any NaN values to zeros so the time arrays can be added
 iznan = isnan(myTimes1);
 myTimes1(iznan) = 0;
 iznan = isnan(myTimes2);
 myTimes2(iznan) = 0;
 
-% this adds the arrays, creating one complete date-time array for the
+% this adds the time arrays, creating one complete date-time array for the
 % two complimentary arrays
 FIELD_TIME = myTimes1 + myTimes2;
+
+%-----------------------------------
+% Loop through measurement data and perform checks
+%-----------------------------------
+
+% Initialize variables
+dataSize = size(fileData{4});
+FlagsNum = ones(dataSize(1), dataSize(2)); % Stores Numeric Flag for .dfs0 files
+FlagsText = cell(dataSize(1), dataSize(2)); % Stores text flag for .dat files
 stagnant = 0; % for checking how many lines the data has been constant
 dfsi = 1; % index for position in dfs0 file if using flagged dfs0
 % Some checks need some time to see if entries need to be flagged, such as
@@ -282,15 +429,19 @@ dfsi = 1; % index for position in dfs0 file if using flagged dfs0
 % through once and you can use the last write index only with your current
 % index to write all necessary lines.
 lastwrite = 1;
-% Loops through data performing checks
+
+% Loop through data and check
 for di = 1:dataSize(1)
     try
-        if UseDfsFlags % If using dfs0 flags
-            while FIELD_TIME(di) > dfsTime(dfsi) % find first time step in dfs0 that is not prior to current timestep in raw
+        % CHECK FOR FLAGS IN DFS0 FILE
+        % If using dfs0 flags, find first time step in dfs0 that is not prior to current timestep in raw
+        if UseDfsFlags
+            while FIELD_TIME(di) > dfsTime(dfsi)
                 dfsi = dfsi + 1;
             end
         end
-        % If using dfs0 flags, and raw data matches, and DateTime matches
+        % If using dfs0 flags, flag data as original or modified
+        %   (if raw data matches, and DateTime matches)
         if UseDfsFlags && Measurements(di) == round(dfsData(dfsi, 2),4) && FIELD_TIME(di) == dfsTime(dfsi)
             if dfsData(dfsi, 3) == 1
                 FlagsNum(di) = 1; % flag as original
@@ -304,6 +455,11 @@ for di = 1:dataSize(1)
                 Measurements(di) = dfsData(dfsi, 4);
                 FlagsText{di} = "Dfs0 Flagged Data"; % Contain modified numbers, if applicable
             end
+            
+        % PERFORM STANDARD DATA CHECKS    
+        % If not using dfs0 flags, process measurement value by checking:
+        %    if NaN, -Inf, value out of range, invalid datetime, 
+        %    or repeating number
         else
             if isnan(Measurements(di,1)) % checks if value at timestep is nan
                 Measurements(di, 1) = -1e-35;
@@ -340,7 +496,9 @@ for di = 1:dataSize(1)
                 end
                 
             end
-            % checks for date times with 24:00, which is invalid. should be
+            
+            % CHECK MIDNIGHT IS HOUR 24 or 00
+            % check for date times where hour is 24:00, which is invalid. should be
             % 00:00. Works to place properly or mark as invalid.
             if ~isempty(myTimes1)
                 timeCheck = strsplit(char(Time{di, 1}), ' ');
@@ -372,7 +530,9 @@ for di = 1:dataSize(1)
                     end
                 end
             end
-            % Checks if date time is sorted, ie if current datetime occurs
+            
+            % CHECK DATETIMES IN ORDER
+            % Checks if date time is sorted, ie. if current datetime occurs
             % after previous and before next.
             % Examples
             % 1/1/2000 00:00, 1/1/2000 01:00, 1/1/2000 02:00 OK
@@ -462,6 +622,8 @@ for di = 1:dataSize(1)
                 end
             end
         end
+        
+        % WRITE DATA TO OUTPUT FILE
         % If first line write to file
         if di == 1
             if strcmp(DataText(di, 1), "")
@@ -472,9 +634,10 @@ for di = 1:dataSize(1)
             fprintf(flagID, "%s|%s|%s|%s|%s|%s\n", char(Station{di, 1}), char(Type{di, 1}),...
                 char(Time{di, 1}), val, char(Validation{di, 1}), FlagsText{di, 1});
             lastwrite = di + 1;
-            % else if value doesn't match previous value, value is nan, or is
-            % last line, then write all lines to file between lastwrite index
-            % and current one, di.
+            
+        % else if value doesn't match previous value, value is nan, or is
+        % last line, then write all lines to file between lastwrite index
+        % and current one, "di".
         elseif FIELD_MEASUREMENTS(di, 1) ~= FIELD_MEASUREMENTS(di - 1, 1) || di == dataSize(1)|| isnan(Measurements(di, 1))
             for wi = lastwrite:di
                 if strcmp(DataText(wi, 1), "")
@@ -493,14 +656,17 @@ for di = 1:dataSize(1)
 end
 
 %-----------------------------------
-
+% close file
+%-----------------------------------
 [~] = fclose( flagID );
-% create a structure
 
-DATA.STATION = FIELD_STATION;
-DATA.TIME = FIELD_TIME;
+%-----------------------------------
+% create and populate the output structure
+%-----------------------------------
+DATA.STATION      = FIELD_STATION;
+DATA.TIME         = FIELD_TIME;
 DATA.MEASUREMENTS = Measurements;
-DATA.RAW = FIELD_MEASUREMENTS;
-DATA.FLAG = FlagsNum;
+DATA.RAW          = FIELD_MEASUREMENTS;
+DATA.FLAG         = FlagsNum;
 
 end

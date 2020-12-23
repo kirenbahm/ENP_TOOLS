@@ -21,19 +21,19 @@ INI.DIR_OUTFILES        = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Stage/';
 INI.DIR_STAGE_DFS0       = [INI.DIR_INFILES 'DFS0/'];
 INI.DIR_STAGE_PNGS       = [INI.DIR_OUTFILES 'DFS0_pngs/'];
 INI.STAGE_LATEX_FILENAME = [INI.DIR_OUTFILES 'STAGE.tex'];
-INI.STAGE_LATEX_HEADER   = 'Water Level Statistics';    % header printed in LaTeX document
+INI.STAGE_LATEX_HEADER   = 'STAGE Analysis';    % header printed in LaTeX document
 INI.STAGE_LATEX_RELATIVE_PNG_PATH = './DFS0_pngs/'; % RELATIVE path from location of .tex file to location of .png files
 
 INI.DIR_STAGE_DFS0DD       = [INI.DIR_OUTFILES 'DFS0DD/'];
 INI.DIR_STAGE_PNGSDD       = [INI.DIR_OUTFILES 'DFS0DD_pngs/'];
 INI.STAGEDD_LATEX_FILENAME = [INI.DIR_OUTFILES 'STAGE_DD.tex'];
-INI.STAGEDD_LATEX_HEADER   = 'Daily Water Level Statistics';
+INI.STAGEDD_LATEX_HEADER   = 'STAGE Analysis Daily';
 INI.STAGEDD_LATEX_RELATIVE_PNG_PATH = './DFS0DD_pngs/';
 
 INI.DIR_STAGE_DFS0HR       = [INI.DIR_OUTFILES 'DFS0HR/'];
 INI.DIR_STAGE_PNGSHR       = [INI.DIR_OUTFILES 'DFS0HR_pngs/'];
 INI.STAGEHR_LATEX_FILENAME = [INI.DIR_OUTFILES 'STAGE_HR.tex'];
-INI.STAGEHR_LATEX_HEADER   = 'Hourly Water Level Statistics';
+INI.STAGEHR_LATEX_HEADER   = 'STAGE Analysis Hourly';
 INI.STAGEHR_LATEX_RELATIVE_PNG_PATH = './DFS0HR_pngs/';
 
 

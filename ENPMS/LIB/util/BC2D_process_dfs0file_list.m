@@ -1,7 +1,7 @@
 function INI = BC2D_process_dfs0file_list(INI)
 
 % Select Hourly or Daily dfs0 files
-if strcmpi(INI.OLorSZ,'OL') 
+if strcmpi(INI.OLorSZ,'OL')
     FILE_FILTER = 'DFS0HR/*.dfs0'; % list only files with extension .out
 elseif strcmpi(INI.OLorSZ,'SZ')
     FILE_FILTER = 'DFS0DD/*.dfs0'; % list only files with extension .out
@@ -16,15 +16,21 @@ fileListingID = fopen(fileNameForFileList,'w');
 fprintf(fileListingID,"Files used to create %s:\n", INI.DFS2);
 fprintf(fileListingID,"Current Date: %s\n", char(datetime));
 fprintf(fileListingID,"Time period: %s to %s\n", INI.DATE_I, INI.DATE_E);
+
 if strcmpi(INI.OLorSZ,'OL')
     fprintf(fileListingID,"Increment: hourly\n");
 elseif strcmpi(INI.OLorSZ,'SZ')
     fprintf(fileListingID,"Increment: daily\n");
 end
-if INI.USE_FOURIER_BC2D
+
+if INI.USE_FOURIER
     fprintf(fileListingID,"Method: Fourier\n\n");
-else
+elseif INI.USE_JULIAN
     fprintf(fileListingID,"Method: Julian Day\n\n");
+elseif INI.USE_UNFILLED
+    fprintf(fileListingID,"Method: Unfilled Timeseries\n\n");
+else
+    fprintf("\n\nERROR - Cannot determine which data to use for BC2D interpolation\n\n");
 end
 
 INI.MAP_H_DATA = containers.Map();
@@ -78,9 +84,9 @@ for i = 1:num_stations
         DATE_F(i) = DFS0.T(length(DFS0.T));
         
         INI.MAP_H_DATA(char(C{1})) = STATION;
-
+        
         fprintf(fileListingID,"%s\\%s\t%s\n",INI.LISTING(i).folder, INI.LISTING(i).name, INI.LISTING(i).date);
-
+        
         fprintf('  done\n' );
     catch
         fprintf('%s:  EXCEPTION in: %d/%d: with n=%d observations\n', char(NAME), i, num_stations, nn);

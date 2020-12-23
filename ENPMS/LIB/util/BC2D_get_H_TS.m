@@ -22,12 +22,16 @@ for currentKey = allKeys
     X(i) = A.utmXmeters;
     Y(i) = A.utmYmeters;
     
-    % if using Fourier technique, 
-    if INI.USE_FOURIER_BC2D
+    if INI.USE_FOURIER
         H(i) = A.dHf(nTS); % dHf is Fourier temporal interpolation
-    else
+    elseif INI.USE_JULIAN
         H(i) = A.dHd(nTS); % dHd is Julian temporal interpolation
+    elseif INI.USE_UNFILLED 
+        H(i) = A.dHr(nTS); % dHr is 'raw' - no temporal interpolation
+    else
+        fprintf("\n\nERROR - Cannot determine which data to use for BC2D interpolation\n\n");
     end
+
     L{1,i} = currentKey;
 end
 

@@ -1,5 +1,7 @@
 function D08_edit_dfs0_metadata()
-
+%
+% Update script so if the Excel file has an empty cell, it doesn't fail.??? 
+%
 % This function is used to rename DFE dfs0 files and change metadata to those used in the MIKE model.
 %
 % For example, it takes a file 'S333.flow.dfs0' with item 'S333' and changes it to file 'S333_Q' with item name 'S333_Q' and title 'S333_Q'

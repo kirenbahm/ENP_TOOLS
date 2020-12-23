@@ -61,13 +61,13 @@ INI.OBS_STAGE_FLAG_DIR = '../../ENP_TOOLS_Output/Obs_Data_Final/Stage/';
 % -------------------------------------------------------------------------
 % Settings used to determine which values will be flagged
 % -------------------------------------------------------------------------
-INI.STAGE_LOWER_LIMIT = -10;   % Lower limit for stage in feet
-INI.STAGE_UPPER_LIMIT = 50;    % Upper Limit for stage in feet
+INI.STAGE_LOWER_LIMIT = -100;   % Lower limit for stage in feet
+INI.STAGE_UPPER_LIMIT = 500;    % Upper Limit for stage in feet
 
-INI.STAGE_PERIOD_WITH_CONSTANT_LIMIT = 7; %Period of time stage can remain constant, in days, before being flagged
+INI.STAGE_PERIOD_WITH_CONSTANT_LIMIT = 20; %Period of time stage can remain constant, in days, before being flagged
 
-INI.FLOW_LOWER_LIMIT = -10000; % Lower limit for flow in cubic feet per second
-INI.FLOW_UPPER_LIMIT = 10000;  % Upper limit for flow in cubic feet per second
+INI.FLOW_LOWER_LIMIT = -5000000;  % Lower limit for flow in cubic feet per second
+INI.FLOW_UPPER_LIMIT =  5000000;  % Upper limit for flow in cubic feet per second
 
 % -------------------------------------------------------------------------
 % Other options (0 = NO, 1 = YES)

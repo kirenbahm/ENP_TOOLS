@@ -127,10 +127,19 @@ D06_generateObservedMatlab
       read_file_DFS0
 
 ------------------
-D07_map_OBSERVED_DFE
+D07_make_kml_OBSERVED_DFE
    initializeLIB
    S00_load_DFE_STNLOC
    S01_load_PREPROCESS_IMAGERY
+
+D07_make_kml_OBSERVED_DFE_BC2D_IN
+   initializeLIB
+   S00_load_DFE_STNLOC
+   S01_load_PREPROCESS_IMAGERY
+
+D07_make_kml_OBSERVED_DFE_BC2D_OUT
+   initializeLIB
+   S00_load_DFE_STNLOC
 
 ------------------
 D08_edit_dfs0_metadata

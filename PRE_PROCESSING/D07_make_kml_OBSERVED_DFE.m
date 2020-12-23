@@ -1,4 +1,4 @@
-function D07_map_OBSERVED_DFE()
+function D07_make_kml_OBSERVED_DFE()
 %  This function creates kml files for viewing in GOOGLE_EARTH
 %
 %  Function creates a kml file of stations with links to png files.
@@ -25,15 +25,15 @@ INI.MATLAB_SCRIPTS = '../ENPMS/';
 % -------------------------------------------------------------------------
 % Location of input station metadata file (this is the DFE station table)
 % -------------------------------------------------------------------------
-DFE_STATION_DATA_FILE = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/dfe_station_table_20200715.txt';
+DFE_STATION_DATA_FILE = '../../Obs_Data_Raw/DFE_station_table-20201106.txt';
 
 % -------------------------------------------------------------------------
 % LOAD directory locations and list PNG directory options
 % -------------------------------------------------------------------------
-DIR_FLOW_DFS0_IN  = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/';
-DIR_STAGE_DFS0_IN = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Stage/';
-DIR_FLOW_KML_OUT  = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/';
-DIR_STAGE_KML_OUT = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Stage/';
+DIR_FLOW_DFS0_IN  = '../../Obs_Data_Final_DFS0/Flow/';
+DIR_STAGE_DFS0_IN = '../../Obs_Data_Final_DFS0/Stage/';
+DIR_FLOW_KML_OUT  = '../../Obs_Data_Final_DFS0/Flow/';
+DIR_STAGE_KML_OUT = '../../Obs_Data_Final_DFS0/Stage/';
 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------

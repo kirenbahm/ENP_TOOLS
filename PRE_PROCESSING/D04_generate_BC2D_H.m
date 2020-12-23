@@ -48,6 +48,9 @@ SAVE_IN_MATLAB = 1;                                 % to save the H data and the
 % Delete existing DFS0 files? (0 = FALSE, 1 = TRUE)
 INI.DELETE_EXISTING_DFS0 = 1;
 
+% Create plots of output? (0 = FALSE, 1 = TRUE)
+INI.CREATE_FIGURES = 1;
+
 % Create figures of just timeseries interpolation results? (0 = NO, 1 = YES)
 % (Currently works with Fourier method only)
 INI.CREATE_RESIDUALS_FIGURES = 0;
@@ -55,25 +58,15 @@ INI.CREATE_RESIDUALS_FIGURES = 0;
 % -------------------------------------------------------------------------
 % Grid info
 % -------------------------------------------------------------------------
-% *****  OLD VALUES  ******
-% INI.X0 = 458400;
-% INI.Y0 = 2777500;
-% INI.LON= -81.412625;
-% INI.LAT = 25.112786;
-% INI.NY = -0.1742935;
-% *****  OLD VALUES  ******
-
-% *****  NEW VALUES  ******
-INI.X0 = 458600;
+INI.X0 = 458600;  % UTM SW grid origin in meters
 INI.Y0 = 2777800;
 INI.LON= -81.41065021250006;
 INI.LAT = 25.11550027870545;
-INI.NY = -0.1743006671603;
-% *****  NEW VALUES  ******
+INI.NY = -0.1743006671603; % geographic coordinate grid rotation
 
+INI.cell = 1600;  % cell size of output in meters
 
-INI.cell = 1600;
-INI.nx = ceil((558000-INI.X0)/INI.cell);
+INI.nx = ceil((558000-INI.X0)/INI.cell); % UTM grid NE corner coordinates
 INI.ny = ceil((2867500-INI.Y0)/INI.cell);
 
 % -------------------------------------------------------------------------
@@ -158,7 +151,7 @@ if SAVE_IN_MATLAB
     load(char(INI.H_MATLAB_FILLED),'-mat');
     DATA_2D = BC2D_create_DFS2(INI);
     
-    % plot points
+    % extract points
     INI.MAP_H_DATA = BC2D_extractData2D(DATA_2D, INI.MAP_H_DATA);
     MAP_H_DATA = INI.MAP_H_DATA;
     save(char(INI.H_STATIONS_MATLAB),'MAP_H_DATA','-v7.3');
@@ -168,8 +161,13 @@ else
     INI.MAP_H_DATA = MAP_H_DATA;
 end
 
-BC2D_plot_all(INI);
+if INI.CREATE_FIGURES
+    BC2D_plot_all(INI);
+end
 
 fclose('all');
 fprintf('\n DONE \n\n');
+fprintf('\n\n *** NOTE THAT YOU MAY NEED TO MANUALLY EDIT THE DFS2 GEOGRAPHIC COORDINATES ***');
+fprintf(  '\n                   FROM UTM-17 to NAD_1983_UTM_Zone_17N  \n\n');
+fprintf('\n\n (also, after pressing OK, you will need to choose Keep Map Projection Coordinates and derive Geographical Coordinates \n');
 end

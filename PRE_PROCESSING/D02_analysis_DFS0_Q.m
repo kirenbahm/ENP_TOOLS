@@ -18,23 +18,23 @@ INI.DIR_OUTFILES        = '../../ENP_TOOLS_Output/Obs_Data_Final_DFS0/Flow/';
 % -------------------------------------------------------------------------
 % Set up directory structure (this shouldn't need changing)
 % -------------------------------------------------------------------------
-INI.DIR_FLOW_DFS0       = [INI.DIR_INFILES 'DFS0/'];
-INI.DIR_FLOW_PNGS       = [INI.DIR_OUTFILES 'DFS0_pngs/'];
-INI.FLOW_LATEX_FILENAME = [INI.DIR_OUTFILES 'FLOW.tex'];
-INI.FLOW_LATEX_HEADER   = 'FLOW Analysis *New';    % header printed in LaTeX document
-INI.FLOW_LATEX_RELATIVE_PNG_PATH = './DFS0_pngs/'; % RELATIVE path from location of .tex file to location of .png files
+INI.DIR_FLOW_DFS0        = [INI.DIR_INFILES 'DFS0/'];
+INI.DIR_FLOW_PNGS        = [INI.DIR_OUTFILES 'DFS0_pngs/'];
+INI.FLOW_LATEX_FILENAME  = [INI.DIR_OUTFILES 'FLOW.tex'];
+INI.FLOW_LATEX_HEADER    = 'FLOW Analysis';    % header printed in LaTeX document
+INI.FLOW_LATEX_RELATIVE_PNG_PATH  = './DFS0_pngs/'; % RELATIVE path from location of .tex file to location of .png files
 
-INI.DIR_FLOW_DFS0DD       = [INI.DIR_OUTFILES 'DFS0DD/'];
-INI.DIR_FLOW_PNGSDD       = [INI.DIR_OUTFILES 'DFS0DD_pngs/'];
-INI.FLOWDD_LATEX_FILENAME = [INI.DIR_OUTFILES 'FLOW_DD.tex'];
-INI.FLOWDD_LATEX_HEADER   = 'FLOW Analysis Daily *New';
-INI.FLOWDD_LATEX_RELATIVE_PNG_PATH = './DFS0DD_pngs/';
+INI.DIR_FLOW_DFS0DD        = [INI.DIR_OUTFILES 'DFS0DD/'];
+INI.DIR_FLOW_PNGSDD        = [INI.DIR_OUTFILES 'DFS0DD_pngs/'];
+INI.FLOWDD_LATEX_FILENAME  = [INI.DIR_OUTFILES 'FLOW_DD.tex'];
+INI.FLOWDD_LATEX_HEADER    = 'FLOW Analysis Daily';
+INI.FLOWDD_LATEX_RELATIVE_PNG_PATH  = './DFS0DD_pngs/';
 
-INI.DIR_FLOW_DFS0HR       = [INI.DIR_OUTFILES 'DFS0HR/'];
-INI.DIR_FLOW_PNGSHR       = [INI.DIR_OUTFILES 'DFS0HR_pngs/'];
-INI.FLOWHR_LATEX_FILENAME = [INI.DIR_OUTFILES 'FLOW_HR.tex'];
-INI.FLOWHR_LATEX_HEADER   = 'FLOW Analysis Hourly *New';
-INI.FLOWHR_LATEX_RELATIVE_PNG_PATH = './DFS0HR_pngs/';
+INI.DIR_FLOW_DFS0HR        = [INI.DIR_OUTFILES 'DFS0HR/'];
+INI.DIR_FLOW_PNGSHR        = [INI.DIR_OUTFILES 'DFS0HR_pngs/'];
+INI.FLOWHR_LATEX_FILENAME  = [INI.DIR_OUTFILES 'FLOW_HR.tex'];
+INI.FLOWHR_LATEX_HEADER    = 'FLOW Analysis Hourly';
+INI.FLOWHR_LATEX_RELATIVE_PNG_PATH  = './DFS0HR_pngs/';
 
 % -------------------------------------------------------------------------
 % Location of ENPMS library

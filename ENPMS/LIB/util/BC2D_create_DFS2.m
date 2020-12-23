@@ -27,7 +27,8 @@ NSTEPS = INI.NSTEPS;
 
 %for i = ntime_start:ntime_end
 for i = 1:NSTEPS
-    %print mark on each 100 step
+    
+    % print mark to screen (progress bar) on each 100 step
     if (~mod(i,100))
         if strcmpi(INI.OLorSZ,'OL')
             dt = hours(i - 1);
@@ -38,13 +39,19 @@ for i = 1:NSTEPS
         fprintf(' ... Step: %s: %d/%d \n', char(t), i,NSTEPS);
     end
     
+    % Load data
+    % L is cell array of station names (size = 1 x num_stations)
+    % XD and YD are double arrays of UTM coordinates (1 x num_stations)
+    % HD is double array of stages from each station for one timestep (1 x num_stations)
     [HD, XD, YD,L] = BC2D_get_H_TS(INI,i);
     
+    % Find and remove NaN values from arrays
     N = find(~isnan(HD));
-    
     HD = HD(N);
     XD = XD(N);
     YD = YD(N);
+    
+    % Reshape arrays to remove empty spots left by NaN data
     n = length(HD);
     HD = reshape(HD,n,1);
     XD = reshape(XD,n,1);
@@ -53,7 +60,10 @@ for i = 1:NSTEPS
     % TriScatteredInterp is not recommended
     % F = TriScatteredInterp(XD,YD,HD,'natural');
     
-    F = scatteredInterpolant(XD,YD,HD,'natural');
+    % Spatially interpolate data
+    %F = scatteredInterpolant(XD,YD,HD,'natural'); % Uses 'natural' interpolation method. Extrapolation method seems to default to 'linear' from what I can tell
+    F = scatteredInterpolant(XD,YD,HD,'natural','nearest'); % Changed extrapolation method to 'nearest' 2020-12-21 keb
+    
     HI = F(XI_UTM,YI_UTM);
     
     N = find(isnan(HI));

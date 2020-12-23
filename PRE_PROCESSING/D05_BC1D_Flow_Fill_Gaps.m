@@ -32,11 +32,11 @@ INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Processed_BC1D/out/';
 
 % Model Simulation Period
 INI.START_DATE = '01/01/1999 00:00';
-INI.END_DATE   = '12/31/2019 00:00';
+INI.END_DATE   = '01/03/2020 00:00';
 
 % Add these to the output filenames
-INI.OUTFILE_PREFIX = '';
-INI.OUTFILE_SUFFIX = '-filled';
+INI.OUTFILE_PREFIX = 'BC_';
+INI.OUTFILE_SUFFIX = '';
 
 % Location of ENPMS library
 INI.MATLAB_SCRIPTS = '../ENPMS/';

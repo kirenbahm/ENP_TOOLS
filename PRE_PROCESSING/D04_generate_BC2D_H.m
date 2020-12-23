@@ -25,11 +25,11 @@ INI.STAGE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_BC2D/in/'
 
 
 % Use Fourier for creating BC2D maps, otherwise use Julian Day Average
-INI.USE_FOURIER_BC2D = false;
+% see below %    INI.USE_FOURIER_BC2D = false; 
 
-% Output directory:
-INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Julian/';
-%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Fourier/';
+% Output directory (also includes switch setting for Fourier):
+INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Julian/'; INI.USE_FOURIER_BC2D = false; 
+%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Fourier/'; INI.USE_FOURIER_BC2D = true; 
 
 
 % Location of ENPMS Scripts

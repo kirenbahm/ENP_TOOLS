@@ -111,6 +111,7 @@ D04_generate_BC2D_H_OL
    BC2D_fill_gaps_H_points
       BC2D_fit_gaps_julian
       BC2D_fit_gaps_fourier (also plots residuals)
+      BC2D_create_raw_data_vector
    BC2D_create_DFS2 (creates BC2D interpolated file using scatteredInterpolant)
       BC2D_write_DFS2_header
       BC2D_get_H_TS (gets data)

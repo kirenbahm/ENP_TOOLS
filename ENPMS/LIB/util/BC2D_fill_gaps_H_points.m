@@ -32,6 +32,7 @@ for currentKey = allKeys
     ST.t_i = beginDate;
     ST.t_e = endDate;
     ST.dT  = dateVector;
+    ST.dHr = dataVector; % vector for unfilled (raw) data
     ST.dHd = dataVector; % vector for Julian Day fit
     ST.dHf = dataVector; % vector for Fourier fit
 
@@ -41,6 +42,9 @@ for currentKey = allKeys
     
     fprintf('... processing %d/%d: %s: with %d records...\n', i, numKeys, char(stnDataFilename),numObsValues);
     
+    % Create un-filled (raw) data vector
+    ST = BC2D_create_raw_data_vector(ST);
+
     % Create data vector filled using Julian Date method
     ST = BC2D_fit_gaps_julian(ST);
     

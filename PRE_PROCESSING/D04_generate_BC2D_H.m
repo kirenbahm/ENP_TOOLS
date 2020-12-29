@@ -24,13 +24,15 @@ INI.OLorSZ = 'OL';
 INI.STAGE_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_BC2D/in/';
 
 
-% Use Fourier for creating BC2D maps, otherwise use Julian Day Average
-% see below %    INI.USE_FOURIER_BC2D = false; 
+% Method for creating BC2D maps (ONE should be true, the other two should be false)
+INI.USE_JULIAN    = true;
+INI.USE_FOURIER   = false;
+INI.USE_UNFILLED  = false;
 
-% Output directory (also includes switch setting for Fourier):
-INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Julian/'; INI.USE_FOURIER_BC2D = false; 
-%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Fourier/'; INI.USE_FOURIER_BC2D = true; 
-
+% Output directory
+INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Julian/';
+%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Fourier/';
+%INI.BC2D_DIR   = '../../ENP_TOOLS_Output/Obs_Processed_BC2D/out/BC2D-Unfilled/';
 
 % Location of ENPMS Scripts
 INI.MATLAB_SCRIPTS = '../ENPMS/';
@@ -51,8 +53,8 @@ INI.DELETE_EXISTING_DFS0 = 1;
 % Create plots of output? (0 = FALSE, 1 = TRUE)
 INI.CREATE_FIGURES = 1;
 
-% Create figures of just timeseries interpolation results? (0 = NO, 1 = YES)
-% (Currently works with Fourier method only)
+% Create figures of timeseries interpolation residuals? (0 = NO, 1 = YES)
+% (Currently ONLY works with Fourier method)
 INI.CREATE_RESIDUALS_FIGURES = 0;
 
 % -------------------------------------------------------------------------

@@ -27,6 +27,9 @@ DFE_STATION_DATA_FILE = '../../Obs_Processed_BC2D/DFE_station_table-20201106-fak
 % Directory containing input png folder, and output kml location:
 % -------------------------------------------------------------------------
 DIR_STAGE_DFS0_IN = '../../Obs_Processed_BC2D/out/Julian/';
+%DIR_STAGE_DFS0_IN = '../../Obs_Processed_BC2D/out/Fourier/';
+%DIR_STAGE_DFS0_IN = '../../Obs_Processed_BC2D/out/Unfilled/';
+
 FILE_FILTER = [DIR_STAGE_DFS0_IN 'FIGURES/*.png']; % list only files with extension *.png
 KML_FILE = [DIR_STAGE_DFS0_IN char('BC2D_outfiles.kml')];
 

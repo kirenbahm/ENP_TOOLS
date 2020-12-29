@@ -19,20 +19,29 @@ for currentKey = allKeys
     
     hold on;
     
-    if ~INI.USE_FOURIER_BC2D
+    if INI.USE_JULIAN
         NN(2) = {'Temporal interpolation - Julian Day'};
         T = datestr(STATION.dT);
-        V = STATION.dHd;
+        V = STATION.dHd; % dHd is julian interpolation
+        TTS2 = timeseries(V,T);
+        TTS2.TimeInfo.Format = 'mmm-yyyy';
+        plot(TTS2,'Linestyle', 'none', 'Color', 'r', 'Marker','.', 'MarkerSize',2);
+    elseif INI.USE_FOURIER
+        NN(2) = {'Temporal interpolation - Fourier'};
+        T = datestr(STATION.dT);
+        V = STATION.dHf; % dHd is Fourier interpolation
+        TTS2 = timeseries(V,T);
+        TTS2.TimeInfo.Format = 'mmm-yyyy';
+        plot(TTS2,'Linestyle', 'none', 'Color', 'r', 'Marker','.', 'MarkerSize',2);
+    elseif INI.USE_UNFILLED
+        NN(2) = {'Temporal interpolation - None'};
+        T = datestr(STATION.dT);
+        V = STATION.dHr; % dHr is unfilled (raw) data (no interpolation)
         TTS2 = timeseries(V,T);
         TTS2.TimeInfo.Format = 'mmm-yyyy';
         plot(TTS2,'Linestyle', 'none', 'Color', 'r', 'Marker','.', 'MarkerSize',2);
     else
-        NN(2) = {'Temporal interpolation - Fourier'};
-        T = datestr(STATION.dT);
-        V = STATION.dHf;
-        TTS2 = timeseries(V,T);
-        TTS2.TimeInfo.Format = 'mmm-yyyy';
-        plot(TTS2,'Linestyle', 'none', 'Color', 'r', 'Marker','.', 'MarkerSize',2);
+        fprintf('\n\n ERROR identifying timeseries type in BC2D_plot_all.m \n\n');
     end
     
     NN(3) = {'Raw Observed Data'};

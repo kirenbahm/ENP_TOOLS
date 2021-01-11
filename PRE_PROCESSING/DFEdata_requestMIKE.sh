@@ -4,6 +4,10 @@
 # Created: 2018-07-10
 # Author: Adam Karczynski
 
+
+# RUN THIS SCRIPT ON TOADFISH  10.146.112.20
+
+
 # The following script runs a data request to DFE for MIKE.she and MATLAB processing as part of the COP model.
 # The script uses lists of STATION and DATATYPE from the '_input' directory, requests data from DFE via
 # data_request.sh, and outputs *.dat files to their respective subdirectories "Flow", "Stage", and any
@@ -17,6 +21,8 @@ if [[ $# -ne 2 ]] ; then
 	echo "ex: $0 2010-01-01 2017-12-31 or"
 	echo "'begin_date' 'end_date' for fulle record"
 	echo "*** Date format must be YYYY-mm-dd ***"
+	echo ""
+	echo "(run this script on toadfish 10.146.112.20)"
 	exit 0
 fi
 

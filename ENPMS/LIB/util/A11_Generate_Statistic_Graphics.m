@@ -157,6 +157,7 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
     clear LISTING LATEX_FILES;
     if ii <= nM % If one of the input models, find filenames of dfs2 user selected for figures
         ModelNameParts = INI.MODEL_SIMULATION_SET{ii}; % Parse Base model Name
+        NameTag = INI.MODEL_RUN_DESC{ii};
         fprintf('\nFinding .dfs2 Files For Model %s', ModelNameParts{2});
         ModelFolder = [INI.DATA_STATISTICS  ModelNameParts{2} '\']; % Base Model results folder% create directory and copy needed files
         LATEX_FILES.IsDifference = false;
@@ -186,7 +187,7 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
         end
         % If Wet and Dry Seasons are being made add filename to list
         if INI.WET_DRY_SEASON_FIGS
-            LISTING(fi).name = [ModelFolder ModelNameParts{2} '_WetDryStats.dfs2'];       % Base Model WetDry Stats
+            LISTING(fi).name = [ModelFolder ModelNameParts{3} '_WetDryStats.dfs2'];       % Base Model WetDry Stats
             fi = fi + 1;
         end
         % If Total Period Figures are being made add filename to list
@@ -249,8 +250,8 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
                 LATEX_FILES.ModelOrder{nonBase} = ModelNameParts{3};
                 % Add output Latex Files for this alternative - Base
                 % set of Difference Maps
-                LATEX_FILES.FileNames{ti} = [INI.LATEX_DIR '/' 'Hydroperiod_Diffs_' ModelNameParts{3} '-' BaseNameParts{3} '.tex'];
-                LATEX_FILES.FileNames{ti + 1} = [INI.LATEX_DIR '/' 'Stage_Diffs_' ModelNameParts{3} '-' BaseNameParts{3} '.tex'];
+                LATEX_FILES.FileNames{ti} = [INI.LATEX_DIR '/' 'Hydroperiod_Diffs_' ModelNameParts{3} '_minus_' BaseNameParts{3} '.tex'];
+                LATEX_FILES.FileNames{ti + 1} = [INI.LATEX_DIR '/' 'Stage_Diffs_' ModelNameParts{3} '_minus_' BaseNameParts{3} '.tex'];
                 ti = ti + 2; % increment latex file name index by 2
                 nonBase = nonBase + 1; % increment model name index by 1
             end
@@ -272,7 +273,7 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
             continue;
         end
         fprintf('\n....Creating figures for file %s\n', LISTING(FI).name);
-        createStatisticFigure(LISTING(FI).name, LegendData, OutDir, INI.GIS_DIR, StartDateTime, EndDateTime, LATEX_FILES); % Send dfs2 to script for writing figures
+        createStatisticFigure(NameTag, LISTING(FI).name, LegendData, OutDir, INI.GIS_DIR, StartDateTime, EndDateTime, LATEX_FILES); % Send dfs2 to script for writing figures
     end
     % For each Latex File, Write Tail
     for li = 1:size(LATEX_FILES.FileNames, 2)

@@ -19,13 +19,6 @@ INI.DIR_Q_DFS0_FILES = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_MAT
 
 FILE_FILTER = '*.dfs0';   % File extension filter for input files
 
-% Model number (don't change this - currently only M06 has been tested)
-INI.MODEL = 'M06';  % options: 'M01' or 'M06'
-
-% Excel file with station data, and sheets to be used for input & output
-INI.XLSX_STATIONS = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Data_Common/MODEL_DATA_ITEMS_20200609-beta.xlsx';
-INI.SHEET_OBS = [INI.MODEL '_' 'MODEL_COMP'];  % station data is READ to this sheet
-
 % Location of database file to be created
 DATABASE_OBS_FOLDER = '../../ENP_TOOLS_Output/Obs_Processed_MATLAB/out/';
 

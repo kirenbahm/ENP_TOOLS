@@ -169,7 +169,7 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
         fi = 1;
         % If Monthly Figures are being made add filename to list
         if INI.MONTHLY_FIGS
-            LISTING(fi).name = [ModelFolder ModelNameParts{2} '_MonthlyStats.dfs2'];      % current model Monthly Stats
+            LISTING(fi).name = [ModelFolder ModelNameParts{3} '_MonthlyStats.dfs2'];      % current model Monthly Stats
             fi = fi + 1;
             % If Monthly Figs, add Monthly Latex files to list
             LATEX_FILES.FileNames{5} = [INI.LATEX_DIR '/' 'Stage_Monthly_' ModelNameParts{3} '.tex'];
@@ -177,12 +177,12 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
         end
         % If Calendar year Figures are being made add filename to list
         if INI.CALENDAR_YEAR_FIGS
-            LISTING(fi).name = [ModelFolder ModelNameParts{2} '_CalYearStats.dfs2'];      % current Model Calendar Year Stats
+            LISTING(fi).name = [ModelFolder ModelNameParts{3} '_CalYearStats.dfs2'];      % current Model Calendar Year Stats
             fi = fi + 1;
         end
         % If Monthly Figures are being made add filename to list
         if INI.WATER_YEAR_FIGS
-            LISTING(fi).name = [ModelFolder ModelNameParts{2} '_WaterYearStats.dfs2'];    % Base Model Water Year Stats
+            LISTING(fi).name = [ModelFolder ModelNameParts{3} '_WaterYearStats.dfs2'];    % Base Model Water Year Stats
             fi = fi + 1;
         end
         % If Wet and Dry Seasons are being made add filename to list
@@ -194,7 +194,7 @@ for ii=1:nM + 1 % Extra loop iteration is for the DifferenceMaps
         if INI.TOTAL_PERIOD_FIGS
             Period = strcat(num2str(INI.ANALYZE_DATE_I(2)), '_', num2str(INI.ANALYZE_DATE_I(1)), '_',...
                 num2str(INI.ANALYZE_DATE_F(2)), '_', num2str(INI.ANALYZE_DATE_F(1)));
-            LISTING(fi).name = [ModelFolder ModelNameParts{2}, '_TotalAnalysisPeriodStats(' Period ').dfs2']; % Base Model Total Period Stats
+            LISTING(fi).name = [ModelFolder ModelNameParts{3}, '_TotalAnalysisPeriodStats(' Period ').dfs2']; % Base Model Total Period Stats
         end
     elseif INI.DIFFERENCE_MAP_FIGS % occurs at condition ii == nM + 1
         % find listing of all difference map dfs2 files

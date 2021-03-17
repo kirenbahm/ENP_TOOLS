@@ -26,9 +26,9 @@ function D05_BC1D_Flow_Fill_Gaps()
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 
-% Input/Output Directories
-INI.OBS_FLOW_IN_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_BC1D/in/';
-INI.OBS_FLOW_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Processed_BC1D/out/';
+% Input/Output Directories for FLOW
+INI.OBS_IN_DIR  = '../../ENP_FILES/ENP_TOOLS_Sample_Input/Obs_Processed_BC1D/in/';
+INI.OBS_OUT_DIR = '../../ENP_TOOLS_Output/Obs_Processed_BC1D/out/';
 
 % Model Simulation Period
 INI.START_DATE = '01/01/1999 00:00';
@@ -46,6 +46,8 @@ INI.MATLAB_SCRIPTS = '../ENPMS/';
 % END USER INPUT
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
+DIR_DFS0_IN  = INI.OBS_IN_DIR;
+DIR_DFS0_OUT = INI.OBS_OUT_DIR;
 
 INI.OBS_FILETYPE = '*.dfs0';
 
@@ -56,6 +58,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+% -------------------------------------------------------------------------
+% MikeZero Import Statements
+% -------------------------------------------------------------------------
 dmi = NET.addAssembly('DHI.Mike.Install');
 if (~isempty(dmi))
     DHI.Mike.Install.MikeImport.SetupLatest({DHI.Mike.Install.MikeProducts.MikeCore});
@@ -75,41 +80,45 @@ INI.START_DATE_NUM = datenum(datetime(INI.START_DATE,'Inputformat','MM/dd/yyyy H
 INI.END_DATE_NUM   = datenum(datetime(INI.END_DATE,  'Inputformat','MM/dd/yyyy HH:mm'));
 
 % If input directory doesn't exist, end
-if ~exist(INI.OBS_FLOW_IN_DIR, 'dir')
-    fprintf('\n\nERROR - Directory not found: %s\n\n',INI.OBS_FLOW_IN_DIR);
+if ~exist(DIR_DFS0_IN, 'dir')
+    fprintf('\n\nERROR - Directory not found: %s\n\n',DIR_DFS0_IN);
     return
 end
 
-FILE_FILTER = [INI.OBS_FLOW_IN_DIR INI.OBS_FILETYPE]; % list only files with extension *.dfs0
-LISTING  = dir(char(FILE_FILTER));
+%Find Listing of input Dfs0 files
+FILE_FILTER = [DIR_DFS0_IN INI.OBS_FILETYPE]; % list only files with extension *.dfs0
+LISTING  = dir(char(FILE_FILTER)); % list only files input directory with extension *.dfs0
 
+%Loop through files
 n = length(LISTING);
 for i = 1:n
     try
         % iterate through each item in LISTING struc array (created by 'dir' matlab function)
         s = LISTING(i);
-        myFILE = [s.folder '/' s.name];
+        myFILE = [s.folder '/' s.name]; %%find full file name and path
         NAME = s.name; % get filename
-        fprintf('\n... %d/%d:  reading %s ...', i, n, NAME);
+        fprintf('\n... %d/%d:  reading %s ...', i, n, NAME); % report running status
         [~,myname,myext] = fileparts(myFILE);
         
-        dfs0FileName = strcat(INI.OBS_FLOW_OUT_DIR, INI.OUTFILE_PREFIX, myname, INI.OUTFILE_SUFFIX, myext);
+        dfs0FileName = strcat(DIR_DFS0_OUT, INI.OUTFILE_PREFIX, myname, INI.OUTFILE_SUFFIX, myext);
 
         % Open dfs0 file and copy metadata for new file
+        % Recreate File with updated metadata
         dfs0File  = DfsFileFactory.DfsGenericOpen(myFILE);
-        FileTitle = dfs0File.FileInfo.FileTitle;
-        AppTitle = dfs0File.FileInfo.ApplicationTitle;
-        AppVersionNo = dfs0File.FileInfo.ApplicationVersion;
-        DataType = dfs0File.FileInfo.DataType;
-        NoData = dfs0File.FileInfo.DeleteValueDouble;
-        ProjWktString = dfs0File.FileInfo.Projection.WKTString;
-        ProjLong = dfs0File.FileInfo.Projection.Longitude;
-        ProjLat = dfs0File.FileInfo.Projection.Latitude;
-        ProjOri = dfs0File.FileInfo.Projection.Orientation;
-        utmXmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateX;
-        utmYmeters = dfs0File.ItemInfo.Item(0).ReferenceCoordinateY;
-        elev_ngvd29_ft = dfs0File.ItemInfo.Item(0).ReferenceCoordinateZ;
-        TimeAxis = dfs0File.FileInfo.TimeAxis;  
+        FileTitle        = dfs0File.FileInfo.FileTitle;
+        AppTitle         = dfs0File.FileInfo.ApplicationTitle;
+        AppVersionNo     = dfs0File.FileInfo.ApplicationVersion;
+        NoData           = dfs0File.FileInfo.DeleteValueDouble;
+        DataType         = dfs0File.FileInfo.DataType;
+        ProjWktString    = dfs0File.FileInfo.Projection.WKTString;
+        ProjLong         = dfs0File.FileInfo.Projection.Longitude;
+        ProjLat          = dfs0File.FileInfo.Projection.Latitude;
+        ProjOri          = dfs0File.FileInfo.Projection.Orientation;
+        TimeAxis         = dfs0File.FileInfo.TimeAxis;  
+        utmXmeters       = dfs0File.ItemInfo.Item(0).ReferenceCoordinateX;
+        utmYmeters       = dfs0File.ItemInfo.Item(0).ReferenceCoordinateY;
+        elev_ngvd29_ft   = dfs0File.ItemInfo.Item(0).ReferenceCoordinateZ;
+        
         % Read Time Series flow values
         dd = double(Dfs0Util.ReadDfs0DataDouble(dfs0File));
         
@@ -125,7 +134,7 @@ for i = 1:n
         START_TIME = datenum(yy,mo,da,hh,mi,se);
         DFS0.T = datenum(dd(:,1))/86400 + START_TIME;
         DFS0.V = dd(:,2:end);
-       
+        
         % remove all delete values - first remove the timevector elements
         DFS0.T(DFS0.V == dfs0File.FileInfo.DeleteValueFloat)= [];
         
@@ -136,7 +145,7 @@ for i = 1:n
         
         % initialize new time series arrays at minimum size
         measurements = zeros(size(DFS0.V, 1), 1);
-        time_vector = zeros(size(DFS0.V, 1), 1);
+        time_vector  = zeros(size(DFS0.V, 1), 1);
         DFSi = 1;
         newi = 1;
         
@@ -179,7 +188,7 @@ for i = 1:n
                 % otherwise use current value
                 else
                     measurements(newi, 1) = DFS0.V(DFSi, 1);
-                    time_vector(newi, 1) = DFS0.T(DFSi, 1);
+                    time_vector(newi, 1)  = DFS0.T(DFSi, 1);
                     newi = newi + 1;
                     DFSi = DFSi + 1;
                 end
@@ -254,3 +263,4 @@ end
 fclose('all');
 fprintf('\n DONE \n\n');
 end
+

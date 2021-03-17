@@ -15,9 +15,9 @@ function D05_BC1D_prep_stage()
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 
-% Input/Output Directories
-INI.OBS_FLOW_IN_DIR  = '../../Obs_Processed_BC1D/renamed-stage/';
-INI.OBS_FLOW_OUT_DIR = '../../Obs_Processed_BC1D/out-stage/';
+% Input/Output Directories for STAGE
+INI.OBS_IN_DIR  = '../../Obs_Processed_BC1D/renamed-stage/';
+INI.OBS_OUT_DIR = '../../Obs_Processed_BC1D/out-stage/';
 
 % Model Simulation Period
 INI.START_DATE = '01/01/1999 00:00';
@@ -35,6 +35,8 @@ INI.MATLAB_SCRIPTS = '../ENPMS/';
 % END USER INPUT
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
+DIR_DFS0_IN  = INI.OBS_IN_DIR;
+DIR_DFS0_OUT = INI.OBS_OUT_DIR;
 
 INI.OBS_FILETYPE = '*.dfs0';
 
@@ -45,6 +47,9 @@ catch
     addpath(genpath(INI.MATLAB_SCRIPTS,0));
 end
 
+% -------------------------------------------------------------------------
+% MikeZero Import Statements
+% -------------------------------------------------------------------------
 dmi = NET.addAssembly('DHI.Mike.Install');
 if (~isempty(dmi))
     DHI.Mike.Install.MikeImport.SetupLatest({DHI.Mike.Install.MikeProducts.MikeCore});
@@ -64,35 +69,43 @@ INI.START_DATE_NUM = datenum(datetime(INI.START_DATE,'Inputformat','MM/dd/yyyy H
 INI.END_DATE_NUM   = datenum(datetime(INI.END_DATE,  'Inputformat','MM/dd/yyyy HH:mm'));
 
 % If input directory doesn't exist, end
-if ~exist(INI.OBS_FLOW_IN_DIR, 'dir')
-    fprintf('\n\nERROR - Directory not found: %s\n\n',INI.OBS_FLOW_IN_DIR);
+if ~exist(DIR_DFS0_IN, 'dir')
+    fprintf('\n\nERROR - Directory not found: %s\n\n',DIR_DFS0_IN);
     return
 end
 
-FILE_FILTER = [INI.OBS_FLOW_IN_DIR INI.OBS_FILETYPE]; % list only files with extension *.dfs0
-LISTING  = dir(char(FILE_FILTER));
+%Find Listing of input Dfs0 files
+FILE_FILTER = [DIR_DFS0_IN INI.OBS_FILETYPE]; % list only files with extension *.dfs0
+LISTING  = dir(char(FILE_FILTER)); % list only files input directory with extension *.dfs0
 
+%Loop through files
 n = length(LISTING);
 for i = 1:n
     try
         % iterate through each item in LISTING struc array (created by 'dir' matlab function)
         s = LISTING(i);
-        myFILE = [s.folder '/' s.name];
+        myFILE = [s.folder '/' s.name]; %%find full file name and path
         NAME = s.name; % get filename
-        fprintf('\n... %d/%d:  reading %s ...', i, n, NAME);
-        [myfilepath,myname,myext] = fileparts(myFILE);
+        fprintf('\n... %d/%d:  reading %s ...', i, n, NAME); % report running status
+        [~,myname,myext] = fileparts(myFILE);
         
-        dfs0FileName = strcat(INI.OBS_FLOW_OUT_DIR, INI.OUTFILE_PREFIX, myname, INI.OUTFILE_SUFFIX, myext);
+        dfs0FileName = strcat(DIR_DFS0_OUT, INI.OUTFILE_PREFIX, myname, INI.OUTFILE_SUFFIX, myext);
 
         % Open dfs0 file and copy metadata for new file
+        % Recreate File with updated metadata
         dfs0File  = DfsFileFactory.DfsGenericOpen(myFILE);
         FileTitle        = dfs0File.FileInfo.FileTitle;
-        station_name     = dfs0File.ItemInfo.Item(0).Name;
-        dfsDoubleOrFloat = dfs0File.ItemInfo.Item(0).DataType;
+        AppTitle         = dfs0File.FileInfo.ApplicationTitle;
+        AppVersionNo     = dfs0File.FileInfo.ApplicationVersion;
+        NoData           = dfs0File.FileInfo.DeleteValueDouble;
         ProjWktString    = dfs0File.FileInfo.Projection.WKTString;
         ProjLong         = dfs0File.FileInfo.Projection.Longitude;
         ProjLat          = dfs0File.FileInfo.Projection.Latitude;
         ProjOri          = dfs0File.FileInfo.Projection.Orientation;
+        TimeAxis         = dfs0File.FileInfo.TimeAxis;  
+        station_name     = dfs0File.ItemInfo.Item(0).Name;
+        dfsDoubleOrFloat = dfs0File.ItemInfo.Item(0).DataType;
+        itemQuantity     = dfs0File.ItemInfo.Item(0).Quantity;
         utmXmeters       = dfs0File.ItemInfo.Item(0).ReferenceCoordinateX;
         utmYmeters       = dfs0File.ItemInfo.Item(0).ReferenceCoordinateY;
         elev_ngvd29_ft   = dfs0File.ItemInfo.Item(0).ReferenceCoordinateZ;
@@ -101,12 +114,12 @@ for i = 1:n
         dd = double(Dfs0Util.ReadDfs0DataDouble(dfs0File));
         
         % Read Start datetime
-        yy = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Year);
-        mo = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Month);
-        da = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Day);
-        hh = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Hour);
-        mi = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Minute);
-        se = double(dfs0File.FileInfo.TimeAxis.StartDateTime.Second);
+        yy = double(TimeAxis.StartDateTime.Year);
+        mo = double(TimeAxis.StartDateTime.Month);
+        da = double(TimeAxis.StartDateTime.Day);
+        hh = double(TimeAxis.StartDateTime.Hour);
+        mi = double(TimeAxis.StartDateTime.Minute);
+        se = double(TimeAxis.StartDateTime.Second);
         
         % Create array of time step values 
         START_TIME = datenum(yy,mo,da,hh,mi,se);
@@ -199,12 +212,12 @@ for i = 1:n
         fprintf('writing %s ...', dfs0FileName);
        % create output dfs0
         factory = DfsFactory();
-        builder = DfsBuilder.Create(char(FileTitle),'Matlab DFS',0);
+        builder = DfsBuilder.Create(char(FileTitle), char(AppTitle), AppVersionNo);
         
         %save projection and file metadata 
         T = datevec(time_vector(1));
         builder.SetDataType(0);
-        builder.DeleteValueDouble = -1e-35;
+        builder.DeleteValueDouble = NoData;
         builder.SetGeographicalProjection(factory.CreateProjectionGeoOrigin(ProjWktString,ProjLong,ProjLat,ProjOri));
         builder.SetTemporalAxis(factory.CreateTemporalNonEqCalendarAxis...
             (eumUnit.eumUsec,System.DateTime(T(1),T(2),T(3),T(4),T(5),T(6))));
@@ -214,8 +227,7 @@ for i = 1:n
         
         %save item metadata
         myStationName = char([station_name]);
-        item1.Set(myStationName, DHI.Generic.MikeZero.eumQuantity...
-            (eumItem.eumIWaterLevel, eumUnit.eumUfeet), dfsDoubleOrFloat);
+        item1.Set(myStationName, itemQuantity, dfsDoubleOrFloat);
         item1.SetValueType(DataValueType.Instantaneous);
         item1.SetAxis(factory.CreateAxisEqD0());
         item1.SetReferenceCoordinates(utmXmeters,utmYmeters,elev_ngvd29_ft);
@@ -246,3 +258,4 @@ end
 fclose('all');
 fprintf('\n DONE \n\n');
 end
+

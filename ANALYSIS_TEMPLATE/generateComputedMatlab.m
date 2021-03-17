@@ -64,7 +64,7 @@ INI.STAT_OUTPUTS  = '..\..\ENP_TOOLS_Output\generateComputedMatlab_output\Statis
 %---------------------------------------------------------------------
 % 4. Provide name of the Excel file with all stations (and data items):
 %---------------------------------------------------------------------
-INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20200501.xlsx'];
+INI.fileCompCoord = [INI.DATA_COMMON 'MODEL_DATA_ITEMS_20210317.xlsx'];
 
 % Conversion factor for chainage units between Excel file and MSHE_WM.dfs0 file
 %INI.CONVERT_M11CHAINAGES = 0.3048; % use 0.3048 if Excel file chainages in meters and MSHE_WM.dfs0 chainages in feet
@@ -107,7 +107,7 @@ INI.TRANSECT_DEFS_SHEETNAMES_3DSZQ{ii} = 'SZ2RIV'; ii=ii+1;
 %---------------------------------------------------------------------
 % 6. Define file containing rules for aggregating flow data
 %---------------------------------------------------------------------
-INI.AGGREGATE_EQUATIONS = [ INI.DATA_COMMON 'aggregate_rules_file_20201030.txt'];
+INI.AGGREGATE_EQUATIONS = [ INI.DATA_COMMON 'aggregate_rules_file_20210310.txt'];
 
 %---------------------------------------------------------------------
 % Additional settings, DEFAULT can be modified for additional functionality

@@ -56,7 +56,7 @@ end
 %---------------------------------------------------------------------
 INI.DATA_COMMON = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Data_Common/'; 
 
-INI.FILE_OBSERVED = [INI.DATA_COMMON '/SAMPLE_OBS_DATA_20200305.MATLAB'];
+INI.FILE_OBSERVED = [INI.DATA_COMMON '/OBS_DATA_20210317.MATLAB'];
 %---------------------------------------------------------------------
 % 3. Set a tag for this analysis
 %     (This tag will be used to name the output directory, combined 
@@ -99,7 +99,7 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 % 7. Select a list of stations to be analyzed
 %---------------------------------------------------------------------
 
-INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-20201030.txt']; 
+INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-20210317.txt']; 
 
 %---------------------------------------------------------------------
 % 8. Define flow report items

@@ -27,6 +27,7 @@ function [ output_args ] = generateComputedMatlab( input_args )
 [INI.ROOT,NAME,EXT] = fileparts(pwd()); % path string of ROOT Directory/
 INI.ROOT = [INI.ROOT '/'];
 INI.CURRENT_PATH =[char(pwd()) '/']; % path string of folder MAIN
+i = 0; % initialize simulation count
 %%% DO NOT MODIFY (end)
 
 
@@ -76,9 +77,15 @@ INI.CONVERT_M11CHAINAGES = 1.0;     % use 1.0 if Excel file chainages in feet an
 % This setup allows results from different directories or computers to be used 
 % copying the data, i.e. INI.MODEL_SIMULATION_SET{i} can vary with respect
 % to Path, Model (M01, M06) and Simulation name (alternative).
-% Once data are extracted, simulation files may be deleted
+% Once data are extracted, simulation files may be deleted.
+% The 3rd string below must always be an underscore '_'.
+% Files created by this script will be given the unique identifier 'model_alternative'.
 
-i = 0;
+% Expected format: i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['path',                           'model', '_', 'alternative'];
+% Example:         i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\Models\Result\',              'M06',   '_', 'Alt1'];
+% Example:         i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['ENP_TOOLS_Sample_Input\Result\', 'M06',   '_', 'Alt2'];
+% Example:         i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['ENP_TOOLS_Sample_Input\Result\', 'M01',   '_', 'test'];
+
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test'];
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\', 'M06','_', 'test'];
 %i = i + 1;  INI.MODEL_SIMULATION_SET{i} = ['..\..\ENP_FILES\ENP_TOOLS_Sample_Input\Result\', 'M01','_', 'test_short'];

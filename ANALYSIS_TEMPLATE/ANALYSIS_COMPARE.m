@@ -101,8 +101,6 @@ INI.GIS_DIR = '..\..\ENP_FILES\ENP_TOOLS_Sample_Input\GIS\';
 %     i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_new_bridge',    'MySecondAlternativeRunTag'};
 %     i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_3_new_bridges', 'MyThirdAlternativeRunTag'};
 
-i = 0; % (don't change this line. variable initialization)
-
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test', 'M01'};
 i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M06_test', 'M06'};
 %i = i + 1;  INI.MODEL_SIMULATION_SET{i} = {INI.DATA_COMPUTED, 'M01_test_short', 'M01'};

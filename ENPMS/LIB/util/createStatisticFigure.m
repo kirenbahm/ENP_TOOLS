@@ -23,7 +23,7 @@ CanalShp = [GISDir 'sfwmd_canals_Clipped.shp'];
 % Dfs2 file information
 dfs2File = Dfs2File(DfsFileFactory.DfsGenericOpen(FileName)); % Open dfs2 file
 [~, fn, ~] = fileparts(FileName); % parse parts of filename
-namesplit = split(fn,'_'); % split filename by '-'
+NameText = replace(NameTag, '_', ' '); % split filename by '-'
 IsDifference = LatexFileNames.IsDifference; % Finds if file was difference map
 PrefixTitle = '';
 PrefixFileName = '';
@@ -32,19 +32,19 @@ IsMonthly = false; % Flagged for more specific title
 
 % Used to create Figure Titles and Figure *.png filename
 if contains(FileName, 'CalYear') % For Calendar Year
-    PrefixTitle = [NameTag ' Annual'];
-    PrefixFileName = PrefixTitle;
+    PrefixTitle = [NameText ' Annual'];
+    PrefixFileName = [NameTag ' Annual'];
 elseif contains(FileName, 'Monthly') % For Monthly
-    PrefixTitle = [NameTag ' Monthly'];
-    PrefixFileName = PrefixTitle;
+    PrefixTitle = [NameText ' Monthly'];
+    PrefixFileName = [NameTag ' Monthly'];
     IsMonthly = true; % Uses generic prefix but more specific time, and is flagged for later
 elseif contains(FileName, 'WaterYear') % For Water Year
-    PrefixTitle = [NameTag ' Water Year'];
+    PrefixTitle = [NameText ' Water Year'];
     PrefixFileName = [NameTag ' Water-Year'];
 elseif contains(FileName, 'WetDry') % For WetDry Season
     IsWetDry = true; % Uses less generic prefix, thus is flagged for creating prefix later
 elseif contains(FileName, 'TotalAnalysisPeriod') % For Total Analysis Period
-    PrefixTitle = [NameTag ' Analysis Period'];
+    PrefixTitle = [NameText ' Analysis Period'];
     PrefixFileName = [NameTag ' Analysis-Period'];
 end
 
@@ -56,11 +56,11 @@ PondingDepthLatexFile = '';
 % If is difference, finds the alternative to determine 
 % which latex outfiles to write to 
 if IsDifference
-    alternative = split(NameTag, '-');
+    alternative = NameTag;
     ai = 1;
     % Loop through alternative names for find correct index
     for i = 1:size(LatexFileNames.ModelOrder, 1)
-        if strcmp(LatexFileNames.ModelOrder{i}, alternative{1})
+        if strcmp(LatexFileNames.ModelOrder{i}, alternative)
             break;
         end
         ai = ai + 2;
@@ -195,7 +195,7 @@ for nI = 1:dfs2File.ItemInfo.Count
     
     % Writes a Section start to the respective Latex File
     if IsWetDry 
-        generate_latex_blocks_maps(ActiveLatex, 2, strcat(NameTag, ' Wet/Dry Season ', TitleFront));
+        generate_latex_blocks_maps(ActiveLatex, 2, strcat(NameText, ' Wet/Dry Season ', TitleFront));
     else
         generate_latex_blocks_maps(ActiveLatex, 2, TitleFront);
     end
@@ -213,10 +213,10 @@ for nI = 1:dfs2File.ItemInfo.Count
         YearStr = num2str(currentDateTime.Year); % turn year to string
         if IsWetDry % If Wet/Dry Seasons
             if currentDateTime.Month == 6 % If timestep is June, Wet Season
-                TitleText = strcat(NameTag, ' Wet Season ', TitleFront, ' -', YearStr); % final title
+                TitleText = strcat(NameText, ' Wet Season ', TitleFront, ' -', YearStr); % final title
                 plotfilename = strcat(NameTag, ' Wet', PlotName, '-', YearStr); % final filename
             else % else, Dry Season
-                TitleText = strcat(NameTag, ' Dry Season ', TitleFront, ' -', YearStr);  % final title
+                TitleText = strcat(NameText, ' Dry Season ', TitleFront, ' -', YearStr);  % final title
                 plotfilename = strcat(NameTag, ' Dry', PlotName, '-', YearStr); % final filename
             end
         elseif IsMonthly % If monthly use Month and Year in title and filename

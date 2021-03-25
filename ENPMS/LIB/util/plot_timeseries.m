@@ -53,7 +53,11 @@ for i = m %
     rTS(index_nan)=[]; %remove Nan values
     rTV(index_nan,:)=[]; %remove dates with Nan values
     TSp.name = char(SIM(i));
-    TSp = timeseries(rTS,rTV);
+    if (length(rTS) == 1)
+        continue;
+    else
+        TSp = timeseries(rTS,rTV);
+    end
     TSp.TimeInfo.Format = 'dd/mm/yy';
     
     if isempty(rTS)

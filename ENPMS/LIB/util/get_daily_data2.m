@@ -15,7 +15,7 @@ DATE_VEC = [y,m,d,h,mi,s];
 DD_ARRAY = [y,m,d];DD_ARRAY = unique(DD_ARRAY,'rows','stable');
 
 %extract values for the specified vector
-n = length(DD_ARRAY);
+n = size(DD_ARRAY, 1);
 DRED.DD_WAVE(1:n) = NaN; % daily weighted average
 % DRED.DD_AVE(1:n) = NaN; % daily  average
 % DRED.DD_WSUM(1:n) = NaN; % daily weighted sumation

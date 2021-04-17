@@ -74,7 +74,7 @@ end
 
 % If no complete Months, report and end script
 if EndDateTime - StartDateTime <= 0
-    fprintf('ERROR generating Monthly Stats - No Complete Wet or Dry Season.\n');
+    fprintf('ERROR generating Wet/Dry Season Stats - No Complete Wet or Dry Season.\n');
     return;
 end
 

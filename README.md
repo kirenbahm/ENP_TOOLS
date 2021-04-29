@@ -11,3 +11,12 @@ Sample input and output files are in the parent directory ENP_FILES. The top-lev
 Ask Kiren for a copy of the ENP_FILES directory.
 
 The ENP_MODELS, ENP_TOOLS, and ENP_FILES directories should all work together if they are in the same parent folder, at the same level.
+
+This library has many authors/contributors. Credit goes to:
+- GIT Consulting
+- Robert Fennema, NPS
+- Kiren Bahm, NPS
+- Lago Consulting
+- Adam Karzynski, NPS
+
+(Please let Kiren know if you have not been credited on this list.)

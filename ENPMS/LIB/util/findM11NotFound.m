@@ -10,7 +10,7 @@ STATIONS_NOT_FOUND = SELECTED(~L_NOT_FOUND);
 i = 0;
 for K = STATIONS_NOT_FOUND
     i = i+1;
-    if isKey(mapM11chain,char(K))
+    if isKey(mapM11chain,char(K(i)))
         CHAINAGES_NOT_FOUND(i) = mapM11chain(char(M11CHAIN));
     end 
 end

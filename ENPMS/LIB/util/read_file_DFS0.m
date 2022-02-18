@@ -1,6 +1,6 @@
 function DFS0 = read_file_DFS0(FILE_NAME)
 
-fprintf('--- Reading data file: %s',char(FILE_NAME));
+fprintf('\n\n--- Reading data file: %s',char(FILE_NAME));
 
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;

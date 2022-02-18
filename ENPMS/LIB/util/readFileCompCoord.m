@@ -7,7 +7,7 @@ INI.mapCompSelected = containers.Map;
 
 % Read Excel spreadsheet into generic data arrays
 [~,~,RAW] = xlsread(char(INI.fileCompCoord),char(INI.XLSCOMP));
-fprintf('--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
+fprintf('\n\n--- Reading file::%s with a list of stations to be extracted from raw data\n', char(INI.fileCompCoord));
 
 % Get map of active grid cells (to screen out stations outside domain)
 activeCellCodes = readDomainGridCodes(INI.filePP);

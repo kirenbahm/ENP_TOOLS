@@ -35,10 +35,10 @@ if (INI.USE_RES11)
     else
         % prints message of which files were missing
         if(~dfs0Exists)
-            fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
+            fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
         end
         if(~res11Exists)
-            fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res11));
+            fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res11));
         end
         return
     end
@@ -47,7 +47,7 @@ else
     if(dfs0Exists)
         DATA = read_file_DFS0(INI.fileM11Dfs0);
     else
-        fprintf('WARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
+        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
         return
     end
 end
@@ -136,31 +136,31 @@ SELECTED = sort(SELECTED);
 XLSH = [INI.LOG_XLSX_SH '_M11_SH'];
 
 if length(XLSH)> 30
-   fprintf('--- WARNING length of sheet name  %s is greater than 30 char, shortening to %s \n',char(XLSH),char(XLSH(1:30)));
+   fprintf('\n--- WARNING length of sheet name  %s is greater than 30 char, shortening to %s \n',char(XLSH),char(XLSH(1:30)));
    XLSH = XLSH(1:30);
 end
 
 [STATIONS_NOT_FOUND] = findM11NotFound(NAME_FOUND,SELECTED,mapM11chain);
 
 %print selected
-xlswrite(char(INI.LOG_XLSX),{'SELECTED'},char(XLSH),'B1');
+xlswrite(char(INI.LOG_XLSX),{'ALL REQUESTED STATIONS'},char(XLSH),'B1');
 xlswrite(char(INI.LOG_XLSX),SELECTED,char(XLSH),'B2');
 
 % XFOUND = sort(XFOUND');
 %print found
-xlswrite(char(INI.LOG_XLSX),{'CHAINAGE'},char(XLSH),'D1');
+xlswrite(char(INI.LOG_XLSX),{'CHAINAGES FOR FOUND STATIONS'},char(XLSH),'D1');
 xlswrite(char(INI.LOG_XLSX),XFOUND',char(XLSH),'D2');
 
 % NAME_FOUND = sort(NAME_FOUND');
-xlswrite(char(INI.LOG_XLSX),{'STATION'},char(XLSH),'E1');
+xlswrite(char(INI.LOG_XLSX),{'STATIONS FOUND'},char(XLSH),'E1');
 xlswrite(char(INI.LOG_XLSX),NAME_FOUND',char(XLSH),'E2');
 
 %print not found
 XNFOUND = sort(XNFOUND');
-xlswrite(char(INI.LOG_XLSX),{'NOTFOUND'},char(XLSH),'G1');
+xlswrite(char(INI.LOG_XLSX),{'STATIONS NOT FOUND'},char(XLSH),'G1');
 xlswrite(char(INI.LOG_XLSX),STATIONS_NOT_FOUND,char(XLSH),'G2');
 
-xlswrite(char(INI.LOG_XLSX),{'ALL CHAINAGES'},char(XLSH),'I1');
+xlswrite(char(INI.LOG_XLSX),{'LIST OF ALL CHAINAGES'},char(XLSH),'I1');
 xlswrite(char(INI.LOG_XLSX),XNFOUND,char(XLSH),'I2');
 
 fprintf('\n    - Summary of M11 results\n');

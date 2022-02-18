@@ -41,7 +41,7 @@ INI.GRAPHICS_LW = [ 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3];
 INI.GRAPHICS_FS = 12;
 INI.GRAPHICS_FN = 'times';
 
-INI.GRAPHICS_FIGUREWIDTH = 8; %10
+INI.GRAPHICS_FIGUREWIDTH = 8; % normal value = 8;  also used: 10
 INI.GRAPHICS_FIGUREHEIGHT = 3;
 
 %---------------------------------------------------------------------

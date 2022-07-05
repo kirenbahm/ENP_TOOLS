@@ -117,7 +117,7 @@ INI.ANALYZE_DATE_F = [2010 12 31 0 0 0];% ending of analysis period
 % 7. Select a list of stations to be analyzed
 %---------------------------------------------------------------------
 
-INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-20210317.txt']; 
+INI.SELECTED_STATION_FILE = [INI.DATA_COMMON '/STATIONS-test-20220425.txt']; 
 
 %---------------------------------------------------------------------
 % 8. Define flow report items

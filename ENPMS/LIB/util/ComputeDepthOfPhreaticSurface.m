@@ -7,7 +7,7 @@ function ComputeDepthOfPhreaticSurface(INI)
 
 % Import Statements
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
-NET.addAssembly('DHI.Generic.MikeZero.EUM');
+NET.addAssembly('DHI.Generic.MikeZero.DFS');
 NET.addAssembly('DHI.Generic.MikeZero.DFS');
 import DHI.Generic.MikeZero.DFS.*;
 import DHI.Generic.MikeZero.DFS.dfs0.*;

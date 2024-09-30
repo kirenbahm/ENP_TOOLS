@@ -1,61 +1,31 @@
-function INI = readM11_WM(INI,res11Exists,dfs0Exists)
+function INI = readM11_WM(INI,res11Exists,dfs0Exists,res1dExists)
 
-% check flag to use res11
-if (INI.USE_RES11)
-    % check if files exist;
-    % if dfs0 and res11, use together
-    if(dfs0Exists && res11Exists)
-        DFS0 = read_file_DFS0(INI.fileM11Dfs0);
-        wi = 1; %stores end index of water level items
-        sizetype = size(DFS0.TYPE); %for determining loop length
-        % determines how much of dfs0 data to use
-        for i=1:sizetype(2)
-            if(~strcmp(DFS0.TYPE{i},'Water Level'))
-                wi = i - 1;
-                break;
-            end
-        end
-        RES11 = read_file_RES11(INI.fileM11Res11, 2);
-        % concatinate applicable results together from both files
-        DATA.T = DFS0.T;
-        DATA.V = cat(2,DFS0.V(:,1:wi),RES11.V(2:end,:));
-        DATA.TYPE = cat(2,DFS0.TYPE(1:wi),RES11.TYPE);
-        DATA.UNIT = cat(2,DFS0.UNIT(1:wi),RES11.UNIT);
-        DATA.NAME = cat(2,DFS0.NAME(1:wi),RES11.NAME);
+%% read 1-D model results file (choose file based on preferential order: res1d, res11, dfs0)
+% save data into 'DATA' variable
+if(INI.USE_RES1D && res1dExists)
+    DATA = read_file_RES1D(INI.fileM11Res1d);
 
-    % elseif only use res11
-    elseif (res11Exists)
-        DATA = read_file_RES11(INI.fileM11Res11, 0);
+elseif(INI.USE_RES11 && res11Exists)
+    DATA = read_file_RES11(INI.fileM11Res11, 0);
 
-    % elseif only use dfs0
-    elseif (dfs0Exists)
-        DATA = read_file_DFS0(INI.fileM11Dfs0);
+elseif(INI.USE_DFS0 && dfs0Exists)
+    DATA = read_file_DFS0(INI.fileM11Dfs0);
 
-    % else can't use res11 option
-    else
-        % prints message of which files were missing
-        if(~dfs0Exists)
-            fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
-        end
-        if(~res11Exists)
-            fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res11));
-        end
-        return
-    end
 else
-    % if not using res11, use old dfs0 read
-    if(dfs0Exists)
-        DATA = read_file_DFS0(INI.fileM11Dfs0);
-    else
-        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
-        return
+    % prints message of which files were missing
+    if(~res1dExists)
+        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res1d));
     end
+    if(~res11Exists)
+        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res11));
+    end
+    if(~dfs0Exists)
+        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
+    end
+    return
 end
 
-
-
-
-
+%% process 'DATA'
 
 % Is this line necessary? Specifically what data is it trying to filter out?
 % This might need to be removed. -keb
@@ -64,13 +34,13 @@ DATA.V(abs(DATA.V)<1e-8 & abs(DATA.V) > 0 ) = NaN; % remove non-physical values 
 
 
 
-
-
 SZ = size(DATA.V);
 %xlswrite(char(INI.fileCompCoord),DATA.NAME','ALL_COMPUTED','B2');
 %fprintf('--- M11 results have %d Computational Points with %d Timesteps\n',SZ(2),SZ(1));
 
-% create a map of chainages with Station Names as values
+%% create a map of chainages with Station Names as values
+% extract desired data into INI variable using station names from Excel
+% file
 mapM11chain = getMapM11Chainages(INI);
 
 %fprintf('--- CONVERSION FACTOR FOR CHAINAGES::%f\n',INI.CONVERT_M11CHAINAGES);
@@ -79,7 +49,7 @@ fi = 0;
 fn = 0;
 
 for i=1:SZ(2)
-    % Convert chainage units from Excel file if requested
+    %% process MIKE 'canal;chainage;datatype' strings into separate variables
     M11CHAIN = DATA.NAME{i};            % copy name (expected format: 'stationName;chainage;riverName'
     M11CHAIN = strrep(M11CHAIN,' ',''); % remove spaces
     STR_TEMP = strsplit(M11CHAIN,';');  % break apart string into components
@@ -87,6 +57,7 @@ for i=1:SZ(2)
     NSTR = sprintf('%.0f',N);           % save the converted chainage
     M11CHAIN = [STR_TEMP{1} ';' NSTR ';' STR_TEMP{3}]; % re-assemble and write over original variable
 
+    %% search 'DATA' for matches to desired stations, and save output data to 'INI.mapCompSelected' variable
     try
         XSEL{i} = M11CHAIN;
         if isKey(mapM11chain,char(M11CHAIN))
@@ -129,6 +100,7 @@ for i=1:SZ(2)
     end
 end
 
+%% write report of stations found and not found to Excel spreadsheet log
 SELECTED = values(mapM11chain)';
 SELECTED = cellfun(@(x) cell2mat(x),SELECTED,'un',0);
 SELECTED = sort(SELECTED);

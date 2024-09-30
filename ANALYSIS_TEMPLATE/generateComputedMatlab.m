@@ -32,7 +32,7 @@ i = 0; % initialize simulation count
 
 
 %---------------------------------------------------------------------
-% 1. SETUP Location of ENPMS Scripts
+% 1. SETUP Location of ENPMS Scripts (includes mbin DHI MATLAB scripts)
 %---------------------------------------------------------------------
 INI.MATLAB_SCRIPTS = '..\ENPMS\';
 
@@ -138,9 +138,14 @@ INI.SZ_HEADS_DRY_CELL_THRESHOLD = 0.01; % Threshold for converting SZ Heads to P
 % END OF USER INPUT: start extraction
 %---------------------------------------------------------------------
 
-% BETA: Read M11 values from res11 file or dfs0 file?
-INI.USE_RES11 = true;   % read .res11 file (slow and more accurate)
-%INI.USE_RES11 = false;  % read .dfs0  file (fast and less accurate)
+% What filetype to read 1-D channel flow model results from? (only one should be true)
+INI.USE_DFS0  = false;  % read .dfs0  file (super-old format)
+INI.USE_RES11 = false;  % read res11  file (old format)
+INI.USE_RES1D = true;  % read .res1d  file (new format)
+% Check that only one is true
+if (sum(INI.USE_DFS0 + INI.USE_RES11 + INI.USE_RES1D) ~= 1)
+   fprintf('\n\nERROR in generateComputed: Must choose only one 1-D output file type\n\n');
+end
 
 % Process seepage maps (this code is currently not implemented)
 INI.READ_SEEPAGE_MAP = 0;

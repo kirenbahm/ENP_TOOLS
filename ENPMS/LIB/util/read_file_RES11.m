@@ -20,7 +20,9 @@ import DHI.Generic.MikeZero.DFS.*;
 %------------------------------------
 % Process user option selections
 %------------------------------------
-%% Determines Output Data
+%% Determine Output Data Type
+% Sets 'outType' based on script input variable 'OutOption' and last 10 characters of FILE_NAME.
+% Output datatypes are hardcoded below
 filetype = FILE_NAME(end-10:end);
 if (OutOption == 0) % Outputs all information
     outType = System.String('All');
@@ -226,37 +228,37 @@ else
     mi = double(res11File.FileInfo.TimeAxis.StartDateTime.Minute);
     se = double(res11File.FileInfo.TimeAxis.StartDateTime.Second);
     START_TIME = double(datenum(yy,mo,da,hh,mi,se));
-    
+
     %% Read data from file and store in vals
     fprintf('      reading step 1/%i and counting',res11File.FileInfo.TimeAxis.NumberOfTimeSteps);
     for i=1:res11File.FileInfo.TimeAxis.NumberOfTimeSteps
         readOrder = 0;
         % print progress bar to screen for file reading
         if ~mod(i+1,10) % print only every 10 days
-           fprintf('.');
+            fprintf('.');
         end
         if ~mod(i,366)
-           fprintf('\n      reading step %i%s%i and counting',i, '/', res11File.FileInfo.TimeAxis.NumberOfTimeSteps);
+            fprintf('\n      reading step %i%s%i and counting',i, '/', res11File.FileInfo.TimeAxis.NumberOfTimeSteps);
         end
         %% searches through index of selected time series type
         for iitem=1:ind
             current = res11File.ReadItemTimeStep(indices(iitem) + 1, i-1);
-            %current = res11File.ReadItemTimeStepNext(); % this function is only slightly faster, but the downside is that we would need to read the entire file, which is not desirable particularly when reading the HDAdd.res11 file 
+            %current = res11File.ReadItemTimeStepNext(); % this function is only slightly faster, but the downside is that we would need to read the entire file, which is not desirable particularly when reading the HDAdd.res11 file
             dd = double(current.Data);
             if (iitem == 1)
-              time(i) = current.Time;
+                time(i) = current.Time;
             end
             %% if first element in time step, read timestep information
             vals(i, readOrder + 1: readOrder + elements{iitem}) = dd;
             readOrder = readOrder + elements{iitem};
         end
     end
-    
+
     %% Stores Collected Information into Output
     for t=1:res11File.FileInfo.TimeAxis.NumberOfTimeSteps
-      time(t) = (DfsExtensions.ToSeconds(res11File.FileInfo.TimeAxis, time(t)) / 86400.0) + START_TIME;
+        time(t) = (DfsExtensions.ToSeconds(res11File.FileInfo.TimeAxis, time(t)) / 86400.0) + START_TIME;
     end
-    
+
     DATA.T = time';
     DATA.V = vals;
     DATA.TYPE = type;

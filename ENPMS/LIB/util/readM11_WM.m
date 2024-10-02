@@ -54,7 +54,7 @@ for i=1:SZ(2)
     M11CHAIN = strrep(M11CHAIN,' ',''); % remove spaces
     STR_TEMP = strsplit(M11CHAIN,';');  % break apart string into components
     N = str2num(STR_TEMP{2})*INI.CONVERT_M11CHAINAGES; % convert unit of chainage if requested
-    NSTR = sprintf('%.0f',N);           % save the converted chainage
+    NSTR = sprintf('%d',int32(N));           % save the converted chainage
     M11CHAIN = [STR_TEMP{1} ';' NSTR ';' STR_TEMP{3}]; % re-assemble and write over original variable
 
     %% search 'DATA' for matches to desired stations, and save output data to 'INI.mapCompSelected' variable

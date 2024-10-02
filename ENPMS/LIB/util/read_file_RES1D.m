@@ -54,10 +54,11 @@ for r = 1:rd.Reaches.Count
         for c=1:numChainages
             chainage = chainlist(c);
             parse = num2str(chainage, '%.3f');
-            DATA.NAME{datasetcounter} = strcat(char(reach_name), ';', pad(parse, 12, 'left'), ';', char(data_type));
+            DATA.NAME{datasetcounter} = strcat(upper(char(reach_name)), ';', pad(parse, 12, 'left'), ';', char(data_type));
             DATA.TYPE{datasetcounter} = char(data_type);
             if strcmp(char(data_type),'Water Level') || strcmp(char(data_type),'Water level')
                 DATA.UNIT{datasetcounter} = char('m');
+                DATA.NAME{datasetcounter} = strcat(upper(char(reach_name)), ';', pad(parse, 12, 'left'), ';', char('Water Level')); % change case to be compatible with Excel data
             elseif strcmp(char(data_type),'Discharge')
                 DATA.UNIT{datasetcounter} = char('m^3/s');
             else

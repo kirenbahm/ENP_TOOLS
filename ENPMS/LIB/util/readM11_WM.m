@@ -14,13 +14,13 @@ elseif(INI.USE_DFS0 && dfs0Exists)
 else
     % prints message of which files were missing
     if(~res1dExists)
-        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res1d));
+        fprintf('\nWARNING: missing res1D file %s\n', char(INI.fileM11Res1d));
     end
     if(~res11Exists)
-        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Res11));
+        fprintf('\nWARNING: missing res11 file %s\n', char(INI.fileM11Res11));
     end
     if(~dfs0Exists)
-        fprintf('\nWARNING: missing M11 file %s for:%s\n',char(fn), char(INI.fileM11Dfs0));
+        fprintf('\nWARNING: missing dfs0 file %s\n', char(INI.fileM11Dfs0));
     end
     return
 end

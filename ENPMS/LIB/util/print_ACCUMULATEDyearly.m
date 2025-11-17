@@ -5,29 +5,48 @@ function [ output_args ] = print_ACCUMULATEDyearly(INI,P)
 FN = [INI.ANALYSIS_DIR_TAG '/DS_YEARLY_AVE.txt'];
 FID = fopen(FN,'w');
 
+% %print header
+% fprintf(FID,'Average yearly discharges in kilo acre feet (kaf)\n');
+% 
+% B = all(P.VEC_YYY_AVE);
+% M = P.VEC_YYY_AVE(:,B==1);
+% S = P.SRC(B==1);
+% 
+% %print column header
+% fprintf(FID,'%20s','Station');
+% n = length(S);
+% 
+% for i = 1:n
+%     fprintf(FID,'\t%s', char(S(i)));
+% end
+% 
+% fprintf(FID,'\n');
+% 
+% [ni nj] = size(M);
+% 
+% for i = 1:ni
+%     fprintf(FID,'%20s', char(P.NAME(i)));
+%     for j = 1:nj
+%         fprintf(FID,'\t%8.2f', M(i,j));
+%     end
+%     fprintf(FID,'\n');
+% end
 %print header
-fprintf(FID,'Average yearly discharges in kilo acre feet (kaf)\n');
+fprintf(FID,'Average yearly discharges for the entire simulation period\n');
 
-B = all(P.VEC_YYY_AVE);
-M = P.VEC_YYY_AVE(:,B==1);
-S = P.SRC(B==1);
-
-%print column header
+%pring column header
 fprintf(FID,'%20s','Station');
-n = length(S);
-
+n = length(P.SRC);
 for i = 1:n
-    fprintf(FID,'\t%s', char(S(i)));
+    fprintf(FID,'\t%s', char(P.SRC(i)));
 end
-
 fprintf(FID,'\n');
 
-[ni nj] = size(M);
-
+[ni nj] = size(P.VEC_YYY_AVE);
 for i = 1:ni
-    fprintf(FID,'%20s', char(P.NAME(i)));
+    fprintf(FID,'%s', char(P.NAME(i)));
     for j = 1:nj
-        fprintf(FID,'\t%8.2f', M(i,j));
+        fprintf(FID,'\t%8.2f', P.VEC_YYY_AVE(i,j));
     end
     fprintf(FID,'\n');
 end
